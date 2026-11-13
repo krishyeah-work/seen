@@ -149,8 +149,8 @@ File: `art/scenes.js`. Each scene is an 800 × 500 SVG with everything inside `<
 
 **Help for confused tapping** (every scene). Taps that miss (on the picture or the panel background, or a wrong answer) count up per moment:
 1. 3 taps: everything tappable wiggles once.
-2. 5 taps: only the answer wiggles and glows once.
-3. 9 taps: Glo jumps and offers help (say it slower, show me where, show it in English).
+2. 5 taps: only the answer wiggles and glows once, and the speaker points at it (look and point, `pointAt`).
+3. 9 taps: the speaker points again and Glo jumps and offers help (say it slower, show me where, show it in English).
 Scene art that can be tapped carries `data-art="<key>"` so it can wiggle.
 
 ## 7. Map
@@ -170,7 +170,7 @@ Keep it light: land, sea and labels must stay readable under the pins. Nothing o
 
 ## 8. Voices
 
-Speech uses the browser's voices. Pick by quality: never use novelty voices (Apple's Eddy, Flo, Grandpa and others); prefer natural, neural, enhanced or premium voices, then Spain Spanish, then any Spanish. Women use a female voice and men a male one; if there is no male voice, use the best voice with only a slight pitch drop (0.82), never a heavy one. iOS needs one tap before a page may speak, so speech is unlocked on the first tap.
+Speech uses the browser's voices. Pick by quality: never use novelty voices (Apple's Eddy, Flo, Grandpa and others); Chrome's Google voices first (they're the most natural), then natural, neural, enhanced or premium voices, then Spain Spanish, then any Spanish. Women get the best voice that isn't male. Women use a female voice and men a male one; if there is no male voice, use the best voice with only a slight pitch drop (0.82), never a heavy one. iOS needs one tap before a page may speak, so speech is unlocked on the first tap.
 
 ## 9. Interface motion
 
@@ -216,3 +216,4 @@ One-off exceptions. Add here **only when asked** (see "How to use this file").
 - 2026-11: First version. Product renamed Picto. Glo rebuilt as a full character; people rig gained lids, brows, mouth shapes, jointed arms with hands, poses and gaze; café and shop given depth and ambient life; Spain redrawn as an illustrated map; landing simplified with a first-open entrance; first-time guide added.
 - 2026-11: Setup buttons made conditional and nothing pre-selected; floating notes back on the landing; setup steps reveal in order; avatar editor fixed on phones.
 - 2026-11: Glo moved into the scene top bar and made always tappable; no Glo on the landing; bubble scales with the picture; compact phone scene layout; escalating help for confused tapping; better voice choice on iPhone.
+- 2026-11: Speakers point at the answer when the learner struggles; Chrome's Google voice ranked first again.

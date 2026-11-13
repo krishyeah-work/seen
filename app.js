@@ -324,14 +324,15 @@
       let s = 0;
       if (/natural|neural|premium|enhanced|mejorada|online/i.test(v.name)) s += 8;
       if (/es[-_]ES/i.test(v.lang)) s += 3;
-      if (/m[oó]nica|paulina|marisol|jorge|juan|helena|elvira|[aá]lvaro|pablo|dalia|jorge|google/i.test(v.name)) s += 2;
+      if (/google/i.test(v.name)) s += 6;
+      if (/m[oó]nica|paulina|marisol|jorge|juan|elvira|[aá]lvaro|dalia/i.test(v.name)) s += 2;
       if (v.localService === false) s += 1;
       return s;
     },
     voiceFor(g) {
       const list = this.voices;
       if (g === 'm') return list.find((v) => MALE.test(v.name)) || null;
-      return list.find((v) => FEMALE.test(v.name) && !MALE.test(v.name)) || list.find((v) => !MALE.test(v.name)) || null;
+      return list.find((v) => !MALE.test(v.name)) || null;
     },
     tok: 0,
     say(text, slow, btn, g = 'f', who) {
@@ -345,8 +346,8 @@
       if (!v) v = this.voices[0] || null;
       if (v) { u.voice = v; u.lang = v.lang; }
       // No male Spanish voice? Use the best voice a little lower. A big pitch drop sounds robotic, so keep it subtle.
-      u.pitch = g === 'm' ? (fallback ? 0.82 : 1) : 1.04;
-      u.rate = slow ? 0.66 : 0.94;
+      u.pitch = g === 'm' ? (fallback ? 0.82 : 1) : 1.06;
+      u.rate = slow ? 0.62 : 0.92;
       let started = false;
       // If the engine never starts (no voice, blocked audio), still animate for the line's length.
       const fb = who ? setTimeout(() => { if (!started) timedTalk(who, text, slow); }, 700) : 0;
@@ -1697,6 +1698,7 @@
         art.forEach((a) => once(a, 'wiggle', 800));
         if (h && (answerOnly || !art.length)) once(h, answerOnly ? 'nudge' : 'peek', 1400);
       }, i * 90));
+      if (answerOnly) { const h = $(`#stage [data-hot="${m.answer}"]`); if (h) pointAt(m.who, h); }
     } else {
       const items = $$(m.type === 'pick' ? '.tile' : '.reply');
       const pick = answerOnly ? items.filter((t) => m.type === 'reply' || t.dataset.k === m.answer).slice(0, 1) : items;
@@ -1713,6 +1715,7 @@
   function offerHelp() {
     const m = cur();
     Glo.jump();
+    if (m.type === 'tap') { const h = $(`#stage [data-hot="${m.answer}"]`); if (h) { pointAt(m.who, h); once(h, 'nudge', 1400); } }
     Glo.say(m.type === 'tap' ? `Need a hand? You’re looking for <b>${WORDS[m.word].es}</b> in the picture.` : `Need a hand? Pick the answer below for <b>${WORDS[m.word].es}</b>.`, { actions: gloActs(m) });
   }
 

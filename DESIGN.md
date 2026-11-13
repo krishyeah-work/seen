@@ -6,9 +6,9 @@ How Picto's characters, motion, locations and map are made, so new work matches 
 
 - **Read it before** changing or adding a character, an animation, a location or the map.
 - **Update it after** a change, in the same commit:
-  - If the change alters how things are done in general, edit the matching rule in sections 1 to 8 so it stays true. Write the rule generally ("characters do X"), not as a note about one case.
-  - Add to **section 10, Specific rules** only when the project owner asks for a one-off exception, or explicitly asks a tool to record one. Otherwise never add case-by-case rules.
-  - Add one line to **section 11, Change log**.
+  - If the change alters how things are done in general, edit the matching rule in sections 1 to 9 so it stays true. Write the rule generally ("characters do X"), not as a note about one case.
+  - Add to **section 11, Specific rules** only when the project owner asks for a one-off exception, or explicitly asks a tool to record one. Otherwise never add case-by-case rules.
+  - Add one line to **section 12, Change log**.
 - If a request conflicts with a rule here, follow the request and update the rule.
 
 ## 1. Feel
@@ -80,7 +80,7 @@ Glo is a small speech-bubble creature (from the Greek *glossa*: tongue, language
 
 **Actions** (classes): `is-jump` (squash, launch, hang, land, settle; arms up, tuft flung), `is-wave` (one hello), `data-point="l|r|up|down"` (leans and points, used by the guide), `still` (no idle motion, for rows of small Glos).
 
-**Behaviour.** Eyes follow the pointer. Glo waits at the screen edge and comes forward to speak. Glo never blocks content and never speaks unprompted more than once per screen.
+**Behaviour.** Eyes follow the pointer. Outside scenes Glo stands fully visible in the bottom corner; in a scene it lives in the top bar and speaks inside the answer panel, so it never floats over the picture. Tapping Glo always does something (it helps with the current screen, or says hello). Glo never blocks content and never speaks unprompted more than once per screen. Never show a Glo that can't be tapped where it looks like a button.
 
 ## 5. People
 
@@ -143,7 +143,15 @@ File: `art/scenes.js`. Each scene is an 800 × 500 SVG with everything inside `<
 - **No look-alikes.** Never add decoration that could be mistaken for a tappable item or for a word being taught.
 - **Tap zones** are generous, never overlap, and stay clear of ambient motion.
 - **Props** that arrive during a scene are `.prop` groups shown by adding `.in`.
-- Speech bubbles sit beside the speaker's mouth when nothing is covered, otherwise in the band at the top of the scene.
+- Speech bubbles sit beside the speaker's mouth when nothing is covered, otherwise in the band at the top of the scene. On desktop the bubble and the band scale with the picture (`--k`), so browser zoom keeps them in proportion.
+- **Phones:** the picture takes the free height; the answer panel is compact and sits below it with no scrolling needed to answer (small word, icon-only audio buttons, one-line prompt, short tiles). Once answered, the choices collapse and the feedback and Continue take their place.
+- **No dark overlays** on the picture before a scene starts. The panel introduces the scene.
+
+**Help for confused tapping** (every scene). Taps that miss (on the picture or the panel background, or a wrong answer) count up per moment:
+1. 3 taps: everything tappable wiggles once.
+2. 5 taps: only the answer wiggles and glows once.
+3. 9 taps: Glo jumps and offers help (say it slower, show me where, show it in English).
+Scene art that can be tapped carries `data-art="<key>"` so it can wiggle.
 
 ## 7. Map
 
@@ -160,7 +168,11 @@ What makes it read as a map, in order of importance:
 
 Keep it light: land, sea and labels must stay readable under the pins. Nothing on the map may cover a city label.
 
-## 8. Interface motion
+## 8. Voices
+
+Speech uses the browser's voices. Pick by quality: never use novelty voices (Apple's Eddy, Flo, Grandpa and others); prefer natural, neural, enhanced or premium voices, then Spain Spanish, then any Spanish. Women use a female voice and men a male one; if there is no male voice, use the best voice with only a slight pitch drop (0.82), never a heavy one. iOS needs one tap before a page may speak, so speech is unlocked on the first tap.
+
+## 9. Interface motion
 
 - **Pages** fade and rise 14 px (`viewIn`). Pages with a fixed footer only fade.
 - **Landing, first open:** logo, headline lines (rising from a mask), sentence, button, picture, then Glo hops in and waves and two floating notes pop in. The notes never contain words taught in a scene. Once per visit; afterwards the plain page fade.
@@ -170,7 +182,7 @@ Keep it light: land, sea and labels must stay readable under the pins. Nothing o
 - **The guide** (spotlight tour): the spotlight glides between targets, the card fades and swaps, Glo points at the target. At most four steps per tour, always skippable, replayable from the `?` button.
 - **In-scene coaching:** the first tap moments outline what can be tapped and show a "tap the picture" pill. It disappears after the first correct tap.
 
-## 9. Checklists
+## 10. Checklists
 
 **New character**
 
@@ -193,13 +205,14 @@ Keep it light: land, sea and labels must stay readable under the pins. Nothing o
 2. Use the tokens. Add overlap if more than one part moves.
 3. Check it with reduced motion on, and at phone size.
 
-## 10. Specific rules
+## 11. Specific rules
 
 One-off exceptions. Add here **only when asked** (see "How to use this file").
 
 *None yet.*
 
-## 11. Change log
+## 12. Change log
 
 - 2026-11: First version. Product renamed Picto. Glo rebuilt as a full character; people rig gained lids, brows, mouth shapes, jointed arms with hands, poses and gaze; café and shop given depth and ambient life; Spain redrawn as an illustrated map; landing simplified with a first-open entrance; first-time guide added.
 - 2026-11: Setup buttons made conditional and nothing pre-selected; floating notes back on the landing; setup steps reveal in order; avatar editor fixed on phones.
+- 2026-11: Glo moved into the scene top bar and made always tappable; no Glo on the landing; bubble scales with the picture; compact phone scene layout; escalating help for confused tapping; better voice choice on iPhone.

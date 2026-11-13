@@ -54,9 +54,9 @@
         <text x="74" y="94" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="28" fill="${LIME}" letter-spacing="1">MENÚ</text>
         <path d="M262 70 q-4 -6 0 -11 M274 70 q-4 -6 0 -11 M252 76 h32 v8 q0 12 -12 12 h-8 q-12 0 -12 -12 z M284 79 q9 0 8 7 q-1 6 -9 5" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         <g font-family="Space Grotesk, sans-serif" font-weight="500" font-size="20" fill="${WHITE}">
-          <text x="74" y="140">Café</text><text x="294" y="140" text-anchor="end">1,50 €</text>
-          <text x="74" y="178">Pan con tomate</text><text x="294" y="178" text-anchor="end">2,50 €</text>
-          <text x="74" y="216">Agua</text><text x="294" y="216" text-anchor="end">1,00 €</text>
+          <g data-art="menu-cafe"><text x="74" y="140">Café</text><text x="294" y="140" text-anchor="end">1,50 €</text></g>
+          <g data-art="menu-pan"><text x="74" y="178">Pan con tomate</text><text x="294" y="178" text-anchor="end">2,50 €</text></g>
+          <g data-art="menu-agua"><text x="74" y="216">Agua</text><text x="294" y="216" text-anchor="end">1,00 €</text></g>
         </g>
         ${hot('rect', 'menu-cafe', 'x="62" y="114" width="244" height="36" rx="8"', 'Menu line 1')}
         ${hot('rect', 'menu-pan', 'x="62" y="152" width="244" height="36" rx="8"', 'Menu line 2')}
@@ -88,13 +88,13 @@
       </g>
       ${plant(822, 252, 0.8, LIME)}
       <ellipse cx="70" cy="462" rx="56" ry="8" fill="${INK}" opacity=".2"/><ellipse cx="176" cy="462" rx="74" ry="10" fill="${INK}" opacity=".2"/>
-      <g class="chair">
+      <g class="chair" data-art="chair">
         <rect x="34" y="318" width="14" height="140" rx="6" fill="${PINK}"/><rect x="43" y="322" width="5" height="132" rx="2.5" fill="${INK}" opacity=".12"/>
         <rect x="34" y="384" width="78" height="14" rx="6" fill="${PINK}"/>
         <rect x="98" y="396" width="10" height="62" rx="4" fill="${PINK}"/>
       </g>
       ${hot('rect', 'chair', 'x="22" y="306" width="44" height="156" rx="12"', 'Chair')}
-      <g class="table">
+      <g class="table" data-art="table">
         <rect x="166" y="364" width="16" height="88" fill="${INK}"/>
         <ellipse cx="174" cy="456" rx="44" ry="9" fill="${INK}"/>
         <ellipse cx="174" cy="362" rx="104" ry="20" fill="#93C21A"/>
@@ -157,12 +157,12 @@
       <rect x="56" y="200" width="560" height="10" fill="${INK}"/><rect x="56" y="210" width="560" height="8" fill="${INK}" opacity=".08"/>
       <rect x="56" y="302" width="560" height="10" fill="${INK}"/><rect x="56" y="312" width="560" height="8" fill="${INK}" opacity=".08"/>
       <rect x="56" y="396" width="560" height="10" fill="${INK}"/>
-      ${bottle(86)}${bottle(124)}${bottle(162)}
-      ${carton(232)}${carton(270)}${carton(308)}
-      ${[386, 426].map((x) => `<g><path d="M${x} 200 V151 L${x + 4} 141 H${x + 32} L${x + 36} 151 V200 Z" fill="#9A6234"/><path d="M${x + 28} 141 H${x + 32} L${x + 36} 151 V200 H${x + 30} Z" fill="${INK}" opacity=".14"/><path d="M${x + 4} 141 L${x + 7} 133 H${x + 29} L${x + 32} 141 Z" fill="#6E4220"/><path d="M${x + 10} 137 H${x + 26}" stroke="#F7E7CE" stroke-width="2" stroke-linecap="round"/><rect x="${x + 6}" y="158" width="24" height="28" rx="5" fill="#F7E7CE"/><ellipse cx="${x + 18}" cy="172" rx="6" ry="8.4" fill="#5A3519" transform="rotate(22 ${x + 18} 172)"/><path d="M${x + 15.5} 165.5 Q${x + 20.5} 171.5 ${x + 17} 178.5" stroke="#F7E7CE" stroke-width="1.8" fill="none" stroke-linecap="round"/></g>`).join('')}
+      <g data-art="agua">${bottle(86)}${bottle(124)}${bottle(162)}</g>
+      <g data-art="zumo">${carton(232)}${carton(270)}${carton(308)}</g>
+      <g data-art="cafe">${[386, 426].map((x) => `<g><path d="M${x} 200 V151 L${x + 4} 141 H${x + 32} L${x + 36} 151 V200 Z" fill="#9A6234"/><path d="M${x + 28} 141 H${x + 32} L${x + 36} 151 V200 H${x + 30} Z" fill="${INK}" opacity=".14"/><path d="M${x + 4} 141 L${x + 7} 133 H${x + 29} L${x + 32} 141 Z" fill="#6E4220"/><path d="M${x + 10} 137 H${x + 26}" stroke="#F7E7CE" stroke-width="2" stroke-linecap="round"/><rect x="${x + 6}" y="158" width="24" height="28" rx="5" fill="#F7E7CE"/><ellipse cx="${x + 18}" cy="172" rx="6" ry="8.4" fill="#5A3519" transform="rotate(22 ${x + 18} 172)"/><path d="M${x + 15.5} 165.5 Q${x + 20.5} 171.5 ${x + 17} 178.5" stroke="#F7E7CE" stroke-width="1.8" fill="none" stroke-linecap="round"/></g>`).join('')}</g>
       <g><rect x="490" y="146" width="104" height="54" rx="10" fill="${BLUE}"/><rect x="502" y="160" width="80" height="10" rx="5" fill="${WHITE}"/><rect x="502" y="178" width="52" height="8" rx="4" fill="${LIME}"/></g>
-      <g><path d="M82 298 C78 270 100 256 132 256 C164 256 186 270 182 298 Z" fill="${TAN}"/><path d="M110 266 L116 284 M134 262 L140 282 M158 266 L162 284" stroke="#B9822F" stroke-width="4" stroke-linecap="round"/><path d="M196 298 C192 276 210 264 236 264 C262 264 280 276 276 298 Z" fill="${TAN}"/><path d="M220 272 L225 288 M244 270 L248 288" stroke="#B9822F" stroke-width="4" stroke-linecap="round"/></g>
-      <g>${[[330, 282], [358, 282], [386, 282], [414, 282], [344, 258], [372, 258], [400, 258], [372, 236]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="15" fill="${ORANGE}"/><circle cx="${x + 4}" cy="${y - 6}" r="3" fill="#FFD08A"/>`).join('')}</g>
+      <g data-art="pan"><path d="M82 298 C78 270 100 256 132 256 C164 256 186 270 182 298 Z" fill="${TAN}"/><path d="M110 266 L116 284 M134 262 L140 282 M158 266 L162 284" stroke="#B9822F" stroke-width="4" stroke-linecap="round"/><path d="M196 298 C192 276 210 264 236 264 C262 264 280 276 276 298 Z" fill="${TAN}"/><path d="M220 272 L225 288 M244 270 L248 288" stroke="#B9822F" stroke-width="4" stroke-linecap="round"/></g>
+      <g data-art="naranja">${[[330, 282], [358, 282], [386, 282], [414, 282], [344, 258], [372, 258], [400, 258], [372, 236]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="15" fill="${ORANGE}"/><circle cx="${x + 4}" cy="${y - 6}" r="3" fill="#FFD08A"/>`).join('')}</g>
       ${[474, 522].map((x) => `<g><rect x="${x}" y="252" width="36" height="46" rx="9" fill="#E4F2CF"/><rect x="${x - 2}" y="243" width="40" height="11" rx="3.5" fill="${INK}"/><circle cx="${x + 11}" cy="270" r="5.4" fill="#6B8E23"/><circle cx="${x + 24}" cy="279" r="5.4" fill="#4E6B22"/><circle cx="${x + 13}" cy="288" r="5.4" fill="#6B8E23"/><circle cx="${x + 26}" cy="264" r="5" fill="#4E6B22"/><rect x="${x + 4}" y="256" width="4" height="30" rx="2" fill="#fff" opacity=".7"/></g>`).join('')}
       <g><path d="M90 392 Q86 340 120 336 Q156 334 150 392 Z" fill="${TOMATO}"/><path d="M174 392 Q170 344 204 340 Q238 340 234 392 Z" fill="${TOMATO}"/><path d="M112 336 q6 -10 14 -6 M196 340 q6 -10 14 -6" stroke="${LEAF}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M100 356 q6 -10 16 -12 M184 360 q6 -10 16 -12" stroke="#fff" stroke-opacity=".45" stroke-width="4" fill="none" stroke-linecap="round"/></g>
       <g><rect x="300" y="344" width="172" height="48" rx="10" fill="${BLUE}"/><text x="386" y="375" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="19" fill="${WHITE}" letter-spacing="2">MERCADO</text></g>

@@ -260,7 +260,7 @@
   if (state.learning) UI.learn = state.learning;
   const bankCount = () => Object.keys(state.words).length;
   const isMobile = () => window.innerWidth < 820;
-  const isMobileScene = () => isMobile() && document.body.classList.contains('in-scene');
+  const inScene = () => document.body.classList.contains('in-scene');
   const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
   const shopItem = (tab, id) => SHOP[tab].items.find((i) => i.id === id);
   const owns = (it) => it.cost === 0 || state.owned.includes(it.id);
@@ -301,19 +301,37 @@
 
   /* ================= Speech (female and male voices) ================= */
   const MALE = /pablo|alvaro|álvaro|jorge|diego|carlos|raul|raúl|enrique|dario|darío|gerardo|tomas|tomás|juan|andr[eé]s|male|hombre/i;
-  const FEMALE = /helena|laura|elvira|luc[ií]a|m[oó]nica|paulina|sabina|ximena|dalia|elena|abril|conchita|pen[eé]lope|lupe|google|female|mujer/i;
+  const NOVELTY = /\b(eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|kathy|fred|ralph)\b/i;
+  const FEMALE = /helena|laura|elvira|luc[ií]a|m[oó]nica|paulina|sabina|ximena|dalia|elena|abril|conchita|pen[eé]lope|lupe|marisol|female|mujer/i;
   const Speech = {
     voices: [],
     init() {
       if (!('speechSynthesis' in window)) return;
-      const pick = () => { this.voices = speechSynthesis.getVoices().filter((v) => /^es/i.test(v.lang)); };
+      const pick = () => {
+        // Novelty voices (Apple's Eddy, Flo, Grandpa, Zarvox and friends) sound robotic: never use them.
+        this.voices = speechSynthesis.getVoices().filter((v) => /^es/i.test(v.lang) && !NOVELTY.test(v.name))
+          .sort((a, b) => this.score(b) - this.score(a));
+      };
       pick();
       speechSynthesis.onvoiceschanged = pick;
+      [300, 1200, 3000].forEach((t) => setTimeout(pick, t)); // Safari fills the list late
+      // iOS only lets a page speak after a user gesture: unlock speech on the first tap.
+      const unlock = () => { try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) { /* ignore */ } document.removeEventListener('pointerdown', unlock, true); };
+      document.addEventListener('pointerdown', unlock, true);
+    },
+    // Higher is better: natural or enhanced voices first, then Spain Spanish, then any Spanish.
+    score(v) {
+      let s = 0;
+      if (/natural|neural|premium|enhanced|mejorada|online/i.test(v.name)) s += 8;
+      if (/es[-_]ES/i.test(v.lang)) s += 3;
+      if (/m[oó]nica|paulina|marisol|jorge|juan|helena|elvira|[aá]lvaro|pablo|dalia|jorge|google/i.test(v.name)) s += 2;
+      if (v.localService === false) s += 1;
+      return s;
     },
     voiceFor(g) {
-      const list = this.voices.filter((v) => /es[-_]ES/i.test(v.lang)).concat(this.voices);
+      const list = this.voices;
       if (g === 'm') return list.find((v) => MALE.test(v.name)) || null;
-      return list.find((v) => FEMALE.test(v.name)) || list.find((v) => !MALE.test(v.name)) || null;
+      return list.find((v) => FEMALE.test(v.name) && !MALE.test(v.name)) || list.find((v) => !MALE.test(v.name)) || null;
     },
     tok: 0,
     say(text, slow, btn, g = 'f', who) {
@@ -322,11 +340,13 @@
       const tok = ++this.tok;
       const u = new SpeechSynthesisUtterance(text.replace(/[¡¿]/g, ''));
       u.lang = 'es-ES';
-      const v = this.voiceFor(g);
-      if (v) u.voice = v;
-      // No male Spanish voice installed? Lower the pitch so Paco still sounds like a man.
-      u.pitch = g === 'm' ? (v ? 0.95 : 0.5) : 1.08;
-      u.rate = slow ? 0.62 : 0.92;
+      let v = this.voiceFor(g);
+      const fallback = !v;
+      if (!v) v = this.voices[0] || null;
+      if (v) { u.voice = v; u.lang = v.lang; }
+      // No male Spanish voice? Use the best voice a little lower. A big pitch drop sounds robotic, so keep it subtle.
+      u.pitch = g === 'm' ? (fallback ? 0.82 : 1) : 1.04;
+      u.rate = slow ? 0.66 : 0.94;
       let started = false;
       // If the engine never starts (no voice, blocked audio), still animate for the line's length.
       const fb = who ? setTimeout(() => { if (!started) timedTalk(who, text, slow); }, 700) : 0;
@@ -413,7 +433,7 @@
       this.actions = opts.actions || null;
       const acts = this.actions ? `<div class="ola-acts">${this.actions.map((a, i) => `<button type="button" data-i="${i}">${a.icon ? icon(a.icon) : ''}${a.label}</button>`).join('')}</div>` : '';
       const x = `<button type="button" class="ola-x" aria-label="Close">${icon('x')}</button>`;
-      if (isMobileScene()) {
+      if (inScene()) {
         const slot = $('#olaSlot');
         if (!slot) return;
         slot.innerHTML = `<div class="ola-inline" role="status">${ola('oi-face')}<div class="oi-body"><span class="nm">Glo</span><div>${html}</div>${acts}</div>${x}</div>`;
@@ -444,9 +464,13 @@
     wave() { this.all().forEach((g) => { g.classList.remove('is-wave'); void g.getBoundingClientRect(); g.classList.add('is-wave'); }); },
     // idle | happy | joy | talk | think | wow | soft | sleep
     mood(m) { this.all().forEach((g) => { g.dataset.mood = m || 'idle'; }); },
+    // Tapping Glo always does something: it answers for the screen you're on, or says hello.
     tap() {
-      if (this.el.classList.contains('talk')) { this.hide(); return; }
-      if (typeof this.ctx === 'function') this.ctx(); else if (this.ctx) this.say(this.ctx);
+      if (Tour.id) Tour.end(true);
+      if (this.el.classList.contains('talk') || ($('#olaSlot') && $('#olaSlot').innerHTML)) { this.hide(); return; }
+      this.wave();
+      if (typeof this.ctx === 'function') this.ctx();
+      else this.say(this.ctx || 'Hi, I’m <b>Glo</b>. Tap me whenever you’re stuck and I’ll help.');
     },
     context(c) { this.ctx = c; },
     once(key, html, delay = 900) {
@@ -512,7 +536,17 @@
     cam.style.transform = `translate(${(400 - S * fx).toFixed(1)}px, ${(250 - S * fy).toFixed(1)}px) scale(${S.toFixed(3)})`;
     if (instant) setTimeout(() => el.classList.remove('instant'), 50);
   }
-  function relayout() { $$('[data-scene]').forEach((el) => setCam(el, el.dataset.cam || 'wide', true)); placeSay(); }
+  // Desktop scenes: the bubble and the band above the picture scale with the picture, so browser zoom
+  // or a small window keeps them in proportion with the characters instead of growing over them.
+  function fitScene() {
+    const st = $('#stage'), sc = $('.scene');
+    if (!st || !sc) return;
+    if (isMobile()) { st.style.removeProperty('--band'); sc.style.removeProperty('--k'); return; }
+    const k = Math.max(0.55, Math.min(1.15, Math.min(st.clientWidth / 800, (st.clientHeight - 130) / 500)));
+    st.style.setProperty('--band', Math.round(130 * k) + 'px');
+    sc.style.setProperty('--k', k.toFixed(3));
+  }
+  function relayout() { fitScene(); $$('[data-scene]').forEach((el) => setCam(el, el.dataset.cam || 'wide', true)); placeSay(); }
   function propIn(root, key) { const p = root.querySelector(`[data-prop="${key}"]`); if (p) p.classList.add('in'); }
   function wave(root, who) {
     const arm = root.querySelector(`${who ? `[data-who="${who}"] ` : root.querySelector('[data-who]') ? '[data-who] ' : ''}.arm-r`);
@@ -676,7 +710,7 @@
       { sel: '#say', title: 'Listen and read', text: 'They speak Spanish. Underneath is the same line in English, with a <b>blank</b> where the new word goes.' },
       { sel: '.word-row', title: 'The new word', text: 'This is the word to work out. Tap <b>Listen</b> to hear it again, or <b>Slower</b>.' },
       { sel: '#stage', title: 'Answer in the picture', text: 'Now tap the thing they mean, right in the scene. No translation needed.', pad: 0 },
-      { sel: isMobile() ? '.ola-mini' : '.ola-btn', title: 'Need a hint?', text: 'Tap me. I can say it slower, show you where to look or, as a last resort, show the English.', pad: 4 }
+      { sel: '.ola-mini', title: 'Need a hint?', text: 'Tap me. I can say it slower, show you where to look or, as a last resort, show the English.', pad: 4 }
     ]
   };
   const Tour = {
@@ -695,6 +729,14 @@
           <div class="tour-body"><span class="tour-step"></span><h3 id="tourT"></h3><p></p></div>
           <div class="tour-foot"><button type="button" class="text-link" data-action="tourSkip">Skip</button><div class="tour-dots" aria-hidden="true"></div><button type="button" class="btn btn-sm" data-action="tourNext"></button></div>
         </div>`;
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.tour-card')) return;
+        const r = $('.tour-hole', el).getBoundingClientRect(), x = e.clientX, y = e.clientY;
+        if (x < r.left || x > r.right || y < r.top || y > r.bottom) return;
+        this.end(true);
+        const t = document.elementFromPoint(x, y);
+        if (t) t.click();
+      });
       document.body.appendChild(el);
       document.body.classList.add('touring');
       this.el = el;
@@ -797,7 +839,6 @@
           <div class="hero-stage" data-scene="cafe" data-cam="hero">${SCENE_ART.cafe()}</div>
           <div class="float f1"><b>5-minute scenes</b>with real people</div>
           <div class="float f3"><b>No word lists</b>just pictures and context</div>
-          <div class="hero-glo">${glo({ cls: 'hero-glo-fig' })}</div>
         </div>
       </section>
       ${footer()}
@@ -806,7 +847,6 @@
     ['cup', 'bread', 'glass'].forEach((p) => later(() => propIn(hero, p), first ? 900 : 0));
     setCam(hero, 'hero', true);
     later(() => wave(hero), first ? 1500 : 900);
-    later(() => { const g = $('.hero-glo .glo'); if (g) { g.classList.add('is-wave'); g.dataset.mood = 'happy'; setTimeout(() => { g.dataset.mood = 'idle'; }, 2200); } }, first ? 2100 : 1300);
   }
 
   // Design notes page (not linked from the product): #/notes
@@ -1393,8 +1433,10 @@
       <section class="panel" id="panel" aria-live="polite"></section>
     </div>`;
     const stage = $('#stage');
+    fitScene();
     setCam(stage, 'wide', true);
-    stage.addEventListener('click', (e) => { const h = e.target.closest('.hot.live'); if (h) onTap(h.dataset.hot, h); });
+    stage.addEventListener('click', (e) => { const h = e.target.closest('.hot.live'); if (h) onTap(h.dataset.hot, h); else confused(); });
+    $('#panel').addEventListener('click', (e) => { if (!e.target.closest('button, a, input, .word, .say')) confused(); });
     stage.addEventListener('keydown', (e) => { const h = e.target.closest('.hot.live'); if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onTap(h.dataset.hot, h); } });
     later(() => wave(stage, def.speaker), 700);
     $('#panel').innerHTML = `
@@ -1454,10 +1496,11 @@
       } else say.dataset.tail = '';
       return;
     }
-    const scr = scene.getBoundingClientRect(), bw = say.offsetWidth, bh = say.offsetHeight;
+    const k = parseFloat(scene.style.getPropertyValue('--k')) || 1;
+    const scr = scene.getBoundingClientRect(), bw = say.offsetWidth * k, bh = say.offsetHeight * k;
     const put = (left, top, tail, tx) => {
       say.dataset.tail = tail;
-      say.style.setProperty('--tx', tx + 'px');
+      say.style.setProperty('--tx', tx / k + 'px');
       say.style.left = left - scr.left + 'px';
       say.style.top = top - scr.top + 'px';
     };
@@ -1484,7 +1527,7 @@
     // 2. Nothing free near the mouth: the band at the top of the scene, tail pointing down at the speaker.
     let l = sr.left + 20;
     if (mouth) l = Math.max(sr.left + 16, Math.min(sr.right - 16 - bw, mouth.x - 96));
-    put(l, sr.top + 14, mouth ? 'b' : '', mouth ? Math.max(30, Math.min(bw - 30, mouth.x - l)) : 40);
+    put(l, sr.top + 14 * k, mouth ? 'b' : '', mouth ? Math.max(30 * k, Math.min(bw - 30 * k, mouth.x - l)) : 40 * k);
   }
 
   function nextMoment() {
@@ -1495,6 +1538,7 @@
     const m = cur();
     SC.solved = false;
     SC.misses = 0;
+    SC.confused = 0;
     setProgress();
     const stage = $('#stage'), say = $('#say');
     say.classList.add('fading');
@@ -1539,6 +1583,7 @@
     if (m.type === 'tap') inter = `<div class="tapcue"><span class="hand">${icon('search')}</span><span>Tap your answer in the scene${isMobile() ? ' above' : ''}.</span></div>`;
     if (m.type === 'pick') inter = `<div class="tiles" role="group" aria-label="Choose a picture">${m.options.map((o, i) => `<button type="button" class="tile" data-action="pick" data-k="${o}" aria-label="Picture ${i + 1}">${prop(o)}</button>`).join('')}</div>`;
     if (m.type === 'reply') inter = `<div class="replies">${m.replies.map((r, i) => `<button type="button" class="reply" data-action="reply" data-i="${i}"><span><span class="r-es">${esc(r.es)}</span><span class="r-en">${blankify(r.en)}</span></span>${icon('volume')}</button>`).join('')}</div>`;
+    $('#panel').classList.remove('solved');
     $('#panel').innerHTML = `
       <div class="tagrow">${tag}</div>
       <div class="word-row"><div class="word" id="panelWord">${w.es}</div>
@@ -1553,9 +1598,7 @@
 
   function momentGlo(m) {
     const w = WORDS[m.word];
-    const acts = [{ label: 'Say it slower', icon: 'turtle', fn: () => Speech.say(w.es, true, null, speakerG(m.who), m.who) }];
-    if (m.type !== 'reply') acts.push({ label: 'Show me where', icon: 'search', fn: hint });
-    acts.push({ label: 'Show it in English', icon: 'eye', fn: revealEnglish });
+    const acts = gloActs(m);
     Glo.context(() => {
       if (SC.solved) { Glo.say('You’ve got it. Tap <b>Continue</b> when you’re ready.'); return; }
       Glo.say(`Stuck on <b>${w.es}</b>? Pick a hint. English is the last resort.`, { actions: acts });
@@ -1579,6 +1622,7 @@
     const m = cur();
     SC.solved = true;
     clearTimers();
+    $('#panel').classList.add('solved');
     Glo.hide();
     const stage = $('#stage');
     stage.classList.remove('tappable');
@@ -1623,10 +1667,53 @@
     const msg = (m.wrong && m.wrong[key]) || 'Not quite. Look at the scene again.';
     react(m.who, 'soft', 1700);
     pose(m.who, null);
-    const hintBtn = m.type !== 'reply' && SC.misses < 2 ? `<button type="button" class="link-btn" data-action="hint">${icon('search')}Show me where</button>` : '';
+    confused();
+    const hintBtn = m.type !== 'reply' ? `<button type="button" class="link-btn" data-action="hint">${icon('search')}Show me where</button>` : '';
     $('#fb').innerHTML = `<div class="feedback soft"><span class="badge">${icon('eye')}</span><div class="fb-txt"><b>Not quite</b><p>${msg}</p>${hintBtn}</div></div>`;
-    if (SC.misses >= 2) { hint(); if (!isMobile()) later(() => Glo.say('I’ve highlighted it for you. <b>Take your time.</b>'), 300); }
-    else if (!isMobile()) later(() => Glo.say('Almost! Want a hint?', { actions: [{ label: 'Show me where', icon: 'search', fn: hint }, { label: 'Say it slower', icon: 'turtle', fn: () => Speech.say(WORDS[m.word].es, true, null, speakerG(m.who)) }] }), 500);
+
+  }
+
+  /* Someone tapping around is looking for what to do. Help in steps, gently:
+     3 confused taps: everything you can tap wiggles once.
+     5: only the answer wiggles and glows once.
+     9: Glo steps in and offers help. Counts reset on every new moment. */
+  const HELP_AT = { all: 3, answer: 5, glo: 9 };
+  function confused() {
+    if (!SC || SC.solved || !cur() || SC.i < 0) return;
+    SC.confused = (SC.confused || 0) + 1;
+    const n = SC.confused;
+    if (n === HELP_AT.all) nudge(false);
+    else if (n === HELP_AT.answer) nudge(true);
+    else if (n === HELP_AT.glo) offerHelp();
+  }
+  const artFor = (key) => $$(`#stage [data-art~="${key}"], #stage [data-prop="${key}"].in, #stage [data-who="${key}"]`);
+  function once(el, cls, ms) { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); setTimeout(() => el.classList.remove(cls), ms); }
+  function nudge(answerOnly) {
+    const m = cur();
+    if (m.type === 'tap') {
+      const keys = answerOnly ? [m.answer] : m.live;
+      keys.forEach((k, i) => setTimeout(() => {
+        const art = artFor(k), h = $(`#stage [data-hot="${k}"]`);
+        art.forEach((a) => once(a, 'wiggle', 800));
+        if (h && (answerOnly || !art.length)) once(h, answerOnly ? 'nudge' : 'peek', 1400);
+      }, i * 90));
+    } else {
+      const items = $$(m.type === 'pick' ? '.tile' : '.reply');
+      const pick = answerOnly ? items.filter((t) => m.type === 'reply' || t.dataset.k === m.answer).slice(0, 1) : items;
+      pick.forEach((t, i) => setTimeout(() => { once(t, 'wiggle', 800); if (answerOnly) once(t, 'glow', 1400); }, i * 90));
+    }
+  }
+  function gloActs(m) {
+    const w = WORDS[m.word];
+    const acts = [{ label: 'Say it slower', icon: 'turtle', fn: () => Speech.say(w.es, true, null, speakerG(m.who), m.who) }];
+    if (m.type !== 'reply') acts.push({ label: 'Show me where', icon: 'search', fn: hint });
+    acts.push({ label: 'Show it in English', icon: 'eye', fn: revealEnglish });
+    return acts;
+  }
+  function offerHelp() {
+    const m = cur();
+    Glo.jump();
+    Glo.say(m.type === 'tap' ? `Need a hand? You’re looking for <b>${WORDS[m.word].es}</b> in the picture.` : `Need a hand? Pick the answer below for <b>${WORDS[m.word].es}</b>.`, { actions: gloActs(m) });
   }
 
   function hint() {

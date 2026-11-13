@@ -59,6 +59,7 @@ False friends get a warning too (*pan* is not a frying pan).
 - **Profile**: an avatar editor. Earn **Rep** in scenes and spend it on hats, tops, backpacks, badges, eyewear and illustrated backgrounds. Your level follows lifetime Rep, so spending never lowers it.
 - **Friends**: filter by language, invite friends, and co-learn with friends on the same trip.
 - **Glo**: a small learning buddy with moods of its own. It offers hints when you're stuck, and stays quiet when you're not.
+- **Help when you're lost**: tap around in a scene and the tappable things wiggle, then the answer glows, then Glo offers to help.
 
 ## Design principles
 
@@ -103,7 +104,7 @@ npx serve .
 
 Opening `index.html` directly from disk also mostly works, but a local server is closer to how the site runs online.
 
-**Voices:** speech depends on the voices installed on your device. Chrome and Edge on Windows and macOS usually include Spanish voices. If no male Spanish voice is available, male characters use a lowered pitch.
+**Voices:** speech uses the voices installed on your device, and Picto picks the most natural Spanish ones it can find. On iPhone and iPad, for the best sound download an enhanced Spanish voice in Settings > Accessibility > Spoken Content > Voices > Spanish (for example Mónica or Jorge, Enhanced).
 
 **Start over:** use "Restart the demo" in the footer or in the About dialog.
 

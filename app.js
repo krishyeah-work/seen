@@ -301,16 +301,18 @@
 
   /* ================= Speech (female and male voices) ================= */
   const MALE = /pablo|alvaro|álvaro|jorge|diego|carlos|raul|raúl|enrique|dario|darío|gerardo|tomas|tomás|juan|andr[eé]s|male|hombre/i;
+  const IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const NOVELTY = /\b(eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|kathy|fred|ralph)\b/i;
-  const FEMALE = /helena|laura|elvira|luc[ií]a|m[oó]nica|paulina|sabina|ximena|dalia|elena|abril|conchita|pen[eé]lope|lupe|marisol|female|mujer/i;
+  const FEMALE = /helena|laura|elvira|luc[ií]a|m[oó]nica|paulina|sabina|ximena|dalia|elena|abril|conchita|pen[eé]lope|lupe|marisol|google|female|mujer/i;
   const Speech = {
     voices: [],
     init() {
       if (!('speechSynthesis' in window)) return;
       const pick = () => {
         // Novelty voices (Apple's Eddy, Flo, Grandpa, Zarvox and friends) sound robotic: never use them.
-        this.voices = speechSynthesis.getVoices().filter((v) => /^es/i.test(v.lang) && !NOVELTY.test(v.name))
-          .sort((a, b) => this.score(b) - this.score(a));
+        const list = speechSynthesis.getVoices().filter((v) => /^es/i.test(v.lang) && !NOVELTY.test(v.name));
+        // Desktop keeps the browser's own order (the setup learners liked); iPhone and iPad rank by quality.
+        this.voices = IOS ? list.sort((a, b) => this.score(b) - this.score(a)) : list;
       };
       pick();
       speechSynthesis.onvoiceschanged = pick;
@@ -330,9 +332,9 @@
       return s;
     },
     voiceFor(g) {
-      const list = this.voices;
+      const list = IOS ? this.voices : this.voices.filter((v) => /es[-_]ES/i.test(v.lang)).concat(this.voices);
       if (g === 'm') return list.find((v) => MALE.test(v.name)) || null;
-      return list.find((v) => !MALE.test(v.name)) || null;
+      return list.find((v) => FEMALE.test(v.name)) || list.find((v) => !MALE.test(v.name)) || null;
     },
     tok: 0,
     say(text, slow, btn, g = 'f', who) {
@@ -341,12 +343,13 @@
       const tok = ++this.tok;
       const u = new SpeechSynthesisUtterance(text.replace(/[¡¿]/g, ''));
       u.lang = 'es-ES';
+      // The original desktop settings: Spain Spanish, a little slower than normal for learners, a touch brighter for women.
+      // No male voice installed? Desktop lowers the default voice; iOS uses its best voice with a gentle drop, since a big one sounds robotic there.
       let v = this.voiceFor(g);
       const fallback = !v;
-      if (!v) v = this.voices[0] || null;
-      if (v) { u.voice = v; u.lang = v.lang; }
-      // No male Spanish voice? Use the best voice a little lower. A big pitch drop sounds robotic, so keep it subtle.
-      u.pitch = g === 'm' ? (fallback ? 0.82 : 1) : 1.06;
+      if (!v && IOS) v = this.voices[0] || null;
+      if (v) u.voice = v;
+      u.pitch = g === 'm' ? (fallback ? (IOS ? 0.82 : 0.5) : 0.95) : 1.08;
       u.rate = slow ? 0.62 : 0.92;
       let started = false;
       // If the engine never starts (no voice, blocked audio), still animate for the line's length.

@@ -170,7 +170,11 @@ Keep it light: land, sea and labels must stay readable under the pins. Nothing o
 
 ## 8. Voices
 
-Speech uses the browser's voices. Pick by quality: never use novelty voices (Apple's Eddy, Flo, Grandpa and others); Chrome's Google voices first (they're the most natural), then natural, neural, enhanced or premium voices, then Spain Spanish, then any Spanish. Women get the best voice that isn't male. Women use a female voice and men a male one; if there is no male voice, use the best voice with only a slight pitch drop (0.82), never a heavy one. iOS needs one tap before a page may speak, so speech is unlocked on the first tap.
+Speech uses the browser's voices, with the settings learners liked from the first version: Spain Spanish, rate 0.92 (0.62 for "slower"), women at pitch 1.08, men at 0.95.
+
+- **Desktop:** keep the browser's own voice order; women get the first female or Google voice. With no male voice, Paco uses the default voice at pitch 0.5.
+- **iPhone and iPad:** never use novelty voices (Eddy, Flo, Grandpa and others); rank voices by quality (enhanced or premium first). With no male voice, use the best voice at pitch 0.82, because a heavy drop sounds robotic there. Speech is unlocked on the first tap.
+- Pre-recorded voices were tried (Piper) and rejected: too fast and less warm than the browser voices. Don't switch to recorded audio without asking.
 
 ## 9. Interface motion
 
@@ -217,3 +221,4 @@ One-off exceptions. Add here **only when asked** (see "How to use this file").
 - 2026-11: Setup buttons made conditional and nothing pre-selected; floating notes back on the landing; setup steps reveal in order; avatar editor fixed on phones.
 - 2026-11: Glo moved into the scene top bar and made always tappable; no Glo on the landing; bubble scales with the picture; compact phone scene layout; escalating help for confused tapping; better voice choice on iPhone.
 - 2026-11: Speakers point at the answer when the learner struggles; Chrome's Google voice ranked first again.
+- 2026-11: Desktop voices restored to the original settings; iOS keeps its own quality ranking.

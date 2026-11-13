@@ -1,12 +1,13 @@
-/* Seen — prototype app. Vanilla JS, hash routing, no build step. */
+/* Picto: the app. Vanilla JS, hash routing, no build step. Art comes from art/*.js (window.ART). */
 (function () {
   'use strict';
-  const { scene: SCENE_ART, prop, icon, ola, avatarBust, avatarFull, bgPanel, glo, deco, arrival, spain, AV_DEFAULT } = window.ART;
+  const { scene: SCENE_ART, prop, icon, ola, avatarBust, avatarFull, bgPanel, glo, gloDay, deco, arrival, spain, AV_DEFAULT } = window.ART;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const app = $('#app');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const BRAND = 'Picto';
   const DESIGNER = 'Krishna R';
   const REPO = 'https://github.com/krishyeah-work/seen';
 
@@ -152,6 +153,7 @@
     cafe: {
       id: 'cafe', art: 'cafe', place: 'cafe', title: 'Café La Plaza', where: 'Barrio Gótico, Barcelona', tag: 'Day 1 · Barcelona', mins: 5,
       activity: 'Order breakfast at Café La Plaza', speaker: 'lucia',
+      acts: ['present-l', 'shrug', 'present-l', 'idea', 'present', 'hips', 'present', 'present-l', 'wave'],
       blurb: 'It’s 9 a.m. on your first morning in Barcelona. Lucía runs the little café on the corner. Find a table, order, chat and pay, all in Spanish.',
       meta: [['clock', '5 min'], ['cards', '5 new words'], ['chat', 'With Lucía']],
       whoLine: 'You’ll meet <b>Lucía</b>. She runs the café and speaks slowly for newcomers.',
@@ -194,6 +196,7 @@
     mercado: {
       id: 'mercado', art: 'mercado', place: 'mercado', title: 'El mercado', where: 'Paco’s corner shop, Barcelona', tag: 'Day 2 · Review', mins: 3, review: true, requires: 'cafe',
       activity: 'Pick up groceries at Paco’s shop', speaker: 'paco',
+      acts: ['hips', 'present-l', 'idea', 'present'],
       blurb: 'Paco runs the shop on your street. Find the words you met at the café on his shelves. No pictures to choose from this time: just the word and its sound.',
       meta: [['clock', '3 min'], ['refresh', 'Review'], ['chat', 'With Paco']],
       whoLine: 'You’ll meet <b>Paco</b>. He always has fresh bread.',
@@ -214,6 +217,7 @@
     colearn: {
       id: 'colearn', art: 'mercado', artOpts: () => ({ friend: friend('meera').av, friendId: 'meera' }), place: 'colearn', title: 'Shopping with Meera', where: 'Paco’s shop, Barcelona', tag: 'Co-learn · Barcelona', mins: 4, requires: 'cafe', colearn: 'meera',
       activity: 'Go shopping with Meera', speaker: 'meera',
+      acts: ['wave', 'idea', 'present-l', 'shrug', 'present', 'wave'],
       blurb: 'Meera is learning Spanish too. Meet her at Paco’s shop, help each other out and buy breakfast for tomorrow.',
       meta: [['clock', '4 min'], ['cards', '1 new word'], ['users', 'With Meera']],
       whoLine: 'You’re co-learning with <b>Meera</b>. She’s one level ahead of you.',
@@ -240,19 +244,20 @@
   };
 
   /* ================= State ================= */
-  const KEY = 'seen-proto-v3';
+  const KEY = 'picto-v1', OLD_KEY = 'seen-proto-v3';
   const INITIAL = () => ({
-    v: 3, known: ['en'], learning: null, goal: null, sound: true, rep: 0, repEarned: 0, pace: 'steady', arrived: false,
-    words: {}, order: [], fresh: [], done: {}, last: null, greeted: {}, log: {}, stuck: null, colearn: {},
+    v: 3, known: [], learning: null, goal: null, sound: true, rep: 0, repEarned: 0, pace: 'steady', arrived: false,
+    words: {}, order: [], fresh: [], done: {}, last: null, greeted: {}, tours: {}, log: {}, stuck: null, colearn: {},
     eq: { cap: 'cap-none', top: 'tee-blue', pack: 'pack-pink', badge: 'badge-none', eyes: 'eyes-none', bg: 'bg-lime' }, owned: []
   });
   function load() {
-    try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 3) return s; } catch (e) { /* storage unavailable */ }
+    try { const s = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY)); if (s && s.v === 3) return Object.assign(INITIAL(), s); } catch (e) { /* storage unavailable */ }
     return INITIAL();
   }
   let state = load();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
-  const UI = { filter: 'all', langSel: null, city: 'barcelona', tab: 'cap', search: '', goal: null, ffilter: 'all' };
+  const UI = { filter: 'all', langSel: null, learn: null, city: 'barcelona', tab: 'cap', search: '', goal: null, ffilter: 'all' };
+  if (state.learning) UI.learn = state.learning;
   const bankCount = () => Object.keys(state.words).length;
   const isMobile = () => window.innerWidth < 820;
   const isMobileScene = () => isMobile() && document.body.classList.contains('in-scene');
@@ -376,7 +381,7 @@
     mount() {
       const d = document.createElement('div');
       d.className = 'ola-dock';
-      d.innerHTML = `<div class="ola-bubble" role="status" aria-live="polite"></div><button class="ola-btn" type="button" aria-label="Glo, your learning buddy. Ask for help">${ola()}</button>`;
+      d.innerHTML = `<div class="ola-bubble" role="status" aria-live="polite"></div><button class="ola-btn" type="button" aria-label="Glo, your learning buddy. Ask for help">${glo({ cls: 'glo-dock' })}</button>`;
       document.body.appendChild(d);
       this.el = d;
       d.querySelector('.ola-btn').addEventListener('click', () => this.tap());
@@ -391,14 +396,18 @@
       document.addEventListener('pointermove', (e) => this.look(e), { passive: true });
       document.addEventListener('pointerdown', (e) => { if (this.el.classList.contains('talk') && !this.el.contains(e.target) && !e.target.closest('.tab-ola, .ola-mini')) this.hide(); });
     },
+    // Glo's eyes follow the pointer.
     look(e) {
-      const p = this.el.querySelector('.ola-pupils');
-      const r = this.el.querySelector('.ola-btn').getBoundingClientRect();
+      const g = this.el.querySelector('.glo');
+      if (!g || g.dataset.mood === 'think') return;
+      const r = g.getBoundingClientRect();
       if (!r.width) return;
-      const cx = r.left + r.width / 2, cy = r.top + r.height / 2, ang = Math.atan2(e.clientY - cy, e.clientX - cx);
-      const d = Math.min(4, Math.hypot(e.clientX - cx, e.clientY - cy) / 50);
-      p.style.transform = `translate(${(Math.cos(ang) * d).toFixed(2)}px, ${(Math.sin(ang) * d).toFixed(2)}px)`;
+      const cx = r.left + r.width / 2, cy = r.top + r.height * 0.45, ang = Math.atan2(e.clientY - cy, e.clientX - cx);
+      const d = Math.min(4.6, Math.hypot(e.clientX - cx, e.clientY - cy) / 46);
+      g.style.setProperty('--gx', (Math.cos(ang) * d).toFixed(2) + 'px');
+      g.style.setProperty('--gy', (Math.sin(ang) * d).toFixed(2) + 'px');
     },
+    all() { return $$('.ola-dock .glo, .ola-mini .glo, .tab-ola .glo'); },
     say(html, opts = {}) {
       clearTimeout(this.timer);
       this.actions = opts.actions || null;
@@ -424,17 +433,17 @@
       const s = $('#olaSlot');
       if (s) s.innerHTML = '';
     },
+    // Squash, jump, land. The mood turns to joy for the length of the jump.
     jump() {
-      [this.el, $('.ola-mini'), $('.tab-ola')].forEach((n) => { if (!n) return; n.classList.remove('jump'); void n.offsetWidth; n.classList.add('jump'); });
-      this.mood('happy');
-      setTimeout(() => this.mood(), 1400);
+      this.all().forEach((g) => { g.classList.remove('is-jump'); void g.getBoundingClientRect(); g.classList.add('is-jump'); });
+      this.el.classList.add('hop');
+      this.mood('joy');
+      clearTimeout(this.jt);
+      this.jt = setTimeout(() => { this.all().forEach((g) => g.classList.remove('is-jump')); this.el.classList.remove('hop'); this.mood(this.el.classList.contains('talk') ? 'talk' : ''); }, 1300);
     },
-    mood(m) {
-      const mouth = this.el.querySelector('.ola-mouth');
-      if (m === 'happy') { mouth.setAttribute('d', 'M49 75 Q60 95 71 75 Z'); mouth.setAttribute('fill', '#0B0B0B'); }
-      else if (m === 'talk') { mouth.setAttribute('d', 'M53 77 Q60 88 67 77 Z'); mouth.setAttribute('fill', '#0B0B0B'); }
-      else { mouth.setAttribute('d', 'M51 77 Q60 86 69 77'); mouth.setAttribute('fill', 'none'); }
-    },
+    wave() { this.all().forEach((g) => { g.classList.remove('is-wave'); void g.getBoundingClientRect(); g.classList.add('is-wave'); }); },
+    // idle | happy | joy | talk | think | wow | soft | sleep
+    mood(m) { this.all().forEach((g) => { g.dataset.mood = m || 'idle'; }); },
     tap() {
       if (this.el.classList.contains('talk')) { this.hide(); return; }
       if (typeof this.ctx === 'function') this.ctx(); else if (this.ctx) this.say(this.ctx);
@@ -512,26 +521,72 @@
     void arm.getBoundingClientRect();
     arm.classList.add('waving');
   }
+  const whoEl = (who) => (who ? document.querySelector(`#stage [data-who="${who}"]`) : null);
   function talking(who, on) {
-    const g = who && document.querySelector(`#stage [data-who="${who}"]`);
+    const g = whoEl(who);
     if (!g) return;
     clearTimeout(g._tt);
-    g.classList.toggle('talk', on);
+    g.classList.toggle('x-talk', on);
   }
   function timedTalk(who, text, slow) {
     talking(who, true);
-    const g = document.querySelector(`#stage [data-who="${who}"]`);
-    if (g) g._tt = setTimeout(() => g.classList.remove('talk'), Math.max(900, (text.length * 70) / (slow ? 0.65 : 1)));
+    const g = whoEl(who);
+    if (g) g._tt = setTimeout(() => g.classList.remove('x-talk'), Math.max(900, (text.length * 70) / (slow ? 0.65 : 1)));
   }
-  // Facial reactions on scene characters: talk while speaking, joy on a right answer, thinking on a miss.
-  function react(who, cls, ms) {
-    const g = document.querySelector(`#stage [data-who="${who}"]`);
+  // Expression for a moment: joy | wow | think | soft | wink (see DESIGN.md, "People").
+  const FACES = ['x-joy', 'x-wow', 'x-think', 'x-soft', 'x-wink'];
+  function react(who, face, ms) {
+    const g = whoEl(who);
     if (!g) return;
-    g.classList.remove('joy', 'hmm', 'talk');
+    g.classList.remove(...FACES);
     void g.getBoundingClientRect();
-    g.classList.add(cls);
+    g.classList.add('x-' + face);
     clearTimeout(g._rt);
-    g._rt = setTimeout(() => g.classList.remove(cls), ms);
+    g._rt = setTimeout(() => g.classList.remove('x-' + face), ms);
+  }
+  // Body pose for a moment, then back to rest. The CSS springs between the two.
+  const POSES = ['present', 'present-l', 'point-l', 'point-up-l', 'point-r', 'think', 'idea', 'cheer', 'hips', 'thumb', 'shrug'].map((n) => 'p-' + n);
+  function pose(who, name, ms = 1800) {
+    const g = whoEl(who);
+    if (!g) return;
+    clearTimeout(g._pt);
+    g.classList.remove(...POSES);
+    if (!name) return;
+    g.classList.add('p-' + name);
+    g._pt = setTimeout(() => g.classList.remove('p-' + name), ms);
+  }
+  // Eyes and a slight head turn toward something in the scene. No target = back to the learner.
+  function gaze(who, el) {
+    const g = whoEl(who), head = g && g.querySelector('.head');
+    if (!g) return;
+    if (!el || !head) { ['--gx', '--gy', '--hx'].forEach((v) => g.style.removeProperty(v)); return; }
+    const h = head.getBoundingClientRect(), t = el.getBoundingClientRect();
+    const dx = t.left + t.width / 2 - (h.left + h.width / 2), dy = t.top + t.height / 2 - (h.top + h.height / 2), d = Math.hypot(dx, dy) || 1;
+    g.style.setProperty('--gx', ((dx / d) * 1.5).toFixed(2) + 'px');
+    g.style.setProperty('--gy', ((dy / d) * 1.2).toFixed(2) + 'px');
+    g.style.setProperty('--hx', ((dx / d) * 1.3).toFixed(2) + 'px');
+  }
+  // The speaker looks at you; everyone else in the scene looks at the speaker.
+  function attend(who) {
+    const sp = whoEl(who), head = sp && sp.querySelector('.head');
+    $$('#stage [data-who]').forEach((g) => gaze(g.dataset.who, g.dataset.who === who ? null : head));
+  }
+  // A hint from the character: look and point at the answer.
+  function pointAt(who, el) {
+    const g = whoEl(who), head = g && g.querySelector('.head');
+    if (!head) return;
+    const h = head.getBoundingClientRect(), t = el.getBoundingClientRect();
+    const dx = t.left + t.width / 2 - (h.left + h.width / 2), dy = t.top + t.height / 2 - (h.top + h.height / 2);
+    gaze(who, el);
+    pose(who, dx > 0 ? 'point-r' : dy < -h.height * 0.4 ? 'point-up-l' : 'point-l', 2800);
+    setTimeout(() => gaze(who, null), 2800);
+  }
+  // What the speaker does with their hands on a line. Never a point at the answer: that is a hint.
+  function gesture(m) {
+    const acts = SC.def.acts || ['present', 'hips', 'present-l', 'idea', 'shrug'];
+    const a = m.act || acts[SC.i % acts.length];
+    if (a === 'wave') wave($('#stage'), m.who);
+    else if (a && a !== 'none') pose(m.who, a, Math.max(2000, m.line.length * 80 + 800));
   }
   const metaRow = (meta) => meta.map(([i, t]) => `<span>${icon(i)}${t}</span>`).join('');
   const sceneOpen = (id) => { const d = SCENES[id]; return !d.requires || state.done[d.requires]; };
@@ -544,9 +599,9 @@
       <a href="#/today" class="${active === 'spanish' ? 'active' : ''}"${active === 'spanish' ? ' aria-current="page"' : ''}><span class="flag-dot" aria-hidden="true"></span><span>Spanish</span></a>
       <a href="#/words" class="${active === 'words' ? 'active' : ''}"${active === 'words' ? ' aria-current="page"' : ''}>${icon('cards')}<span>Word bank</span>${top ? ` <span class="count">${bankCount()}</span>` : ''}</a>`;
     return `<header class="top"><div class="wrap">
-      <a class="logo" href="#/home" aria-label="Seen home">${ola()}<span>Seen</span></a>
+      <a class="logo" href="#/home" aria-label="${BRAND} home">${ola()}<span>${BRAND}</span></a>
       <nav class="nav" aria-label="Main">${links(true)}</nav>
-      <div class="top-right">${repPill()}<a class="me-chip" href="#/profile" aria-label="Your profile and avatar">${myBust('av-36')}</a><button type="button" class="about-btn" data-action="openAbout" aria-label="About this project">${icon('info')}<span>About this project</span></button></div>
+      <div class="top-right">${repPill()}<a class="me-chip" href="#/profile" aria-label="Your profile and avatar">${myBust('av-36')}</a><button type="button" class="icon-btn round help-btn" data-action="help" aria-label="How it works">${icon('help')}</button><button type="button" class="about-btn" data-action="openAbout" aria-label="About this project">${icon('info')}<span>About this project</span></button></div>
     </div></header>
     <main class="view">${inner}</main>
     <nav class="tabs" aria-label="Main">${links(false)}<button type="button" class="tab-ola" data-action="gloTap" aria-label="Ask Glo, your learning buddy">${ola()}<span>Glo</span></button></nav>`;
@@ -575,8 +630,8 @@
   }
   function openAbout() {
     openModal(`<span class="eyebrow">Open source · made for adults 40+</span>
-      <h2 id="aboutTitle">About Seen</h2>
-      <p class="ab-lead">Seen helps adults around 40 and up pick up a new language through short, real-life scenes instead of word lists and translation. This demo teaches Spanish.</p>
+      <h2 id="aboutTitle">About ${BRAND}</h2>
+      <p class="ab-lead">${BRAND} helps adults around 40 and up pick up a new language through short, real-life scenes instead of word lists and translation. This demo teaches Spanish.</p>
       <div class="ab-grid">
         <div class="ab t-pink"><h3>The problem</h3><p>“I can memorize vocabulary lists, but I forget them quickly and still translate every sentence in my head.”</p></div>
         <div class="ab t-lime"><h3>What I noticed</h3><p>I learn from people. I note new words down, try them on the same person next time, and words that sound familiar stick fastest.</p></div>
@@ -592,45 +647,166 @@
         <li><b>Learn together.</b> Co-learn scenes with friends who are on the same trip.</li>
       </ul>
       <div class="metric"><span class="eyebrow outline">How we’d measure it</span><p>Words recognised <b>7 days later</b>, in a scene never seen before.</p></div>
-      <div class="modal-foot"><a class="text-link" href="${REPO}" target="_blank" rel="noopener">View the code on GitHub</a><button type="button" class="text-link" data-action="reset">Restart the demo</button><button type="button" class="btn btn-sm" data-action="closeModal">Back to the app</button></div>`, 'aboutTitle');
+      <div class="modal-foot"><a class="text-link" href="${REPO}" target="_blank" rel="noopener">View the code on GitHub</a><button type="button" class="text-link" data-action="replayGuide">Replay the guide</button><button type="button" class="text-link" data-action="reset">Restart the demo</button><button type="button" class="btn btn-sm" data-action="closeModal">Back to the app</button></div>`, 'aboutTitle');
   }
   function openInvite() {
     openModal(`<span class="eyebrow pink">Invite</span>
       <h2 id="invTitle">Learn with a friend</h2>
       <p class="ab-lead">Send this link. When your friend joins, you can co-learn scenes together and both earn bonus Rep.</p>
-      <div class="inv-row"><input type="text" readonly value="https://seen.app/join/krishna" aria-label="Invite link" id="invLink"><button type="button" class="btn btn-sm" data-action="copyInvite">${icon('copy')}Copy link</button></div>
+      <div class="inv-row"><input type="text" readonly value="https://krishyeah-work.github.io/seen/?invite=krishna" aria-label="Invite link" id="invLink"><button type="button" class="btn btn-sm" data-action="copyInvite">${icon('copy')}Copy link</button></div>
       <div class="modal-foot"><button type="button" class="btn btn-ghost btn-sm" data-action="closeModal">Done</button></div>`, 'invTitle');
   }
 
+  /* ================= Guide: first-time tours =================
+     A tour is a short list of steps. Each step spotlights one thing on the page and Glo explains it in a sentence.
+     Tours run once (state.tours), can be skipped, and can be replayed from the ? button. */
+  const TOURS = {
+    home: () => [
+      { sel: '.me-av', title: 'This is you', text: 'Tap your traveller to change outfits. You unlock new items with the <b>Rep</b> you earn in scenes.' },
+      { sel: '.streak-card', title: 'Your week', text: 'One Glo for each day. The more you learn, the happier it looks.' },
+      { sel: '.lang-card .btn, a.btn[href="#/today"]', title: 'Carry on from here', text: 'This takes you back to your Spanish trip.' }
+    ],
+    today: () => [
+      { sel: '.activity', title: 'Start here', text: 'Each scene is a short real-life moment, about 5 minutes. Tap <b>Let’s go</b> to play it.' },
+      { sel: '.map-card', title: 'Your trip', text: 'Every city is a level. Finish Barcelona to unlock Madrid. Tap a city to see what’s ahead.' },
+      { sel: '.qc-bank', title: 'Your word bank', text: 'Every word you learn is kept here, with its picture and the places you met it.' },
+      { sel: isMobile() ? '.tab-ola' : '.ola-btn', title: 'I’m Glo', text: 'Stuck or curious? Tap me any time and I’ll help.', pad: 4 }
+    ],
+    scene: () => [
+      { sel: '#say', title: 'Listen and read', text: 'They speak Spanish. Underneath is the same line in English, with a <b>blank</b> where the new word goes.' },
+      { sel: '.word-row', title: 'The new word', text: 'This is the word to work out. Tap <b>Listen</b> to hear it again, or <b>Slower</b>.' },
+      { sel: '#stage', title: 'Answer in the picture', text: 'Now tap the thing they mean, right in the scene. No translation needed.', pad: 0 },
+      { sel: isMobile() ? '.ola-mini' : '.ola-btn', title: 'Need a hint?', text: 'Tap me. I can say it slower, show you where to look or, as a last resort, show the English.', pad: 4 }
+    ]
+  };
+  const Tour = {
+    id: null, steps: [], i: 0, el: null, t: 0,
+    start(id, force) {
+      if (this.id || !TOURS[id] || (!force && state.tours[id]) || $('.modal')) return false;
+      const steps = TOURS[id]().filter((s) => { const t = $(s.sel); return t && t.getClientRects().length; });
+      if (!steps.length) return false;
+      Object.assign(this, { id, steps, i: 0 });
+      Glo.hide();
+      const el = document.createElement('div');
+      el.className = 'tour';
+      el.innerHTML = `<div class="tour-hole"></div>
+        <div class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tourT">
+          <div class="tour-glo">${glo({ cls: 'still' })}</div>
+          <div class="tour-body"><span class="tour-step"></span><h3 id="tourT"></h3><p></p></div>
+          <div class="tour-foot"><button type="button" class="text-link" data-action="tourSkip">Skip</button><div class="tour-dots" aria-hidden="true"></div><button type="button" class="btn btn-sm" data-action="tourNext"></button></div>
+        </div>`;
+      document.body.appendChild(el);
+      document.body.classList.add('touring');
+      this.el = el;
+      this.show(true);
+      return true;
+    },
+    show(first) {
+      const s = this.steps[this.i], t = $(s.sel), card = $('.tour-card', this.el);
+      if (!t) { this.next(); return; }
+      card.classList.add('swap');
+      // Jump-scroll (no smooth scroll): the spotlight glides instead, so the two never fight.
+      const r0 = t.getBoundingClientRect();
+      if (r0.top < 90 || r0.bottom > window.innerHeight - 40) t.scrollIntoView({ block: r0.height > window.innerHeight * 0.7 ? 'start' : 'center', behavior: 'auto' });
+      clearTimeout(this.t);
+      this.t = setTimeout(() => {
+        $('.tour-step', card).textContent = `${this.i + 1} of ${this.steps.length}`;
+        $('h3', card).textContent = s.title;
+        $('p', card).innerHTML = s.text;
+        $('[data-action="tourNext"]', card).innerHTML = this.i === this.steps.length - 1 ? 'Got it' : `Next ${icon('arrowRight')}`;
+        $('.tour-dots', card).innerHTML = this.steps.map((_, k) => `<i class="${k === this.i ? 'on' : ''}"></i>`).join('');
+        this.place();
+        card.classList.remove('swap');
+        this.el.classList.add('on');
+        $('[data-action="tourNext"]', card).focus({ preventScroll: true });
+      }, first ? 80 : 360);
+    },
+    // Put the spotlight on the target and the card beside it; Glo points back at the target.
+    place(quiet) {
+      if (!this.el) return;
+      const s = this.steps[this.i], t = $(s.sel);
+      if (!t) return;
+      const r = t.getBoundingClientRect(), pad = s.pad == null ? 10 : s.pad, hole = $('.tour-hole', this.el), card = $('.tour-card', this.el);
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const x = Math.max(6, r.left - pad), y = Math.max(6, r.top - pad), w = Math.min(vw - 6, r.right + pad) - x, h = Math.min(vh - 6, r.bottom + pad) - y;
+      Object.assign(hole.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
+      const cw = card.offsetWidth, ch = card.offsetHeight, gap = 26;
+      let left = x + w / 2 - cw / 2, top, point;
+      if (y + h + gap + ch < vh - 12) { top = y + h + gap; point = 'up'; }
+      else if (y - gap - ch > 12) { top = y - gap - ch; point = 'down'; }
+      else if (vw >= 720 && x + w + gap + cw < vw - 12) { left = x + w + gap; top = y + h / 2 - ch / 2; point = 'l'; }
+      else if (vw >= 720 && x - gap - cw > 12) { left = x - gap - cw; top = y + h / 2 - ch / 2; point = 'r'; }
+      else { top = y + h - ch - 16; point = 'up'; }
+      left = Math.max(12, Math.min(vw - cw - 12, left));
+      top = Math.max(70, Math.min(vh - ch - 12, top));
+      Object.assign(card.style, { left: left + 'px', top: top + 'px' });
+      const g = $('.glo', card);
+      g.dataset.point = point;
+      if (quiet) return;
+      g.dataset.mood = 'talk';
+      clearTimeout(this.mt);
+      this.mt = setTimeout(() => { g.dataset.mood = 'happy'; }, 1500);
+    },
+    next() { if (!this.id) return; if (this.i >= this.steps.length - 1) { this.end(); return; } this.i++; this.show(); },
+    back() { if (!this.id || !this.i) return; this.i--; this.show(); },
+    end(quiet) {
+      if (!this.id) return;
+      state.tours[this.id] = true;
+      save();
+      clearTimeout(this.t);
+      const el = this.el;
+      el.classList.remove('on');
+      setTimeout(() => el.remove(), quiet ? 0 : 280);
+      document.body.classList.remove('touring');
+      Object.assign(this, { id: null, el: null, steps: [] });
+      if (!quiet) Glo.jump();
+    }
+  };
+  // The idea in three steps, for pages that have no tour of their own.
+  function openHow() {
+    openModal(`<span class="eyebrow">How ${BRAND} works</span>
+      <h2 id="howTitle">Words from scenes, not lists</h2>
+      <ol class="how-steps">
+        <li><span class="how-ic">${icon('ear')}</span><div><b>Listen</b><p>Someone says a line in Spanish, in a real situation.</p></div></li>
+        <li><span class="how-ic">${icon('eye')}</span><div><b>Look</b><p>The picture and a small English hint tell you what’s going on. The new word is left blank.</p></div></li>
+        <li><span class="how-ic">${icon('hand')}</span><div><b>Answer</b><p>Tap the thing in the scene, pick a picture or choose a reply.</p></div></li>
+        <li><span class="how-ic">${icon('refresh')}</span><div><b>Meet it again</b><p>The word comes back in new places until it sticks. Glo is there if you need a hint.</p></div></li>
+      </ol>
+      <div class="modal-foot"><button type="button" class="btn btn-sm" data-action="closeModal">Got it</button></div>`, 'howTitle');
+  }
+
   /* ================= Landing & notes ================= */
-  const logoBar = (right) => `<div class="wrap ix-top"><a class="logo" href="#/" aria-label="Seen">${ola()}<span>Seen</span></a>${right || ''}</div>`;
+  const logoBar = (right) => `<div class="wrap ix-top"><a class="logo" href="#/" aria-label="${BRAND}">${ola()}<span>${BRAND}</span></a>${right || ''}</div>`;
   const footer = () => `<footer class="wrap foot"><span>Designed by ${DESIGNER} · <a class="text-link" href="${REPO}" target="_blank" rel="noopener">Open source on GitHub</a></span><button class="text-link" data-action="reset" type="button">Restart the demo</button></footer>`;
 
   function viewIndex() {
     document.body.classList.add('no-tabs');
-    app.innerHTML = `<div class="view landing">
-      ${logoBar(`<a class="btn btn-sm" href="#/start">Enter the product ${icon('arrowRight')}</a>`)}
+    // The entrance plays the first time the page opens in a visit. After that it is a plain fade.
+    let first = false;
+    try { first = !sessionStorage.getItem('picto-intro'); sessionStorage.setItem('picto-intro', '1'); } catch (e) { /* ignore */ }
+    first = first && !reduced;
+    app.innerHTML = `<div class="view landing${first ? ' intro' : ''}">
+      ${logoBar()}
       <section class="wrap hero hero-simple">
-        <div>
-          <span class="eyebrow">Vocabulary through real scenes</span>
-          <h1>Learn a language by living it.<span>Not by memorising it.</span></h1>
-          <p class="hero-for">${icon('users')}Made for adults around 40 and up</p>
-          <p class="hero-sub">Short, real-life scenes that teach new words through pictures and context, not translation.</p>
-          <div class="hero-cta"><a class="btn" href="#/start">Enter the product ${icon('arrowRight')}</a><span class="hero-note">About 10 minutes · desktop and mobile</span></div>
+        <div class="hero-copy">
+          <h1><span class="ln"><span>Learn a language</span></span><span class="ln"><span>by living it.</span></span></h1>
+          <p class="hero-sub">Short real-life scenes teach you new words through pictures and context, not translation.</p>
+          <div class="hero-cta"><a class="btn" href="#/start">Start learning ${icon('arrowRight')}</a><span class="hero-note">Free · no sign-up · made for adults 40 and up</span></div>
         </div>
         <div class="hero-art">
           <div class="hero-stage" data-scene="cafe" data-cam="hero">${SCENE_ART.cafe()}</div>
           <div class="float f1"><b>5-minute scenes</b>with real people</div>
           <div class="float f3"><b>No word lists</b>just pictures and context</div>
+          <div class="hero-glo">${glo({ cls: 'hero-glo-fig' })}</div>
         </div>
       </section>
       ${footer()}
     </div>`;
     const hero = $('.hero-stage');
-    ['cup', 'bread', 'glass'].forEach((p) => propIn(hero, p));
+    ['cup', 'bread', 'glass'].forEach((p) => later(() => propIn(hero, p), first ? 900 : 0));
     setCam(hero, 'hero', true);
-    later(() => wave(hero), 900);
-    Glo.context('¡Hola! I’m <b>Glo</b>, your learning buddy. Tap <b>Enter the product</b> and I’ll come along.');
+    later(() => wave(hero), first ? 1500 : 900);
+    later(() => { const g = $('.hero-glo .glo'); if (g) { g.classList.add('is-wave'); g.dataset.mood = 'happy'; setTimeout(() => { g.dataset.mood = 'idle'; }, 2200); } }, first ? 2100 : 1300);
   }
 
   // Design notes page (not linked from the product): #/notes
@@ -666,18 +842,18 @@
   const steps = (n) => `<div class="steps" aria-label="Step ${n} of 3">${[1, 2, 3].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`;
   function viewStart() {
     document.body.classList.add('no-tabs');
-    if (!UI.langSel) UI.langSel = new Set(state.known.length ? state.known : ['en']);
+    if (!UI.langSel) UI.langSel = new Set(state.learning ? state.known : []);
     app.innerHTML = `<div class="view">
       ${logoBar('<span class="hero-note">Step 1 of 3</span>')}
       <div class="start">
         ${steps(1)}
         <h1>Which languages do you already speak?</h1>
-        <p class="lead">Seen uses them to find words that sound similar in the language you’re about to learn. Pick all that apply.</p>
+        <p class="lead">${BRAND} uses them to find words that sound similar in the language you’re about to learn. Pick all that apply.</p>
         <div class="lang-grid" role="group" aria-label="Languages you speak">
-          ${KNOWN.map((l) => `<button type="button" class="lang" aria-pressed="${UI.langSel.has(l.id)}" data-action="toggleLang" data-id="${l.id}"><span class="tick">${icon('check')}</span><span class="nm">${l.nm}</span><span class="nt">${l.nt}</span></button>`).join('')}
+          ${KNOWN.map((l, i) => `<button type="button" class="lang" style="--i:${i}" aria-pressed="${UI.langSel.has(l.id)}" data-action="toggleLang" data-id="${l.id}"><span class="tick">${icon('check')}</span><span class="nm">${l.nm}</span><span class="nt">${l.nt}</span></button>`).join('')}
         </div>
       </div>
-      <div class="start-foot"><div class="in"><span class="hint" id="langHint">${UI.langSel.size ? `${UI.langSel.size} selected` : 'Pick at least one'}</span><button type="button" class="btn" data-action="toLearn">Continue ${icon('arrowRight')}</button></div></div>
+      <div class="start-foot"><div class="in"><span class="hint" id="langHint">${UI.langSel.size ? `${UI.langSel.size} selected` : 'Pick at least one to continue'}</span><button type="button" class="btn" data-action="toLearn"${UI.langSel.size ? '' : ' disabled'}>Continue ${icon('arrowRight')}</button></div></div>
     </div>`;
     Glo.context('Pick every language you speak, even a little. I’ll use them to find words that <b>sound like home</b>.');
   }
@@ -686,7 +862,7 @@
     const list = LEARN.filter((l) => !q || l.nm.toLowerCase().includes(q) || l.nt.toLowerCase().includes(q));
     if (!list.length) return `<p class="empty-note">No match for “${esc(UI.search)}”. More languages are on the way.</p>`;
     return list.map((l) => l.on
-      ? `<button type="button" class="learn active" aria-pressed="true" data-action="noop"><span class="flag-lg" style="background:${l.flag}"></span><span><span class="nm">${l.nm}</span><br><span class="nt">${l.nt} · ready to try</span></span><span class="radio">${icon('check')}</span></button>`
+      ? `<button type="button" class="learn${UI.learn === 'es' ? ' active' : ''}" aria-pressed="${UI.learn === 'es'}" data-action="pickLearn"><span class="flag-lg" style="background:${l.flag}"></span><span><span class="nm">${l.nm}</span><br><span class="nt">${l.nt} · ready to try</span></span><span class="radio">${icon('check')}</span></button>`
       : `<button type="button" class="learn muted" aria-disabled="true" data-action="soon" data-nm="${l.nm}"><span class="flag-lg" style="background:${l.flag}"></span><span><span class="nm">${l.nm}</span><br><span class="nt">${l.nt}</span></span><span class="soon">Coming soon</span></button>`).join('');
   }
   function viewLearn() {
@@ -700,7 +876,7 @@
         <label class="search">${icon('search')}<span class="sr-only">Search languages</span><input type="search" id="langSearch" placeholder="Search languages" value="${esc(UI.search)}" autocomplete="off"></label>
         <div class="learn-list" id="learnList">${learnList()}</div>
       </div>
-      <div class="start-foot"><div class="in"><a class="text-link" href="#/start">Back</a><button type="button" class="btn" data-action="toGoal">Continue with Spanish ${icon('arrowRight')}</button></div></div>
+      <div class="start-foot"><div class="in"><a class="text-link" href="#/start">Back</a><button type="button" class="btn" data-action="toGoal"${UI.learn ? '' : ' disabled'}>${UI.learn ? 'Continue with Spanish' : 'Choose a language'} ${icon('arrowRight')}</button></div></div>
     </div>`;
     Glo.context('Only Spanish is ready in this prototype. <b>¡Vamos!</b>');
   }
@@ -713,10 +889,10 @@
         <h1>How would you like to learn?</h1>
         <p class="lead">Pick what fits. You can change it any time.</p>
         <div class="goal-list" role="radiogroup" aria-label="Learning goal">
-          ${GOALS.map((g) => `<button type="button" role="radio" class="gopt${UI.goal === g.id ? ' on' : ''}" aria-checked="${UI.goal === g.id}" data-action="pickGoal" data-id="${g.id}"><span class="goal-ic">${icon(g.ic)}</span><span><span class="nm">${g.nm}</span><span class="nt">${g.sub}</span></span><span class="radio">${icon('check')}</span></button>`).join('')}
+          ${GOALS.map((g, i) => `<button type="button" role="radio" class="gopt${UI.goal === g.id ? ' on' : ''}" style="--i:${i}" aria-checked="${UI.goal === g.id}" data-action="pickGoal" data-id="${g.id}"><span class="goal-ic">${icon(g.ic)}</span><span><span class="nm">${g.nm}</span><span class="nt">${g.sub}</span></span><span class="radio">${icon('check')}</span></button>`).join('')}
         </div>
       </div>
-      <div class="start-foot"><div class="in"><button type="button" class="text-link skip" data-action="skipGoal">Skip, just start<small>We’ll adjust the pace as you learn</small></button><button type="button" class="btn" data-action="startLearning">Start learning Spanish ${icon('arrowRight')}</button></div></div>
+      <div class="start-foot"><div class="in"><button type="button" class="text-link skip" data-action="skipGoal">Skip, just start<small>We’ll adjust the pace as you learn</small></button><button type="button" class="btn" data-action="startLearning"${UI.goal ? '' : ' disabled'}>Start learning Spanish ${icon('arrowRight')}</button></div></div>
     </div>`;
   }
 
@@ -759,7 +935,7 @@
   }
   function streakRow(days) {
     return `<div class="streak">${days.map((d) => `<div class="sd${d.today ? ' today' : ''} m-${d.mood}" title="${d.nm}: ${d.mood === 'future' ? 'coming up' : d.mood === 'none' ? 'before you joined' : `${d.min} min`}">
-      <span class="sd-glo">${d.mood === 'none' ? glo('future') : glo(d.mood)}</span><span class="sd-d">${d.short}</span><span class="sd-m">${d.mood === 'future' || d.mood === 'none' ? '·' : `${d.min}m`}</span></div>`).join('')}</div>`;
+      <span class="sd-glo">${gloDay(d.mood)}</span><span class="sd-d">${d.short}</span><span class="sd-m">${d.mood === 'future' || d.mood === 'none' ? '·' : `${d.min}m`}</span></div>`).join('')}</div>`;
   }
   function ring(pct) {
     const c = 2 * Math.PI * 40;
@@ -842,7 +1018,7 @@
       </div>
     </div>`);
     Glo.context('This is your home base. Tap your avatar to dress it up with items you unlock with Rep.');
-    Glo.once('home', 'Tap your <b>avatar</b> to customise it with Rep you earn.', 1000);
+    later(() => Tour.start('home'), 700);
   }
   function friendRow(f, opts = {}) {
     const lv = LEVELS.find((l) => l.id === f.level);
@@ -883,7 +1059,7 @@
       </section>
       <h2 class="h-sec">Day by day</h2>
       <div class="daylist">${days.map((d) => `<div class="day-row${d.mood === 'future' || d.mood === 'none' ? ' quiet' : ''}">
-        <span class="dr-glo">${glo(d.mood === 'none' ? 'future' : d.mood)}</span>
+        <span class="dr-glo">${gloDay(d.mood)}</span>
         <div class="dr-main"><b>${d.today ? 'Today' : d.nm}</b><small>${d.mood === 'future' ? 'Coming up' : d.mood === 'none' ? 'Before you joined' : d.log ? `${d.log.min} min · Spanish · ${d.log.scenes.join(', ')}` : 'Rest day'}</small></div>
         <div class="dr-words">${d.log ? d.log.words.map((w) => `<span class="word-chip">${prop(WORDS[w].art)}${WORDS[w].es}</span>`).join('') : ''}</div>
         ${d.log ? `<span class="dr-rep">+${d.log.rep} Rep</span>` : ''}
@@ -931,9 +1107,9 @@
     fig.innerHTML = myFull('pf-full');
     fig.classList.remove('pop');
     void fig.offsetWidth;
-    fig.classList.add('pop', 'joy');
+    fig.classList.add('pop', 'x-joy', 'p-cheer');
     clearTimeout(fig._t);
-    fig._t = setTimeout(() => fig.classList.remove('joy'), 1500);
+    fig._t = setTimeout(() => fig.classList.remove('x-joy', 'p-cheer'), 1500);
     $$('.me-chip').forEach((el) => { el.innerHTML = myBust('av-36'); });
   }
   function viewProfile() {
@@ -994,7 +1170,15 @@
     return `<span class="eyebrow outline">Level ${c.lvl} · Locked</span><h3>${c.nm}</h3><p class="cc-theme">${c.theme} · ${c.cefr}</p>
       <p class="cc-sub">What you’ll do there</p>
       <ul class="cc-list">${c.acts.map((a) => `<li><span class="cc-i">${icon('lock')}</span><span>${a}</span></li>`).join('')}</ul>
-      <button type="button" class="btn btn-ghost btn-sm" data-action="travel" data-id="${c.id}">${icon('star')}Travel for ${c.cost} Rep</button>`;
+      ${travelBtn(c)}`;
+  }
+  // Travel unlocks in order: finish the city you're in, then have enough Rep.
+  function travelBtn(c) {
+    const homeDone = HOME_CITY.scenes.every((p) => state.done[p]);
+    const why = c.lvl > 2 ? 'Reach Madrid first' : !homeDone ? 'Finish Barcelona first' : state.rep < c.cost ? `${c.cost - state.rep} more Rep needed` : '';
+    return why
+      ? `<span class="travel-lock">${icon('lock')}${why}<small>Travel costs ${c.cost} Rep</small></span>`
+      : `<button type="button" class="btn btn-ghost btn-sm" data-action="travel" data-id="${c.id}">${icon('star')}Travel for ${c.cost} Rep</button>`;
   }
   function mapPins() {
     const pos = (x, y) => `left:${(((x + 14) / 432) * 100).toFixed(2)}%;top:${(((y + 12) / 332) * 100).toFixed(2)}%`;
@@ -1128,7 +1312,7 @@
     setCam(art, 'hero', true);
     walkRoad();
     Glo.context(cafeDone ? 'Your words are waiting at <b>Paco’s shop</b>. Or find <b>Meera</b> on the map and co-learn.' : 'Your first morning in Barcelona. Tap <b>Let’s go</b> for breakfast with Lucía.');
-    Glo.once('today', '¡Bienvenido! Breakfast at <b>Café La Plaza</b> is your first scene.', 1100);
+    later(() => Tour.start('today'), 800);
   }
 
   function viewWords() {
@@ -1193,6 +1377,7 @@
         <div class="progress" aria-hidden="true">${def.moments.map(() => '<i></i>').join('')}</div>
         <div class="top-right">
           <button type="button" class="ola-mini" data-action="gloTap" aria-label="Ask Glo for a hint">${ola()}</button>
+          <button type="button" class="icon-btn round help-btn" data-action="help" aria-label="How a scene works">${icon('help')}</button>
           <button type="button" class="icon-btn round" data-action="toggleSound" aria-label="${state.sound ? 'Mute voices' : 'Turn voices on'}">${icon(state.sound ? 'volume' : 'volumeOff')}</button>
           ${repPill(false)}
           <div class="bank-btn" aria-label="Words in your bank">${icon('cards')}<span class="lbl">Word bank</span><span class="count" id="bankCount">${bankCount()}</span></div>
@@ -1200,6 +1385,7 @@
       </div>
       <div class="stage" id="stage" data-scene="${def.art}" data-cam="wide">
         ${artHTML}
+        <div class="coach-pill" aria-hidden="true">${icon('hand')}Tap the picture to answer</div>
         <div class="timeskip" id="later" aria-live="polite"></div>
         <div class="intro" id="intro"><div class="intro-t"><span class="eyebrow white">${def.tag}</span><h2>${def.title}</h2><p>${def.where}</p></div></div>
       </div>
@@ -1210,16 +1396,16 @@
     setCam(stage, 'wide', true);
     stage.addEventListener('click', (e) => { const h = e.target.closest('.hot.live'); if (h) onTap(h.dataset.hot, h); });
     stage.addEventListener('keydown', (e) => { const h = e.target.closest('.hot.live'); if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onTap(h.dataset.hot, h); } });
-    later(() => wave(stage), 700);
+    later(() => wave(stage, def.speaker), 700);
     $('#panel').innerHTML = `
       <div class="tagrow"><span class="eyebrow">${def.review ? 'Review' : def.colearn ? 'Co-learn' : 'Today’s activity'}</span></div>
       <h2 class="intro-title">${def.activity}</h2>
       <p class="intro-blurb">${def.blurb}</p>
       <div class="intro-meta">${metaRow(def.meta)}</div>
-      <div class="who-card">${def.colearn ? avatarBust(friend(def.colearn).av, 'av-44') : `<span class="who">${CHARS[def.speaker].nm[0]}</span>`}<p>${def.whoLine}</p></div>
+      <div class="who-card">${def.colearn ? avatarBust(friend(def.colearn).av, 'av-44') : avatarBust(window.ART.CAST[def.speaker], 'av-44')}<p>${def.whoLine}</p></div>
+      ${state.tours.scene ? '' : `<ol class="howto" aria-label="How a scene works"><li>${icon('ear')}<span><b>Listen</b> to the line</span></li><li>${icon('eye')}<span><b>Look</b> at the scene</span></li><li>${icon('hand')}<span><b>Tap</b> your answer</span></li></ol>`}
       <div class="panel-foot"><button type="button" class="btn btn-block" data-action="sceneStart">Let’s go ${icon('arrowRight')}</button></div>`;
     Glo.context('Tap <b>Let’s go</b> when you’re ready. I’ll stay in this corner if you need a hand.');
-    if (!isMobile()) later(() => Glo.say('Each line has a small English gloss with a <b>blank</b>. The blank is the word to work out.'), 1200);
   }
 
   function setProgress() {
@@ -1319,12 +1505,15 @@
       }
       $$('.hot', stage).forEach((h) => { h.classList.remove('live', 'hint', 'right', 'wrong'); h.setAttribute('tabindex', '-1'); });
       stage.classList.toggle('tappable', m.type === 'tap');
+      stage.classList.toggle('coach', m.type === 'tap' && !state.tours.tapped);
       if (m.type === 'tap') m.live.forEach((k) => { const h = stage.querySelector(`[data-hot="${k}"]`); if (h) { h.classList.add('live'); h.setAttribute('tabindex', '0'); } });
       renderMoment(m);
       momentGlo(m);
       moveCam(m.cam, () => {
-        if (m.who === 'lucia' && m.cam === 'lucia') wave(stage, 'lucia');
+        attend(m.who);
+        gesture(m);
         showSay(m.who, m.line, m.word, m.gloss);
+        if (SC.i === 0) later(() => Tour.start('scene'), 900);
         if (state.sound) Speech.say(m.line, false, $('#say .play'), speakerG(m.who), m.who);
       });
     };
@@ -1394,6 +1583,9 @@
     const stage = $('#stage');
     stage.classList.remove('tappable');
     if (el) el.classList.add('right');
+    const tapped = el && el.classList.contains('hot');
+    if (tapped && !state.tours.tapped) { state.tours.tapped = true; save(); stage.classList.remove('coach'); }
+    if (tapped) { gaze(m.who, el); later(() => gaze(m.who, null), 1300); }
     if (el && el.classList.contains('hot')) later(() => el.classList.remove('right'), 900);
     $$('.hot.hint', stage).forEach((h) => h.classList.remove('hint'));
     $$('.tile, .reply').forEach((t) => { if (t !== el) t.classList.add('dim'); });
@@ -1416,6 +1608,7 @@
     setProgress();
     Glo.jump();
     react(m.who, 'joy', 1900);
+    pose(m.who, SC.i % 2 ? 'cheer' : 'thumb', 1500);
     if (state.sound) later(() => Speech.say(w.es, false, null, speakerG(m.who), m.who), 350);
     if (res.isNew || res.grew) flyToBank(w.es, $('#panelWord'));
     if (m.after) later(() => moveCam(m.after, placeSay), 900);
@@ -1428,7 +1621,8 @@
     SC.misses++;
     if (el) { el.classList.remove('wrong'); void el.getBoundingClientRect(); el.classList.add('wrong'); later(() => el.classList.remove('wrong'), 800); }
     const msg = (m.wrong && m.wrong[key]) || 'Not quite. Look at the scene again.';
-    react(m.who, 'hmm', 1600);
+    react(m.who, 'soft', 1700);
+    pose(m.who, null);
     const hintBtn = m.type !== 'reply' && SC.misses < 2 ? `<button type="button" class="link-btn" data-action="hint">${icon('search')}Show me where</button>` : '';
     $('#fb').innerHTML = `<div class="feedback soft"><span class="badge">${icon('eye')}</span><div class="fb-txt"><b>Not quite</b><p>${msg}</p>${hintBtn}</div></div>`;
     if (SC.misses >= 2) { hint(); if (!isMobile()) later(() => Glo.say('I’ve highlighted it for you. <b>Take your time.</b>'), 300); }
@@ -1440,7 +1634,7 @@
     const m = cur();
     if (m.type === 'tap') {
       const h = $(`#stage [data-hot="${m.answer}"]`);
-      if (h) h.classList.add('hint');
+      if (h) { h.classList.add('hint'); pointAt(m.who, h); }
     } else if (m.type === 'pick') {
       const t = $(`.tile[data-k="${m.answer}"]`);
       if (t) { t.classList.remove('hint'); void t.offsetWidth; t.classList.add('hint'); }
@@ -1462,7 +1656,8 @@
     $$('.progress i').forEach((el) => { el.classList.add('on'); el.classList.remove('cur'); });
     stage.classList.remove('tappable');
     moveCam(def.art === 'cafe' ? 'lucia' : 'shop', () => {
-      if (def.art === 'cafe') wave(stage);
+      attend(o.who);
+      wave(stage, o.who);
       showSay(o.who, o.line, null, o.gloss);
       if (state.sound) Speech.say(o.line, false, $('#say .play'), speakerG(o.who), o.who);
     });
@@ -1501,7 +1696,7 @@
           <p>${def.outro.text}</p>
           <div class="stats">${def.review ? `<span>${words.length} words reviewed</span><span>${L.firstTry || 0} of ${L.total || words.length} first try</span>` : `<span>${fresh.length} new ${fresh.length === 1 ? 'word' : 'words'}</span><span>${def.moments.length} moments</span>`}<span>+${L.rep} Rep</span><span>${L.english} English ${L.english === 1 ? 'hint' : 'hints'}</span></div>
         </div>
-        ${def.colearn ? avatarFull(friend(def.colearn).av, 'done-friend', true) : ola()}
+        ${def.colearn ? avatarFull(friend(def.colearn).av, 'done-friend', { wave: true, mood: 'joy' }) : glo({ mood: 'joy', cls: 'done-glo is-jump' })}
       </section>
       ${newLvl ? `<section class="levelup">
         <div class="lu-avs">${myBust('av-96')}</div>
@@ -1533,6 +1728,10 @@
       try { navigator.clipboard.writeText(i.value).then(() => toast('Invite link copied'), () => { i.select(); toast('Select and copy the link'); }); } catch (e) { i.select(); toast('Select and copy the link'); }
     },
     gloTap() { Glo.tap(); },
+    tourNext() { Tour.next(); },
+    tourSkip() { Tour.end(); },
+    help() { const r = document.body.dataset.route; if (!Tour.start(r === 'spanish' ? 'today' : r, true)) openHow(); },
+    replayGuide() { closeModal(); state.tours = {}; save(); if (!Tour.start(document.body.dataset.route === 'spanish' ? 'today' : document.body.dataset.route, true)) openHow(); },
     hint() { hint(); },
     repInfo() { toast('Rep is earned in every scene. Spend it to travel to new cities and unlock avatar items.'); },
     cheer(el) { toast(`You cheered ${el.dataset.nm} on`); },
@@ -1541,7 +1740,8 @@
       const id = el.dataset.id;
       if (UI.langSel.has(id)) UI.langSel.delete(id); else UI.langSel.add(id);
       el.setAttribute('aria-pressed', UI.langSel.has(id));
-      $('#langHint').textContent = UI.langSel.size ? `${UI.langSel.size} selected` : 'Pick at least one';
+      $('#langHint').textContent = UI.langSel.size ? `${UI.langSel.size} selected` : 'Pick at least one to continue';
+      $('[data-action="toLearn"]').disabled = !UI.langSel.size;
     },
     toLearn() {
       if (!UI.langSel.size) { toast('Pick at least one language you speak'); return; }
@@ -1549,14 +1749,24 @@
       save();
       location.hash = '#/start/learn';
     },
-    toGoal() { location.hash = '#/start/goal'; },
+    pickLearn() {
+      UI.learn = UI.learn ? null : 'es';
+      $('#learnList').innerHTML = learnList();
+      const b = $('[data-action="toGoal"]');
+      b.disabled = !UI.learn;
+      b.innerHTML = `${UI.learn ? 'Continue with Spanish' : 'Choose a language'} ${icon('arrowRight')}`;
+    },
+    toGoal() { if (!UI.learn) { toast('Choose the language you want to learn'); return; } location.hash = '#/start/goal'; },
     soon(el) { toast(`${el.dataset.nm} is coming soon. This prototype shows the Spanish flow.`); },
     pickGoal(el) {
       UI.goal = el.dataset.id;
       $$('.gopt').forEach((g) => { const on = g.dataset.id === UI.goal; g.classList.toggle('on', on); g.setAttribute('aria-checked', on); });
+      $('[data-action="startLearning"]').disabled = false;
     },
-    skipGoal() { UI.goal = null; actions.startLearning(); },
-    startLearning() {
+    skipGoal() { UI.goal = null; actions.startLearning(true); },
+    startLearning(skipped) {
+      if (skipped !== true && !UI.goal) { toast('Pick how you’d like to learn, or skip'); return; }
+      if (!UI.learn) { location.hash = '#/start/learn'; return; }
       const g = GOALS.find((x) => x.id === UI.goal);
       state.goal = g ? g.id : null;
       state.pace = g ? g.pace : 'steady';
@@ -1653,9 +1863,10 @@
     filter(el) { UI.filter = el.dataset.f; viewWords(); },
     revealWord(el) { $('#reveal').innerHTML = `<p>In English</p><span class="en">${WORDS[el.dataset.id].en}</span>`; },
     reset() {
-      try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+      try { localStorage.removeItem(KEY); localStorage.removeItem(OLD_KEY); sessionStorage.removeItem('picto-intro'); } catch (e) { /* ignore */ }
+      Tour.end(true);
       state = INITIAL();
-      Object.assign(UI, { langSel: null, goal: null, search: '', city: 'barcelona' });
+      Object.assign(UI, { langSel: null, learn: null, goal: null, search: '', city: 'barcelona' });
       closeModal();
       toast('Demo restarted');
       if (location.hash === '#/' || !location.hash) router(); else location.hash = '#/';
@@ -1670,7 +1881,8 @@
     if (fn) { e.preventDefault(); fn(el, e); }
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { if ($('.modal')) { closeModal(); return; } closeDD(); }
+    if (e.key === 'Escape') { if (Tour.id) { Tour.end(); return; } if ($('.modal')) { closeModal(); return; } closeDD(); }
+    if (Tour.id && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); if (e.key === 'ArrowRight') Tour.next(); else Tour.back(); return; }
     const dd = e.target.closest && e.target.closest('.dd-menu');
     if (dd && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
       e.preventDefault();
@@ -1710,6 +1922,7 @@
     clearTimers();
     Speech.stop();
     Glo.hide();
+    Tour.end(true);
     closeModal();
     SC = null;
     document.body.classList.remove('in-scene', 'no-tabs', 'arriving');
@@ -1727,7 +1940,8 @@
   }
 
   let rz;
-  window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(relayout, 120); });
+  window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { relayout(); Tour.place(); }, 120); });
+  window.addEventListener('scroll', () => Tour.place(true), { passive: true });
   window.addEventListener('hashchange', router);
   Speech.init();
   Glo.mount();

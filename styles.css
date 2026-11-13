@@ -1,4 +1,4 @@
-/* Seen — Bold Pop design system */
+/* Picto: Bold Pop design system. Layout and components live here; character and scene motion lives in motion.css. */
 :root {
   --ink: #0B0B0B;
   --paper: #FFFFFF;
@@ -220,7 +220,7 @@ p { margin: 0; }
 .lang[aria-pressed="true"] { background: var(--lime); box-shadow: inset 0 0 0 2px var(--ink); }
 .lang[aria-pressed="true"] .tick { background: var(--ink); color: var(--lime); }
 .lang[aria-pressed="true"] .nt { color: var(--ink); }
-.start-foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: linear-gradient(rgba(255,255,255,0), #fff 30%); padding: 28px var(--gutter) calc(24px + env(safe-area-inset-bottom)); }
+.start-foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--paper); border-top: 1.5px solid var(--gray-100); padding: 16px var(--gutter) calc(24px + env(safe-area-inset-bottom)); }
 .start-foot .in { max-width: 760px; margin: 0 auto; padding: 0 var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .start-foot .hint { font-size: 15px; color: var(--gray-600); }
 .learn-list { margin-top: 32px; display: grid; gap: 12px; }
@@ -468,8 +468,7 @@ body.in-scene .ola-dock { right: 484px; bottom: 20px; }
 .ola-btn:hover { transform: translateY(26%) rotate(-3deg); }
 .ola-dock.up .ola-btn { transform: translateY(-10px) rotate(0); }
 .ola-btn .ola-svg { width: 100%; height: 100%; }
-.ola-pupils { transition: transform .15s ease-out; }
-.ola-dock.jump .ola-btn { animation: olaJump .8s var(--spring); }
+.ola-dock.hop .ola-btn { transform: translateY(4%) rotate(0); }
 @keyframes olaJump { 40% { transform: translateY(-36px) rotate(8deg) scale(1.06); } }
 .ola-bubble { pointer-events: none; visibility: hidden; max-width: 320px; margin-bottom: 92px; background: var(--ink); color: var(--paper); border-radius: 22px 22px 6px 22px; padding: 16px 18px; font-size: 16px; line-height: 1.45; opacity: 0; transform: translateY(10px) scale(.96); transform-origin: right bottom; transition: opacity .3s, transform .4s var(--spring), visibility 0s .4s; }
 .ola-dock.talk .ola-bubble { pointer-events: auto; visibility: visible; opacity: 1; transform: none; transition: opacity .3s, transform .4s var(--spring), visibility 0s; }
@@ -869,39 +868,6 @@ body.arriving .ola-dock { display: none; }
 .inv-row { display: flex; gap: 10px; margin-top: 20px; }
 .inv-row input { flex: 1; min-width: 0; height: 44px; padding: 0 16px; border-radius: 999px; border: 0; box-shadow: inset 0 0 0 2px var(--gray-100); font: 500 16px var(--body); color: var(--ink); background: var(--gray-50); }
 
-/* Avatars */
-.avatar-full { display: block; overflow: visible; }
-/* Characters: one wave hello (not a loop), blinking, talking and reactions */
-.avatar-full g, .avatar g { transform-box: view-box; }
-.avatar-full .arm-r.waving { animation: armUp 2s cubic-bezier(.45, 0, .3, 1) .2s 1 both; }
-.avatar-full .arm-r.waving .fore { animation: foreWave 2s ease-in-out .2s 1 both; }
-@keyframes armUp { 0% { transform: rotate(0); } 18%, 76% { transform: rotate(-128deg); } 100% { transform: rotate(0); } }
-@keyframes foreWave { 0%, 18% { transform: rotate(0); } 30% { transform: rotate(-32deg); } 42% { transform: rotate(6deg); } 54% { transform: rotate(-32deg); } 66% { transform: rotate(2deg); } 76%, 100% { transform: rotate(0); } }
-.f-j, .f-h { display: none; }
-.joy .f-n, .hmm .f-n { display: none; }
-.joy .f-j, .hmm .f-h { display: inline; }
-.avatar-full .av-eyes, .av-hero .av-eyes { animation: blink 5.6s infinite; }
-@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96.5% { transform: scaleY(.08); } }
-.talk .f-n .mouth { animation: talk .17s ease-in-out infinite alternate; }
-@keyframes talk { to { transform: scaleY(.3); } }
-.talk .av-head { animation: headTalk 1.7s ease-in-out 1; }
-@keyframes headTalk { 25% { transform: rotate(-3deg); } 60% { transform: rotate(2.5deg); } }
-.joy .av-head { animation: headJoy .7s var(--spring) 1; }
-@keyframes headJoy { 40% { transform: translateY(-3px) rotate(-5deg); } }
-.joy .av-fig { animation: hop .55s var(--ease) 1; }
-@keyframes hop { 40% { transform: translateY(-5px); } }
-.hmm .av-head { animation: hmmTilt 1.6s ease-in-out 1; }
-@keyframes hmmTilt { 20%, 80% { transform: rotate(6deg); } }
-/* Walk cycle: knees lift in turn, arms swing opposite, body sways with each step */
-.walking .leg-l { animation: stepLeg .5s ease-in-out infinite; }
-.walking .leg-r { animation: stepLeg .5s ease-in-out -.25s infinite; }
-.walking .arm-l { animation: armSwing .5s ease-in-out infinite alternate; }
-.walking .arm-r { animation: armSwing .5s ease-in-out -.5s infinite alternate; }
-.walking .av-fig { animation: bodySway 1s linear infinite; }
-@keyframes stepLeg { 0%, 100% { transform: none; } 50% { transform: translateY(-3px) scaleY(.92); } }
-@keyframes armSwing { from { transform: rotate(10deg); } to { transform: rotate(-10deg); } }
-@keyframes bodySway { 0%, 50%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-1.6px) rotate(-1.6deg); } 75% { transform: translateY(-1.6px) rotate(1.6deg); } }
-
 /* Home */
 .me { grid-template-columns: auto minmax(0, 1fr); }
 .me-av { position: relative; display: block; text-decoration: none; transition: transform .3s var(--spring); }
@@ -1237,7 +1203,7 @@ body.arriving .ola-dock { display: none; }
   .activity { grid-template-columns: 1fr; }
   .activity-art { order: -1; height: 240px; min-height: 0; }
   .pf-grid { grid-template-columns: 1fr; }
-  .pf-preview { position: static; min-height: 0; }
+  .pf-preview { position: relative; top: auto; min-height: 0; }
 }
 @media (max-width: 820px) {
   .activity { padding: 0; }
@@ -1308,8 +1274,6 @@ body.arriving .ola-dock { display: none; }
 @media (max-width: 960px) { .me-art { width: 40%; opacity: .7; } }
 @media (max-width: 820px) { .me-art { width: 70%; height: 62%; opacity: .45; } }
 
-/* Scene cast */
-.scene-fig { overflow: visible; }
 
 @media (max-width: 560px) {
   .start-foot .in:has(.skip) { flex-direction: column-reverse; align-items: stretch; gap: 4px; }
@@ -1323,6 +1287,82 @@ body.arriving .ola-dock { display: none; }
 .hero-for .ic { width: 18px; height: 18px; color: var(--ink); }
 .hero-for + .hero-sub { margin-top: 20px; }
 .foot a.text-link { display: inline; }
+
+/* ===== Iteration 5: Picto ===== */
+/* Glo in the shell */
+.logo .glo { width: 38px; height: 38px; }
+.ola-btn .glo { width: 100%; height: 100%; }
+body[data-route="index"] .ola-dock, body[data-route="start"] .ola-dock, body.touring .ola-dock .ola-bubble { display: none; }
+/* A button that can't be used yet looks it, and the hint beside it says what's missing */
+.btn[disabled] { background: var(--gray-100); color: #8C8C85; box-shadow: none; cursor: not-allowed; transform: none; }
+.btn[disabled] .ic { opacity: .6; }
+.travel-lock { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; margin-top: auto; padding: 10px 14px; border-radius: 16px; background: var(--gray-100); font: 600 15px var(--display); color: var(--gray-600); }
+.travel-lock .ic { width: 18px; height: 18px; grid-row: 1 / 3; }
+.travel-lock small { grid-column: 2; font: 400 13px var(--body); }
+.learn:not(.active):not(.muted) .radio { background: transparent; color: transparent; box-shadow: inset 0 0 0 2px var(--gray-300); }
+@media (min-width: 821px) { .ola-btn { transform: translateY(34%) rotate(-6deg); } .ola-btn:hover { transform: translateY(18%) rotate(-2deg); } }
+.help-btn { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--gray-600); box-shadow: inset 0 0 0 2px var(--gray-100); transition: box-shadow var(--t-1), color var(--t-1), transform var(--t-2) var(--e-spring); }
+.help-btn:hover { color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); transform: rotate(-8deg) scale(1.05); }
+.help-btn .ic { width: 22px; height: 22px; }
+.done-hero .done-glo { width: 170px; height: auto; animation: none; }
+
+/* Landing: one headline, one sentence, one button */
+.landing .hero h1 { font-size: clamp(38px, 4.7vw, 68px); line-height: 1.02; }
+.landing .hero h1 .ln { display: block; overflow: hidden; color: inherit; padding-bottom: .14em; margin-bottom: -.14em; }
+.landing .hero h1 .ln > span { display: block; color: inherit; }
+.landing .hero h1 .ln:nth-child(2) > span { color: var(--blue); }
+.landing .hero-sub { max-width: 36ch; }
+.hero-glo { position: absolute; left: -38px; bottom: -34px; z-index: 3; width: 136px; pointer-events: none; filter: drop-shadow(0 6px 0 rgba(11, 11, 11, .12)); }
+.hero-glo .glo { width: 100%; height: auto; }
+
+/* Guide: spotlight tour */
+body.touring { overflow: hidden; }
+.tour { position: fixed; inset: 0; z-index: 90; opacity: 0; transition: opacity var(--t-2); }
+.tour.on { opacity: 1; }
+.tour-hole { position: fixed; left: 50%; top: 50%; width: 0; height: 0; border-radius: 22px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(11, 11, 11, .64), inset 0 0 0 3px var(--lime); transition: left var(--t-3) var(--e-inout), top var(--t-3) var(--e-inout), width var(--t-3) var(--e-inout), height var(--t-3) var(--e-inout); }
+.tour-hole::after { content: ''; position: absolute; inset: -5px; border-radius: 26px; border: 3px solid var(--lime); animation: tourRing 1.8s var(--e-out) infinite; }
+@keyframes tourRing { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.05); } }
+.tour-card { position: fixed; left: 12px; top: 80px; width: min(360px, calc(100vw - 24px)); padding: 20px 20px 16px; border-radius: 24px; background: var(--paper); border: 2.5px solid var(--ink); box-shadow: 0 6px 0 var(--ink); transition: left var(--t-3) var(--e-inout), top var(--t-3) var(--e-inout), opacity var(--t-1), transform var(--t-2) var(--e-soft); }
+.tour-card.swap { opacity: 0; transform: scale(.96); }
+.tour-glo { position: absolute; right: 16px; top: -62px; width: 80px; pointer-events: none; }
+.tour-glo .glo { width: 100%; height: auto; }
+.tour-step { font: 600 13px var(--display); letter-spacing: .02em; color: var(--gray-600); }
+.tour-card h3 { font-size: 24px; margin: 4px 0 6px; }
+.tour-card p { font-size: 16.5px; line-height: 1.5; color: var(--gray-600); }
+.tour-card p b { color: var(--ink); font-weight: 600; }
+.tour-foot { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+.tour-dots { display: flex; gap: 6px; margin: 0 auto; }
+.tour-dots i { width: 8px; height: 8px; border-radius: 4px; background: var(--gray-300); transition: width var(--t-2) var(--e-soft), background var(--t-2); }
+.tour-dots i.on { width: 22px; background: var(--ink); }
+
+/* In-scene coaching: the first tap moments show what can be tapped */
+.coach-pill { position: absolute; left: 50%; bottom: 18px; z-index: 4; display: none; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--paper); font: 600 15px var(--display); white-space: nowrap; transform: translateX(-50%); pointer-events: none; }
+.stage.coach.tappable .coach-pill { display: inline-flex; animation: coachIn var(--t-3) var(--e-soft) 1.2s both; }
+.coach-pill .ic { width: 20px; height: 20px; color: var(--lime); animation: coachTap 1.2s var(--e-inout) infinite; }
+@keyframes coachIn { from { opacity: 0; transform: translate(-50%, 12px); } }
+@keyframes coachTap { 50% { transform: translateY(3px) scale(.88); } }
+.stage.coach.tappable .hot.live { stroke: rgba(255, 255, 255, .9); stroke-width: 3; stroke-dasharray: 5 9; stroke-linecap: round; animation: dash 1.4s linear infinite; }
+.howto { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.howto li { display: grid; justify-items: center; gap: 6px; padding: 12px 6px; border-radius: 16px; background: var(--gray-50); text-align: center; font-size: 14px; line-height: 1.3; color: var(--gray-600); }
+.howto .ic { width: 22px; height: 22px; color: var(--blue); }
+.howto b { display: block; font-family: var(--display); font-size: 15px; color: var(--ink); }
+.how-steps { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 14px; }
+.how-steps li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start; }
+.how-ic { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--lime); }
+.how-ic .ic { width: 22px; height: 22px; }
+.how-steps b { font-family: var(--display); font-size: 18px; }
+.how-steps p { font-size: 16px; color: var(--gray-600); }
+.who-card .avatar { flex: none; }
+.map-card { background: #E6EDFF; }
+
+@media (max-width: 820px) {
+  .hero-glo { width: 96px; left: -4px; bottom: -22px; }
+  .landing .hero-art { margin-bottom: 20px; }
+  .tour-glo { width: 66px; top: -52px; }
+  .tour-card h3 { font-size: 21px; }
+  .help-btn { width: 40px; height: 40px; }
+  .coach-pill { font-size: 13.5px; padding: 8px 13px; bottom: 10px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }

@@ -1,8 +1,8 @@
-# Seen
+# Picto
 
 **Learn a language by living it. Not by memorising it.**
 
-Seen teaches vocabulary through short, real-life scenes: ordering breakfast at a café, picking up groceries, shopping with a friend. You meet every new word inside a conversation, work it out from the picture and the context, then meet it again somewhere new. Translation is the last resort, not the first step.
+Picto teaches vocabulary through short, real-life scenes: ordering breakfast at a café, picking up groceries, shopping with a friend. You meet every new word inside a conversation, work it out from the picture and the context, then meet it again somewhere new. Translation is the last resort, not the first step.
 
 It is made for adults around 40 and up who want to talk to real people (a waiter, a taxi driver, a shopkeeper) rather than pass tests.
 
@@ -10,15 +10,17 @@ It is made for adults around 40 and up who want to talk to real people (a waiter
 
 The demo teaches Spanish, but the approach and the code are language-agnostic.
 
+Picto was first called Seen, which is why the repository and the link still say `seen`.
+
 ---
 
-## Why Seen exists
+## Why Picto exists
 
 > "I can memorise vocabulary lists, but I forget them quickly and still translate every sentence in my head."
 
 Word lists and flashcards teach words without a moment to hang them on. Most people who learned a language well picked it up from people: a friend, a shopkeeper, a song. They noted a new word down, tried it on the same person next time, and found that words that sounded like ones they already knew stuck fastest.
 
-Seen turns that experience into a product, built on **comprehensible input**: you understand the scene, so you can work out the one new word in it.
+Picto turns that experience into a product, built on **comprehensible input**: you understand the scene, so you can work out the one new word in it.
 
 ## How it works
 
@@ -31,7 +33,7 @@ Every word goes through the same loop:
 
 ### Sound bridges
 
-At the start you pick the languages you already speak. Seen uses them to show sound-alikes when you meet a new word, for example:
+At the start you pick the languages you already speak. Picto uses them to show sound-alikes when you meet a new word, for example:
 
 | Spanish | Sounds like |
 | --- | --- |
@@ -44,6 +46,7 @@ False friends get a warning too (*pan* is not a frying pan).
 
 ## What's in the demo
 
+- **A first-time guide**: Glo walks you through each screen in three or four steps the first time you see it, and the first scene shows what can be tapped. Replay it any time from the `?` button.
 - **Landing and a 3-step setup**: languages you speak (with search), the language to learn, and how you'd like to learn (or skip, and the pace adapts).
 - **Arrival**: a short animated landing in Spain.
 - **Home**: your traveller, level, words learned, words that stuck, a weekly streak with daily moods, your languages and your friends.
@@ -55,7 +58,7 @@ False friends get a warning too (*pan* is not a frying pan).
 - **Word bank**: every word with its picture, its lines and the places you met it.
 - **Profile**: an avatar editor. Earn **Rep** in scenes and spend it on hats, tops, backpacks, badges, eyewear and illustrated backgrounds. Your level follows lifetime Rep, so spending never lowers it.
 - **Friends**: filter by language, invite friends, and co-learn with friends on the same trip.
-- **Glo**: a small learning buddy that offers hints when you're stuck, and stays quiet when you're not.
+- **Glo**: a small learning buddy with moods of its own. It offers hints when you're stuck, and stays quiet when you're not.
 
 ## Design principles
 
@@ -79,7 +82,8 @@ False friends get a warning too (*pan* is not a frying pan).
 
 - Plain **HTML, CSS and JavaScript**. No framework, no build step, no dependencies.
 - All illustrations (scenes, characters, props, map, backgrounds) are **inline SVG** drawn in code, so they stay sharp at any size and can be animated.
-- Characters are built from one parametric system (skin, hair, outfit, accessories, expressions) and can blink, talk, react, wave and walk.
+- Characters are built from one rig (skin, hair, outfit, accessories) with expressions, poses and gaze driven by CSS variables. They breathe, blink, talk in time with the voice, gesture, react, wave and walk.
+- The design rules for characters, motion, locations and the map are in [DESIGN.md](DESIGN.md).
 - Hash-based routing; progress is saved in `localStorage` on your device only.
 - Fonts: [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) and [Inter](https://fonts.google.com/specimen/Inter) from Google Fonts.
 
@@ -106,10 +110,16 @@ Opening `index.html` directly from disk also mostly works, but a local server is
 ## Project structure
 
 ```
-index.html   Page shell, fonts and meta tags
-styles.css   Design tokens, layout, components, animations, responsive rules
-art.js       Illustration kit: scenes, props, icons, characters, map, backgrounds (window.ART)
-app.js       App: data, state, routing, views, scene engine, speech, Glo
+index.html      Page shell, fonts and meta tags
+styles.css      Design tokens, layout, components, responsive rules
+motion.css      Motion tokens and all character, scene and map animation
+art/kit.js      Palette, helpers, word pictures, icons
+art/glo.js      Glo, the learning buddy
+art/people.js   The people rig: traveller, friends and scene cast
+art/scenes.js   Locations: café, shop, arrival
+art/map.js      The illustrated map of Spain
+app.js          App: data, state, routing, views, scene engine, speech, the guide
+DESIGN.md       Rules for characters, motion, locations and the map
 ```
 
 ### Extend it
@@ -126,7 +136,7 @@ Everything a learner sees is driven by data at the top of `app.js`:
 | Avatar shop | `SHOP` | Items, costs and the look each one applies |
 | Friends | `FRIENDS` | Friends, their language, city and look |
 
-To add a new scene, draw it in `art.js` (an 800 × 500 SVG with a `<g class="cam">` group and `.hot` tap zones), give it camera shots in `CAMS`, then describe its moments in `SCENES`. To teach another language, swap the words, lines and voice language (`es-ES` in `Speech`).
+To add a new scene, read [DESIGN.md](DESIGN.md), draw it in `art/scenes.js` (an 800 × 500 SVG with a `<g class="cam">` group and `.hot` tap zones), give it camera shots in `CAMS`, then describe its moments in `SCENES`. To teach another language, swap the words, lines and voice language (`es-ES` in `Speech`).
 
 ## Contributing
 

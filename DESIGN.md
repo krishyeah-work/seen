@@ -182,6 +182,9 @@ Speech uses the browser's voices, with the settings learners liked from the firs
 - Fonts load without blocking the first paint (preload, then swap).
 - If a page fails to draw, show the "Oops, this page didn't load" card with Try again and Back to the start, never a white screen.
 - Places that exist on the week list but have no scene yet must be treated as closed, not looked up.
+- Entrance animations that start content invisible need a safety net: once the entrance would have finished, remove the entrance class so the page shows even if a browser paused the animation.
+- State classes for whole pages use specific names (`entering`, not `intro`), and component styles are scoped to their parent (`.stage > .intro`). A shared name once hid the whole first page.
+- Test first visits in a fresh session (clear sessionStorage and localStorage), and check that content is visible, not just present.
 
 ## 9. Interface motion
 
@@ -230,3 +233,4 @@ One-off exceptions. Add here **only when asked** (see "How to use this file").
 - 2026-11: Speakers point at the answer when the learner struggles; Chrome's Google voice ranked first again.
 - 2026-11: Desktop voices restored to the original settings; iOS keeps its own quality ranking.
 - 2026-11: Fixed blank Spanish home after finishing the café and the shop; loading splash, error card and non-blocking fonts added.
+- 2026-11: Fixed blank first page for new visitors (class clash between the landing entrance and the scene overlay); entrance safety net added.

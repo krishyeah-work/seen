@@ -832,7 +832,7 @@
     let first = false;
     try { first = !sessionStorage.getItem('picto-intro'); sessionStorage.setItem('picto-intro', '1'); } catch (e) { /* ignore */ }
     first = first && !reduced;
-    app.innerHTML = `<div class="view landing${first ? ' intro' : ''}">
+    app.innerHTML = `<div class="view landing${first ? ' entering' : ''}">
       ${logoBar()}
       <section class="wrap hero hero-simple">
         <div class="hero-copy">
@@ -848,6 +848,9 @@
       </section>
       ${footer()}
     </div>`;
+    // Safety net: the entrance starts things invisible, so once it would have finished, drop it.
+    // If a browser paused the animation (background tab, in-app browser), the page still shows.
+    if (first) later(() => { const v = $('.landing'); if (v) v.classList.remove('entering'); }, 2400);
     const hero = $('.hero-stage');
     ['cup', 'bread', 'glass'].forEach((p) => later(() => propIn(hero, p), first ? 900 : 0));
     setCam(hero, 'hero', true);

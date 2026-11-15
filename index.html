@@ -9,18 +9,35 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M29 84 L15 111 L48 99 Z' fill='%23C6F432' stroke='%230B0B0B' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M60 22 C82 22 99 38 101 62 C103 88 85 106 60 106 C35 106 17 88 19 62 C21 38 38 22 60 22 Z' fill='%23C6F432' stroke='%230B0B0B' stroke-width='6'/%3E%3Cellipse cx='46' cy='58' rx='11' ry='13' fill='%23fff' stroke='%230B0B0B' stroke-width='4'/%3E%3Cellipse cx='74' cy='58' rx='11' ry='13' fill='%23fff' stroke='%230B0B0B' stroke-width='4'/%3E%3Ccircle cx='48' cy='60' r='6' fill='%230B0B0B'/%3E%3Ccircle cx='76' cy='60' r='6' fill='%230B0B0B'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5.4">
-  <link rel="stylesheet" href="motion.css?v=5.4">
+  <!-- Fonts load without blocking the first paint: a slow font server can't leave the page white -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript>
+  <style>
+    .boot { position: fixed; inset: 0; display: grid; place-items: center; background: #fff; font: 600 16px system-ui, sans-serif; color: #5C5C56; }
+    .boot-in { display: grid; justify-items: center; gap: 14px; text-align: center; padding: 24px; }
+    .boot-dot { width: 44px; height: 44px; border-radius: 50%; background: #C6F432; border: 4px solid #0B0B0B; animation: bootPulse 1s ease-in-out infinite alternate; }
+    .boot button { margin-top: 6px; padding: 12px 22px; border: 0; border-radius: 999px; background: #0B0B0B; color: #fff; font: inherit; cursor: pointer; }
+    @keyframes bootPulse { to { transform: scale(.82); } }
+  </style>
+  <link rel="stylesheet" href="styles.css?v=5.5">
+  <link rel="stylesheet" href="motion.css?v=5.5">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app"><div class="boot" id="boot"><div class="boot-in"><div class="boot-dot"></div><span>Loading Picto…</span></div></div></div>
+  <script>
+    // Boot guard: if the app hasn't drawn after a few seconds (a script failed to load, a slow network),
+    // offer a reload instead of an endless loading screen.
+    setTimeout(function () {
+      var b = document.getElementById('boot');
+      if (b) b.innerHTML = '<div class="boot-in"><span>This is taking longer than usual.</span><button type="button" onclick="location.reload()">Reload</button></div>';
+    }, 8000);
+  </script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="art/kit.js?v=5.4"></script>
-  <script src="art/glo.js?v=5.4"></script>
-  <script src="art/people.js?v=5.4"></script>
-  <script src="art/scenes.js?v=5.4"></script>
-  <script src="art/map.js?v=5.4"></script>
-  <script src="app.js?v=5.4"></script>
+  <script src="art/kit.js?v=5.5"></script>
+  <script src="art/glo.js?v=5.5"></script>
+  <script src="art/people.js?v=5.5"></script>
+  <script src="art/scenes.js?v=5.5"></script>
+  <script src="art/map.js?v=5.5"></script>
+  <script src="app.js?v=5.5"></script>
 </body>
 </html>

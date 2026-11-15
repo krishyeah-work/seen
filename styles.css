@@ -1424,6 +1424,13 @@ body.touring { overflow: hidden; }
   .howto li { padding: 8px 4px; font-size: 12.5px; }
   .coach-pill { bottom: 8px; }
 }
+/* Error fallback page */
+.crash-card { display: grid; justify-items: center; gap: 12px; max-width: 520px; margin: 8vh auto 0; padding: 40px 28px; border-radius: var(--r-xl); background: var(--gray-50); text-align: center; }
+.crash-glo { width: 120px; height: auto; }
+.crash-card h1 { font-size: clamp(28px, 4vw, 40px); }
+.crash-card p { color: var(--gray-600); }
+.crash-acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
 }

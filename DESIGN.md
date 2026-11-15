@@ -176,6 +176,13 @@ Speech uses the browser's voices, with the settings learners liked from the firs
 - **iPhone and iPad:** never use novelty voices (Eddy, Flo, Grandpa and others); rank voices by quality (enhanced or premium first). With no male voice, use the best voice at pitch 0.82, because a heavy drop sounds robotic there. Speech is unlocked on the first tap.
 - Pre-recorded voices were tried (Piper) and rejected: too fast and less warm than the browser voices. Don't switch to recorded audio without asking.
 
+## Loading and errors
+
+- The page is never blank: a small "Loading Picto…" splash shows until the app draws, and offers a reload after a few seconds if it never does.
+- Fonts load without blocking the first paint (preload, then swap).
+- If a page fails to draw, show the "Oops, this page didn't load" card with Try again and Back to the start, never a white screen.
+- Places that exist on the week list but have no scene yet must be treated as closed, not looked up.
+
 ## 9. Interface motion
 
 - **Pages** fade and rise 14 px (`viewIn`). Pages with a fixed footer only fade.
@@ -222,3 +229,4 @@ One-off exceptions. Add here **only when asked** (see "How to use this file").
 - 2026-11: Glo moved into the scene top bar and made always tappable; no Glo on the landing; bubble scales with the picture; compact phone scene layout; escalating help for confused tapping; better voice choice on iPhone.
 - 2026-11: Speakers point at the answer when the learner struggles; Chrome's Google voice ranked first again.
 - 2026-11: Desktop voices restored to the original settings; iOS keeps its own quality ranking.
+- 2026-11: Fixed blank Spanish home after finishing the café and the shop; loading splash, error card and non-blocking fonts added.

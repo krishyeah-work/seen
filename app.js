@@ -627,7 +627,8 @@
     else if (a && a !== 'none') pose(m.who, a, Math.max(2000, m.line.length * 80 + 800));
   }
   const metaRow = (meta) => meta.map(([i, t]) => `<span>${icon(i)}${t}</span>`).join('');
-  const sceneOpen = (id) => { const d = SCENES[id]; return !d.requires || state.done[d.requires]; };
+  // Scenes that aren't built yet have no SCENES entry: they're never open.
+  const sceneOpen = (id) => { const d = SCENES[id]; return !!d && (!d.requires || !!state.done[d.requires]); };
 
   /* ================= Shell & modals ================= */
   function shell(active, inner) {
@@ -2010,6 +2011,18 @@
     [/^#\/scene\/(\w+)$/, viewScene, true, 'scene'],
     [/^#\/done\/(\w+)$/, viewDone, true, 'done']
   ];
+  // Never leave the learner on a blank page: explain, and offer a way back.
+  function showCrash(err) {
+    console.error(err);
+    document.body.classList.remove('in-scene', 'touring');
+    document.body.classList.add('no-tabs');
+    app.innerHTML = `<div class="view crash wrap">${logoBar()}
+      <section class="crash-card">${glo({ mood: 'soft', cls: 'crash-glo' })}
+        <h1>Oops, this page didn’t load</h1>
+        <p>Your progress is safe. Try again, or go back to the start.</p>
+        <div class="crash-acts"><button type="button" class="btn" onclick="location.reload()">Try again</button><a class="btn btn-ghost" href="#/">Back to the start</a></div>
+      </section></div>`;
+  }
   function router() {
     const h = location.hash || '#/';
     clearTimers();
@@ -2025,7 +2038,7 @@
         if (needsSetup && !state.learning) { location.hash = '#/start'; return; }
         document.body.dataset.route = name;
         window.scrollTo(0, 0);
-        fn(...m.slice(1));
+        try { fn(...m.slice(1)); } catch (err) { showCrash(err); }
         return;
       }
     }

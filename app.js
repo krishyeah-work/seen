@@ -848,9 +848,15 @@
       </section>
       ${footer()}
     </div>`;
-    // Safety net: the entrance starts things invisible, so once it would have finished, drop it.
-    // If a browser paused the animation (background tab, in-app browser), the page still shows.
-    if (first) later(() => { const v = $('.landing'); if (v) v.classList.remove('entering'); }, 2400);
+    // Safety net: the entrance starts things invisible. If a browser paused it (background tab,
+    // in-app browser), show the page without animation. If it played normally, leave everything alone.
+    if (first) later(() => {
+      const v = $('.landing.entering');
+      if (!v || !v.getAnimations) return;
+      let stuck = false;
+      try { stuck = v.getAnimations({ subtree: true }).some((a) => /^(in[A-Z]|fadeOnly)/.test(a.animationName || '') && a.playState !== 'finished'); } catch (e) { return; }
+      if (stuck) { v.classList.add('settled'); v.classList.remove('entering'); }
+    }, 2600);
     const hero = $('.hero-stage');
     ['cup', 'bread', 'glass'].forEach((p) => later(() => propIn(hero, p), first ? 900 : 0));
     setCam(hero, 'hero', true);
@@ -1289,12 +1295,20 @@
       </div>
     </section>`;
   }
+  // Re-draw the current page in place (a filter, a new pace) without replaying its entrance or jumping the scroll.
+  function rerender(fn) {
+    const y = window.scrollY;
+    fn();
+    $$('.view', app).forEach((v) => v.classList.add('settled'));
+    window.scrollTo(0, y);
+  }
   function walkRoad() {
     const w = $('#walker');
     if (!w) return;
     const to = parseFloat(w.dataset.to), dist = to - 12;
     const go = () => {
       const fig = w.querySelector('svg');
+      if (w.closest('.settled')) { w.style.left = to + '%'; return; }
       if (dist < 1 || reduced) { w.style.left = to + '%'; later(() => wave(w), 300); return; }
       const dur = Math.max(1.4, dist * 0.085);
       w.style.setProperty('--walk', dur + 's');
@@ -1848,7 +1862,8 @@
     },
     pickLearn() {
       UI.learn = UI.learn ? null : 'es';
-      $('#learnList').innerHTML = learnList();
+      const on = !!UI.learn, el = $('.learn[data-action="pickLearn"]');
+      if (el) { el.classList.toggle('active', on); el.setAttribute('aria-pressed', on); }
       const b = $('[data-action="toGoal"]');
       b.disabled = !UI.learn;
       b.innerHTML = `${UI.learn ? 'Continue with Spanish' : 'Choose a language'} ${icon('arrowRight')}`;
@@ -1877,6 +1892,7 @@
     city(el) {
       UI.city = el.dataset.id;
       const box = $('.map-box');
+      box.classList.add('settled');
       box.innerHTML = spain(cityStates(), UI.city, null, isMobile() ? 15 : 13) + mapPins();
       $('#cityCard').innerHTML = cityCard(UI.city);
       const again = $(`.city[data-id="${UI.city}"]`);
@@ -1897,10 +1913,10 @@
       state.colearn[f.id] = true;
       save();
       toast(`Shopping with ${f.nm} added to your week`);
-      if (location.hash === '#/today') { viewToday(); const wk = $('.week'); if (wk) wk.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }
+      if (location.hash === '#/today') { rerender(viewToday); const wk = $('.week'); if (wk) wk.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }
       else router();
     },
-    ffilter(el) { UI.ffilter = el.dataset.f; viewFriends(); },
+    ffilter(el) { UI.ffilter = el.dataset.f; rerender(viewFriends); },
     pfTab(el) { UI.tab = el.dataset.tab; pfRefresh(false); },
     pfItem(el) {
       const it = shopItem(UI.tab, el.dataset.id);
@@ -1926,9 +1942,7 @@
       state.pace = el.dataset.v;
       save();
       closeDD();
-      const y = window.scrollY;
-      viewToday();
-      window.scrollTo(0, y);
+      rerender(viewToday);
       toast(`Pace set to ${PACES[state.pace].label}`);
     },
     sceneStart() { $('#intro').classList.add('gone'); Glo.hide(); nextMoment(); },
@@ -1957,7 +1971,7 @@
       if (!state.sound) Speech.stop();
       toast(state.sound ? 'Voices on' : 'Voices off. Tap any speaker to listen.');
     },
-    filter(el) { UI.filter = el.dataset.f; viewWords(); },
+    filter(el) { UI.filter = el.dataset.f; rerender(viewWords); },
     revealWord(el) { $('#reveal').innerHTML = `<p>In English</p><span class="en">${WORDS[el.dataset.id].en}</span>`; },
     reset() {
       try { localStorage.removeItem(KEY); localStorage.removeItem(OLD_KEY); sessionStorage.removeItem('picto-intro'); } catch (e) { /* ignore */ }
@@ -1993,7 +2007,7 @@
     }
   });
   document.addEventListener('input', (e) => {
-    if (e.target.id === 'langSearch') { UI.search = e.target.value; $('#learnList').innerHTML = learnList(); }
+    if (e.target.id === 'langSearch') { UI.search = e.target.value; const l = $('#learnList'); l.classList.add('settled'); l.innerHTML = learnList(); }
   });
 
   /* ================= Router ================= */

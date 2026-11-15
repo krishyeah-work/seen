@@ -269,3 +269,7 @@
 @keyframes inCard { from { opacity: 0; transform: translateY(28px) scale(.955); } }
 @keyframes inGlo { 0% { opacity: 0; transform: translateY(60px) scale(.7, .5); } 60% { opacity: 1; transform: translateY(-12px) scale(.96, 1.06); } 82% { transform: translateY(0) scale(1.06, .94); } 100% { transform: none; } }
 @media (max-width: 820px) { .landing.entering .float, .landing.entering .float.f3 { animation: inPop var(--t-3) var(--e-spring) 1.25s backwards; } }
+
+/* Settled: a page or part of one that is being re-drawn (a filter, a new pace, a city tap, a search)
+   keeps still instead of replaying its entrance. */
+.view.settled, .settled .city, .settled .start > *, .settled .lang, .settled .learn, .settled .gopt, .settled .start-foot, .settled .pf-fig { animation: none; }

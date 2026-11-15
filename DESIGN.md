@@ -182,7 +182,7 @@ Speech uses the browser's voices, with the settings learners liked from the firs
 - Fonts load without blocking the first paint (preload, then swap).
 - If a page fails to draw, show the "Oops, this page didn't load" card with Try again and Back to the start, never a white screen.
 - Places that exist on the week list but have no scene yet must be treated as closed, not looked up.
-- Entrance animations that start content invisible need a safety net: once the entrance would have finished, remove the entrance class so the page shows even if a browser paused the animation.
+- Entrance animations that start content invisible need a safety net, but it must only step in if the entrance really stalled (its animations never finished). Swapping classes on a page that animated normally replays the page fade and looks like a reload.
 - State classes for whole pages use specific names (`entering`, not `intro`), and component styles are scoped to their parent (`.stage > .intro`). A shared name once hid the whole first page.
 - Test first visits in a fresh session (clear sessionStorage and localStorage), and check that content is visible, not just present.
 
@@ -191,6 +191,7 @@ Speech uses the browser's voices, with the settings learners liked from the firs
 - **Pages** fade and rise 14 px (`viewIn`). Pages with a fixed footer only fade.
 - **Landing, first open:** logo, headline lines (rising from a mask), sentence, button, picture, then Glo hops in and waves and two floating notes pop in. The notes never contain words taught in a scene. Once per visit; afterwards the plain page fade.
 - **Setup steps:** the page fades, the content rises in reading order, the choices follow one by one, and the footer slides up. Glo's dock stays hidden until setup is done.
+- **Entrances play once.** Selecting an option updates it in place; never rebuild a list to change one item. When part of a page must be redrawn (a filter, a new pace, a map city, a search), use `rerender()` or the `settled` class so nothing replays its entrance and the scroll position stays put.
 - **Cards** lift 2 to 3 px on hover; buttons press down.
 - **Buttons follow logic.** A button that moves the learner forward is disabled until the choice it depends on is made, and the text beside it says what is missing. Nothing is pre-selected on the learner's behalf. A locked action shows why it is locked instead of a button that only produces a message.
 - **The guide** (spotlight tour): the spotlight glides between targets, the card fades and swaps, Glo points at the target. At most four steps per tour, always skippable, replayable from the `?` button.
@@ -234,3 +235,4 @@ One-off exceptions. Add here **only when asked** (see "How to use this file").
 - 2026-11: Desktop voices restored to the original settings; iOS keeps its own quality ranking.
 - 2026-11: Fixed blank Spanish home after finishing the café and the shop; loading splash, error card and non-blocking fonts added.
 - 2026-11: Fixed blank first page for new visitors (class clash between the landing entrance and the scene overlay); entrance safety net added.
+- 2026-11: No more second fade after the first-page entrance; selecting, filtering, tapping cities and changing pace no longer replay entrances.

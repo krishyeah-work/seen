@@ -18,9 +18,11 @@
 
   function avBack(c) {
     let s = '';
-    if (c.pack !== 'none') s += `<path d="M53.5 58 V52 Q60 46.5 66.5 52 V58" fill="none" stroke="${INK}" stroke-width="2.4"/><rect x="27.6" y="78" width="7" height="22" rx="3.5" fill="${shade(c.packC, -0.14)}" ${TF}/><rect x="85.4" y="78" width="7" height="22" rx="3.5" fill="${shade(c.packC, -0.14)}" ${TF}/><rect x="30.5" y="57" width="59" height="52" rx="15" fill="${c.packC}" ${TB}/><rect x="30.5" y="57" width="59" height="13" rx="6.5" fill="${shade(c.packC, -0.12)}" ${TB}/>`;
+    if (c.pack === 'pack') s += `<path d="M53.5 58 V52 Q60 46.5 66.5 52 V58" fill="none" stroke="${INK}" stroke-width="2.4"/><rect x="27.6" y="78" width="7" height="22" rx="3.5" fill="${shade(c.packC, -0.14)}" ${TF}/><rect x="85.4" y="78" width="7" height="22" rx="3.5" fill="${shade(c.packC, -0.14)}" ${TF}/><rect x="30.5" y="57" width="59" height="52" rx="15" fill="${c.packC}" ${TB}/><rect x="30.5" y="57" width="59" height="13" rx="6.5" fill="${shade(c.packC, -0.12)}" ${TB}/>`;
     let hb = '';
     if (c.hair === 'long') hb += `<path d="M42 30 C40 14 52 8 60 8 C68 8 80 14 78 30 L79 60 Q79 64.5 74 64.5 H70 Q68.4 56 66 52 H54 Q51.6 56 50 64.5 H46 Q41 64.5 41 60 Z" fill="${c.hairC}" ${TB}/>`;
+    if (c.hair === 'bob') hb += `<path d="M40.6 30 C40 14 51 8 60 8 C69 8 80 14 79.4 30 L80.6 51 Q80.6 56.4 75 56.4 H45 Q39.4 56.4 39.4 51 Z" fill="${c.hairC}" ${TB}/>`;
+    if (c.hair === 'mid' && c.cap === 'none') hb += `<path d="M41.8 30 C41 15 50 8 60 8 C70 8 79 15 78.2 30 L78.4 39.6 H41.6 Z" fill="${c.hairC}" ${TB}/>`;
     if (c.hair === 'bun' && c.cap === 'none') hb += `<circle cx="60" cy="9.5" r="7.2" fill="${c.hairC}" ${TB}/><path d="M56.4 6.6 Q59.6 4.4 63 5.8" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.6" stroke-linecap="round"/>`;
     if (hb) s += `<g class="av-head" style="${HEAD_O}"><g class="av-head-i" style="${HEAD_O}">${hb}</g></g>`;
     if (c.top === 'hoodie') s += `<path d="M45 64 Q42 50 52 48.5 H68 Q78 50 75 64 Z" fill="${shade(c.topC, 0.18)}" ${TB}/>`;
@@ -42,24 +44,28 @@
     // One shade (right side and hem) and one soft highlight (left shoulder): the house shading rule.
     s += `<path d="M71 59.4 Q80 61 80 72 L78.5 113 Q78.5 116 75.5 116 H71 Q73.6 92 71 59.4 Z" fill="${INK}" opacity=".13"/><path d="M41.7 109 Q60 112.6 78.4 109 L78.5 113 Q78.5 116 75.5 116 H44.5 Q41.5 116 41.5 113 Z" fill="${INK}" opacity=".1"/><path d="M44.6 68 Q45.4 62.6 51 61.6" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.2" stroke-linecap="round"/>`;
     s += `<path d="${TORSO}" fill="none" ${TB}/>`;
-    if (c.top === 'tee' || c.top === 'stripes') s += `<path d="M53.4 58.7 Q60 64.8 66.6 58.7" fill="${c.skin}" ${TF}/>`;
+    if (c.top === 'cardigan') s += `<path d="M53.6 58.8 Q60 63.6 66.4 58.8 L63.6 116 H56.4 Z" fill="#fff" ${TF}/>${[76, 88, 100].map((y) => `<circle cx="52.6" cy="${y}" r="1.3" fill="${INK}"/>`).join('')}`;
+    if (c.top === 'tee' || c.top === 'stripes' || c.top === 'cardigan') s += `<path d="M53.4 58.7 Q60 64.8 66.6 58.7" fill="${c.skin}" ${TF}/>`;
     if (c.top === 'hoodie') s += `<path d="M51 58.6 Q60 69 69 58.6" fill="${shade(c.topC, 0.18)}" ${TF}/><path d="M56 64.5 V76 M64 64.5 V76" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M48 97 H72 L70.5 107 Q60 109 49.5 107 Z" fill="${shade(c.topC, 0.1)}" ${TF}/>`;
     if (c.top === 'jacket') s += `<path d="M53 58.7 L60 81 L67 58.7 Z" fill="#fff" ${TF}/><path d="M60 81 V116" stroke="${INK}" stroke-width="1.8"/><path d="M52.6 59 L56.6 70 L51.6 74.6 M67.4 59 L63.4 70 L68.4 74.6" fill="none" ${TF}/><circle cx="64" cy="92" r="1.3" fill="${INK}"/><circle cx="64" cy="102" r="1.3" fill="${INK}"/>`;
     if (c.apron) s += `<path d="M47.6 70 H72.4 L73.6 116 H46.4 Z" fill="${c.apron}" ${TF}/><path d="M68.6 70 H72.4 L73.6 116 H69.8 Z" fill="${INK}" opacity=".1"/><path d="M49.4 70.5 L54 59.2 M70.6 70.5 L66 59.2" stroke="${INK}" stroke-width="1.7" fill="none"/><rect x="53.5" y="84" width="13" height="9" rx="2.5" fill="none" ${TF}/><path d="M46.6 96 H42 M73.4 96 H78" stroke="${INK}" stroke-width="1.5" stroke-linecap="round"/>`;
-    if (c.pack !== 'none' && !c.apron) {
-      const strap = (x1, x2) => `<path d="M${x1} 59.6 L${x2} 99" stroke="${INK}" stroke-width="7.6" stroke-linecap="round"/><path d="M${x1} 59.6 L${x2} 99" stroke="${c.packC}" stroke-width="3.8" stroke-linecap="round"/>`;
-      s += strap(48.6, 47.6) + strap(71.4, 72.4);
-    }
+    const strap = (x1, y1, x2, y2, w = 7.6) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${INK}" stroke-width="${w}" stroke-linecap="round"/><path d="M${x1} ${y1} L${x2} ${y2}" stroke="${c.packC}" stroke-width="${w / 2}" stroke-linecap="round"/>`;
+    if (c.pack === 'pack' && !c.apron) s += strap(48.6, 59.6, 47.6, 99) + strap(71.4, 59.6, 72.4, 99);
+    // Tote: one strap over the shoulder, the bag at the hip. Crossbody: a strap across the chest, a small bag in front.
+    if (c.pack === 'tote' && !c.apron) s += `${strap(48.6, 59.6, 43, 91, 6.6)}<path d="M26 90 H50 L48.4 117 Q48.2 119.6 45.6 119.6 H30.4 Q27.8 119.6 27.6 117 Z" fill="${c.packC}" ${TB}/><path d="M42.4 90.6 H49.6 L48.2 117 Q48 119.4 45.6 119.4 H43 Q44.6 104 42.4 90.6 Z" fill="${INK}" opacity=".12"/>`;
+    if (c.pack === 'cross' && !c.apron) s += `${strap(72, 59.6, 49, 99, 6)}<rect x="43" y="96" width="19" height="15" rx="4.5" fill="${c.packC}" ${TF}/><path d="M43 101.6 Q52.5 106 62 101.6" fill="none" ${TF}/><circle cx="52.5" cy="104.2" r="1.3" fill="${INK}"/>`;
     const bx = 60, by = 86;
     if (c.badge === 'star') s += `<circle cx="${bx}" cy="${by}" r="5.2" fill="${LIME}" ${TF}/><polygon points="${starPts(bx, by, 3.6)}" fill="${INK}"/>`;
     if (c.badge === 'heart') s += `<circle cx="${bx}" cy="${by}" r="5.2" fill="#fff" ${TF}/><path d="M60 89 C56.6 86.6 56.4 84.6 57.7 83.7 C58.7 83 59.6 83.6 60 84.4 C60.4 83.6 61.3 83 62.3 83.7 C63.6 84.6 63.4 86.6 60 89 Z" fill="${PINK}"/>`;
     if (c.badge === 'spain') s += `<circle cx="${bx}" cy="${by}" r="5.2" fill="#C60B1E"/><rect x="54.8" y="83.7" width="10.4" height="4.6" fill="#FFC400"/><circle cx="${bx}" cy="${by}" r="5.2" fill="none" ${TF}/>`;
+    if (c.badge === 'flower') s += `<circle cx="${bx}" cy="${by}" r="5.2" fill="#fff" ${TF}/>${[0, 72, 144, 216, 288].map((a) => `<circle cx="${(bx + Math.cos(((a - 90) * Math.PI) / 180) * 2.3).toFixed(2)}" cy="${(by + Math.sin(((a - 90) * Math.PI) / 180) * 2.3).toFixed(2)}" r="1.6" fill="${PINK}"/>`).join('')}<circle cx="${bx}" cy="${by}" r="1.3" fill="#F5C542"/>`;
+    if (c.badge === 'sun') s += `<circle cx="${bx}" cy="${by}" r="5.2" fill="${BLUE}" ${TF}/><path d="M60 81.9 V83 M60 89 V90.1 M55.9 86 H57 M63 86 H64.1 M57.1 83.1 l.8 .8 M62.1 88.1 l.8 .8 M62.9 83.1 l-.8 .8 M57.9 88.1 l-.8 .8" stroke="#FFD23F" stroke-width="1" stroke-linecap="round"/><circle cx="${bx}" cy="${by}" r="2" fill="#FFD23F"/>`;
     return s;
   }
   // Two-part arm with a hand. Shoulder, elbow and wrist are separate pivots, so poses are just three angles.
   function avArm(c, side, wave) {
     const l = side === 'l', g = ARM[side], k = l ? 1 : -1, { sy, ey, wy } = ARM, { sx, ex, wx } = g;
-    const long = c.top === 'hoodie' || c.top === 'jacket';
+    const long = c.top === 'hoodie' || c.top === 'jacket' || c.top === 'cardigan';
     const fist = `<ellipse cx="${wx}" cy="${wy + 3.8}" rx="4.5" ry="4.3" fill="${c.skin}" ${TF}/>`;
     const hand = `<g class="hand" style="transform-origin:${wx}px ${wy}px">
           <g class="h-open"><ellipse cx="${wx + 3.5 * k}" cy="${wy + 2.6}" rx="1.9" ry="3.1" transform="rotate(${-26 * k} ${wx + 3.5 * k} ${wy + 2.6})" fill="${c.skin}" ${TF}/><ellipse cx="${wx}" cy="${wy + 4.6}" rx="4.5" ry="5.1" fill="${c.skin}" ${TF}/><path d="M${wx - 1.4} ${wy + 7.4} v1.9 M${wx + 1.4} ${wy + 7.4} v1.9" stroke="${shade(c.skin, -0.35)}" stroke-width="1" stroke-linecap="round"/></g>
@@ -108,6 +114,7 @@
         </g>`;
     if (c.tache) s += `<path d="M53.6 44 Q56.8 41.4 60 43.2 Q63.2 41.4 66.4 44 Q63.4 46.4 60 45 Q56.6 46.4 53.6 44 Z" fill="${br}" ${TF}/>`;
     if (c.eyes === 'glasses') s += `<g fill="none" stroke="${INK}" stroke-width="1.9"><rect x="47.2" y="30.6" width="11.6" height="10.2" rx="4.2"/><rect x="61.2" y="30.6" width="11.6" height="10.2" rx="4.2"/><path d="M58.8 34.6 Q60 33.6 61.2 34.6"/></g><path d="M49.6 33 l2 -1 M63.6 33 l2 -1" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>`;
+    if (c.eyes === 'round') s += `<g fill="none" stroke="#C9952E" stroke-width="1.6"><circle cx="53" cy="35.8" r="6"/><circle cx="67" cy="35.8" r="6"/><path d="M59 35.2 Q60 34.2 61 35.2"/></g><path d="M49.8 33 l2 -1.2 M63.8 33 l2 -1.2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>`;
     if (c.eyes === 'shades') s += `<rect x="46.6" y="30.8" width="12.4" height="9.8" rx="4" fill="${INK}"/><rect x="61" y="30.8" width="12.4" height="9.8" rx="4" fill="${INK}"/><path d="M59 34.6 H61" stroke="${INK}" stroke-width="1.9"/><path d="M49.2 33.6 h4 M63.6 33.6 h4" stroke="${LIME}" stroke-width="1.6" stroke-linecap="round"/>`;
     return s;
   }
@@ -120,6 +127,7 @@
     if (c.beard) s += `<path d="M44.4 36 C44.6 48.6 51 55.6 60 55.6 C69 55.6 75.4 48.6 75.6 36 C73.4 43 69.4 45.6 65.2 45 Q60 43.2 54.8 45 C50.6 45.6 46.6 43 44.4 36 Z" fill="${hc}" ${TF}/>`;
     s += `<g class="av-face">${avFace(c, id)}</g>`;
     const locks = `<path d="M45.2 24 C40 33 41.6 50 40.4 62.4 Q44.6 66.6 49.2 62.4 C47.4 52 46.6 41 47.8 29 Z" fill="${hc}" ${TB}/><path d="M74.8 24 C80 33 78.4 50 79.6 62.4 Q75.4 66.6 70.8 62.4 C72.6 52 73.4 41 72.2 29 Z" fill="${hc}" ${TB}/>`;
+    const bobLocks = `<path d="M45.2 24 C41 32 41.6 44 40.8 53.4 Q44.6 56.6 49 53.4 C47.6 46 47 38 47.8 29 Z" fill="${hc}" ${TB}/><path d="M74.8 24 C79 32 78.4 44 79.2 53.4 Q75.4 56.6 71 53.4 C72.4 46 73 38 72.2 29 Z" fill="${hc}" ${TB}/>`;
     const shine = `<path d="M52 14.8 Q58 12.6 65 13.8" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="2" stroke-linecap="round"/>`;
     if (!hat) {
       if (c.hair === 'short') s += `<path d="M43.2 34 C41 18 50.5 9.6 61 10 C72 10.4 79.4 18 77 33.4 C75.4 26.2 72.2 22.4 67.2 21.4 C62 24.6 53 24.8 47.2 22.8 C45.2 26 44.2 29.4 43.2 34 Z" fill="${hc}" ${TB}/>${shine}`;
@@ -127,16 +135,22 @@
       if (c.hair === 'curly') s += `<path d="M42.6 34 C37.6 29 40 20.4 46 19.4 C46.4 12.4 54 8.6 59.4 11.8 C64.6 8 72.6 10.4 73.8 16.6 C79.8 18 82.4 26 78 32.6 C75.6 26.6 70.6 24.4 65.6 25.4 C60.6 22.4 54 23.4 50.2 26.4 C46.8 26.6 44.2 29 42.6 34 Z" fill="${hc}" ${TB}/><path d="M50 15.6 Q53 13 56.4 14.4 M63.6 13.4 Q66.6 12.4 69 14.6" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1.8" stroke-linecap="round"/>`;
       if (c.hair === 'bun') s += `<path d="M43.2 34 C41.4 17.6 50 10.2 60 10.2 C70 10.2 78.6 17.6 76.8 34 C75 25.4 70.4 20.4 63.4 19.6 Q60 22.4 56.6 19.6 C49.6 20.4 45 25.4 43.2 34 Z" fill="${hc}" ${TB}/>${shine}`;
       if (c.hair === 'long') s += `${locks}<path d="M43 34 C41 16.4 51 9.6 61 10 C71 10.4 79 17 77 34 C74.4 24.6 68.4 19.8 60.4 19.2 C55 22.2 49 26.4 43 34 Z" fill="${hc}" ${TB}/>${shine}`;
+      if (c.hair === 'bob') s += `${bobLocks}<path d="M43 34 C41 16.4 51 9.6 61 10 C71 10.4 79 17 77 34 C74.4 24.6 68.4 19.8 60.4 19.2 C55 22.2 49 26.4 43 34 Z" fill="${hc}" ${TB}/>${shine}`;
+      if (c.hair === 'mid') s += `<path d="M42.2 39.6 C38.4 20 48 7.6 61 7.8 C74 8 82.4 20 77.8 39.6 C76.6 33.6 75.6 29 73.4 25.4 C70 22 64.6 21.2 59.6 22.6 C55.4 25.6 50.6 27.6 46.6 27.4 C44.6 31 43.2 35.2 42.2 39.6 Z" fill="${hc}" ${TB}/><path d="M50.6 26.4 Q56.6 25.4 61 21.8" fill="none" stroke="${INK}" stroke-width="1.5" stroke-linecap="round"/>${shine}`;
     } else if (c.hair === 'long') s += locks;
+    else if (c.hair === 'bob') s += bobLocks;
     if (c.cap === 'cap') s += `<g transform="translate(0 -1.6)"><path d="M43.6 24 C43.6 11 51 4.6 60 4.6 C69 4.6 76.4 11 76.4 24 Z" fill="${c.capC}" ${TB}/><path d="M60 5.2 V23" stroke="${INK}" stroke-width="1.4" opacity=".3"/><path d="M48 12 Q52 7.6 57 6.6" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/><path d="M41.6 20.6 Q60 25.4 78.4 20.6 Q81.2 23 78.4 25.4 Q60 30 41.6 25.4 Q38.8 23 41.6 20.6 Z" fill="${shade(c.capC)}" ${TB}/><circle cx="60" cy="5" r="2.2" fill="${c.capC}" ${TF}/></g>`;
     if (c.cap === 'beanie') s += `<path d="M44 25 C43.6 11 51 5.4 60 5.4 C69 5.4 76.4 11 76 25 Z" fill="${c.capC}" ${TB}/><path d="M50 21 V25.6 M55 20.4 V26.4 M60 20.2 V26.6 M65 20.4 V26.4 M70 21 V25.6" stroke="${INK}" stroke-width="1.1" opacity=".35"/><rect x="42" y="19.4" width="36" height="7.4" rx="3.7" fill="${shade(c.capC)}" ${TB}/><circle cx="60" cy="4.6" r="4.2" fill="#fff" ${TF}/>`;
+    if (c.cap === 'beret') s += `<path d="M43.2 25.4 Q60 19.8 76.8 25.4 L76.4 20.6 Q60 15.4 43.6 20.6 Z" fill="${shade(c.capC)}" ${TB}/><path d="M41 17 C40 8 52 4 63 4.4 C75 4.8 84 9.6 81 16.4 C79.4 20 70 21.2 60 21 C50 20.8 41.6 20.6 41 17 Z" fill="${c.capC}" ${TB}/><path d="M62.4 4.6 L63.6 1" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"/><path d="M48 9.6 Q54 6.4 61 6.2" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/>`;
     if (c.cap === 'sunhat') s += `<ellipse cx="60" cy="21.5" rx="29" ry="5.6" fill="${c.capC}" ${TB}/><path d="M47.4 22 C47.4 9 53 4.4 60 4.4 C67 4.4 72.6 9 72.6 22 Z" fill="${c.capC}" ${TB}/><rect x="47.8" y="16.2" width="24.4" height="4.4" fill="${PINK}"/>`;
     if (c.eyes === 'goggles') s += `<rect x="43" y="19.6" width="34" height="3.6" rx="1.8" fill="${INK}"/><circle cx="52.4" cy="21.4" r="5" fill="#A8E6FF" ${TF}/><circle cx="67.6" cy="21.4" r="5" fill="#A8E6FF" ${TF}/><path d="M50.4 19.8 l2 -1.4 M65.6 19.8 l2 -1.4" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>`;
     return s + '</g></g>';
   }
+  // A salon cape over the shoulders and arms (the learner in the hairdresser's chair).
+  const avCape = () => `<path d="M51.5 57 Q60 62 68.5 57 Q83 59.5 87 78 L91 120 H29 L33 78 Q37 59.5 51.5 57 Z" fill="#fff" ${TB}/><path d="M76 61 Q85 66 87 78 L91 120 H80 Q82 88 76 61 Z" fill="${INK}" opacity=".1"/><path d="M51.5 57.4 Q60 63 68.5 57.4" fill="none" stroke="${PINK}" stroke-width="3.2" stroke-linecap="round"/>`;
   function figure(c, id, o = {}) {
     return `<defs><clipPath id="${id}a"><ellipse cx="53" cy="35.6" rx="3.7" ry="4.4"/></clipPath><clipPath id="${id}b"><ellipse cx="67" cy="35.6" rx="3.7" ry="4.4"/></clipPath></defs>
-      <g class="av-fig" style="transform-origin:60px 191px"><g class="av-breath">${avBack(c)}</g>${o.legs === false ? '' : avLegs(c)}<g class="av-breath">${avTorso(c, id)}${avArm(c, 'l', false)}${avArm(c, 'r', o.wave)}${avHead(c, id)}</g></g>`;
+      <g class="av-fig" style="transform-origin:60px 191px"><g class="av-breath">${avBack(c)}</g>${o.legs === false ? '' : avLegs(c)}<g class="av-breath">${avTorso(c, id)}${avArm(c, 'l', false)}${avArm(c, 'r', o.wave)}${c.cape ? avCape() : ''}${avHead(c, id)}</g></g>`;
   }
 
   /* Backdrops: muted illustrations behind the traveller (box w x h). */
@@ -170,10 +184,12 @@
     return `<svg class="bg-panel" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">${bgArt(kind, id, 400, 400)}</svg>`;
   }
 
-  function avatarBust(cfg, cls = '') {
+  // view: 'head' (default), 'chest' (shows a badge or top), 'body' (shows a bag at the hip).
+  const BUST_VIEW = { head: 'translate(-48 -3) scale(1.8)', chest: 'translate(-18 -10) scale(1.3)', body: 'translate(6 3) scale(.9)' };
+  function avatarBust(cfg, cls = '', view = 'head') {
     const c = Object.assign({}, AV_DEFAULT, cfg || {});
     const id = nextId('av');
-    return `<svg class="avatar ${cls}" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><defs><clipPath id="${id}c"><circle cx="60" cy="60" r="60"/></clipPath></defs><g clip-path="url(#${id}c)">${bgArt(c.bg, id)}<g transform="translate(-48 -3) scale(1.8)">${figure(c, id, { legs: false })}</g></g></svg>`;
+    return `<svg class="avatar ${cls}" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><defs><clipPath id="${id}c"><circle cx="60" cy="60" r="60"/></clipPath></defs><g clip-path="url(#${id}c)">${bgArt(c.bg, id)}<g transform="${BUST_VIEW[view] || BUST_VIEW.head}">${figure(c, id, { legs: view === 'body' ? undefined : false })}</g></g></svg>`;
   }
   // o: true = wave hello once; or { wave, legs, pose, mood }
   function avatarFull(cfg, cls = '', o = false) {
@@ -187,7 +203,8 @@
   /* Scene cast: the same rig, dressed for the job. */
   const CAST = {
     lucia: { skin: SKIN, hair: 'bun', hairC: '#1F1A17', fem: true, top: 'tee', topC: INK, apron: LIME, pack: 'none' },
-    paco: { skin: SKIN2, hair: 'short', hairC: '#2A1A10', tache: true, top: 'tee', topC: LIME, apron: WHITE, pack: 'none' }
+    paco: { skin: SKIN2, hair: 'short', hairC: '#2A1A10', tache: true, top: 'tee', topC: LIME, apron: WHITE, pack: 'none' },
+    carmen: { skin: '#E0A77E', hair: 'curly', hairC: '#7A1F4E', fem: true, top: 'tee', topC: PINK, apron: INK, pack: 'none', eyes: 'glasses' }
   };
   // Place a figure inside a scene SVG. s = scale; everyone in one scene shares a scale.
   const castFig = (cfg, x, y, s, legs) => avatarFull(cfg, 'scene-fig', { legs }).replace('<svg ', `<svg x="${x}" y="${y}" width="${120 * s}" height="${200 * s}" `);

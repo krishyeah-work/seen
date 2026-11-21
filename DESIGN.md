@@ -88,9 +88,11 @@ One rig serves the traveller, friends and scene cast. File: `art/people.js`; mot
 
 **Build.** 120 × 200 units, about 4.5 heads tall, adult proportions. Front view. Layers back to front: backpack and back hair, legs, torso, left arm, right arm, head. Arms have three pivots (shoulder, elbow, wrist) and three hand shapes (open, pointing, thumb).
 
-**Options** (`AV_DEFAULT`): `skin`, `hair` (short, buzz, curly, bun, long), `hairC`, `fem`, `beard`, `tache`, `cap` (none, cap, beanie, sunhat), `top` (tee, stripes, hoodie, jacket), `pants`, `pack`, `badge`, `eyes` (glasses, shades, goggles), `apron`, `bg`.
+**Options** (`AV_DEFAULT`): `skin`, `hair` (short, buzz, curly, mid, bun, long, bob), `hairC`, `fem`, `beard`, `tache`, `cap` (none, cap, beanie, beret, sunhat), `top` (tee, stripes, cardigan, hoodie, jacket), `pants`, `pack` (pack, tote, cross, none), `badge`, `eyes` (glasses, round, shades, goggles), `apron`, `cape`, `bg`.
 
-**Gender cues.** A character's look must match their name and voice. Feminine cue set: `fem: true` (lashes, earrings, lip colour) with long hair or a bun. Masculine: short, buzz or curly hair, optional beard or moustache. Voices follow `CHARS` in `app.js`.
+**The traveller** is the learner's own character: man or woman, skin, hair, hair colour and (men) beard, chosen free in the profile's "You" tab (`state.me`). Anything in a scene that depends on the learner (haircut photos, the mirror, Carmen's *bienvenido/bienvenida*) follows it.
+
+**Gender cues.** A character's look must match their name and voice. Feminine cue set: `fem: true` (lashes, earrings, lip colour) with long hair, a bob, a bun or curls. Masculine: short, buzz, curly or longer (mid) hair, optional beard or moustache. Voices follow `CHARS` in `app.js`.
 
 **Expressions** (class on the SVG or any ancestor):
 
@@ -147,11 +149,24 @@ File: `art/scenes.js`. Each scene is an 800 × 500 SVG with everything inside `<
 - **Phones:** the picture takes the free height; the answer panel is compact and sits below it with no scrolling needed to answer (small word, icon-only audio buttons, one-line prompt, short tiles). Once answered, the choices collapse and the feedback and Continue take their place.
 - **No dark overlays** on the picture before a scene starts. The panel introduces the scene.
 
+**Conversations, not quizzes** (every scene):
+- **A scene is a real conversation.** The learner takes part in what actually happens at that place (ordering, choosing a haircut, chatting while it's done, paying), not a list of "find the object" questions. Object-finding is only for moments where it's natural (Lucía offers a table, Paco asks what's on your list, Carmen says look in the mirror).
+- **Where a person would choose, the learner chooses.** Ordering, picking a style or colour, what to buy: every option is right (`type: 'choose'`), tapped in the scene or picked below, and "no thanks" is allowed where it would be in real life.
+- **Later lines follow the choices.** A moment can be a function of the scene state, resolved when it starts, so Lucía brings what you ordered, offers only what's left and asks how your own order is. Choices show in the scene too (your order on the table, your new hair in the salon mirror).
+- **Facts are checked.** What happens in a scene and what the culture note says must be true of Spain (salons work by appointment, tips aren't expected). Don't invent customs.
+- **Point of view is the learner's.** A mirror shows the learner where they'd really be (in the chair, in a cape); the room never shows an empty seat where the learner is sitting. Furniture stands on the floor; no shadows floating below it.
+- **Every word is met.** Branches must still show each scene word at least once (offered by the character with a picture), so the next scene's review makes sense.
+
+**Questions** (every scene):
+- **Picture choices are one category.** Every option in a food question is a food, every drink option a drink, every salon option a salon item, so the learner has to know the word, not just rule out the odd one out. Draw each option the way it's served in the scene (pan con tomate is toast with tomato, not a plain loaf).
+- **Reply questions show the meaning.** When the learner answers with a reply rather than finding something, the word's picture sits beside it in the panel and the thing appears or wiggles in the scene (Lucía lifts a jug of agua). No one should answer a question about a word they can't picture. Prompts name the Spanish word, not its English translation.
+- **Picture questions can be answered in the scene too.** If the item is visible in the scene, tapping it there is as good as picking its picture, and the two stay in step (`scene: { hotKey: optionKey }`). Items offered during the moment appear as props first (the pan con tomate on Lucía's counter, the bill on Paco's counter).
+
 **Help for confused tapping** (every scene). Taps that miss (on the picture or the panel background, or a wrong answer) count up per moment:
 1. 3 taps: everything tappable wiggles once.
 2. 5 taps: only the answer wiggles and glows once, and the speaker points at it (look and point, `pointAt`).
 3. 9 taps: the speaker points again and Glo jumps and offers help (say it slower, show me where, show it in English).
-Scene art that can be tapped carries `data-art="<key>"` so it can wiggle.
+Scene art that can be tapped carries `data-art="<key>"` so it can wiggle. Picture answers count too: the matching scene item wiggles, glows and gets pointed at.
 
 ## 7. Map
 
@@ -236,3 +251,6 @@ One-off exceptions. Add here **only when asked** (see "How to use this file").
 - 2026-11: Fixed blank Spanish home after finishing the café and the shop; loading splash, error card and non-blocking fonts added.
 - 2026-11: Fixed blank first page for new visitors (class clash between the landing entrance and the scene overlay); entrance safety net added.
 - 2026-11: No more second fade after the first-page entrance; selecting, filtering, tapping cities and changing pace no longer replay entrances.
+- 2026-11: Picture choices made one category with matching drawings; reply questions show the word's picture and a scene cue; picture questions answerable in the scene; Day 3 added: Salón Rosa with Carmen (espejo, toalla, champú, tijeras).
+- 2026-11: Scenes became conversations: free ordering at the café with follow-ups that match, a shopping list in any order at Paco's, Meera asks what to buy, and the salon is a real haircut (style, colour, a check while cutting) with your reflection changing in the mirror.
+- 2026-11: Salon: you sit in the chair (mirror shows you in a cape, counter below), haircut photos match your avatar, Carmen opens with "¿Tiene cita?" instead of a coffee, "No, no quiero color" answer, fact-checked culture note. Profile "You" tab (man or woman, skin, hair, beard) and more bags, badges, hats, tops and glasses. Word bank gained a language dropdown and sorting by scene, type or newest.

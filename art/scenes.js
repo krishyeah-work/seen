@@ -53,10 +53,10 @@
         <rect x="56" y="56" width="254" height="180" rx="12" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="2"/>
         <text x="74" y="94" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="28" fill="${LIME}" letter-spacing="1">MENÚ</text>
         <path d="M262 70 q-4 -6 0 -11 M274 70 q-4 -6 0 -11 M252 76 h32 v8 q0 12 -12 12 h-8 q-12 0 -12 -12 z M284 79 q9 0 8 7 q-1 6 -9 5" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <g font-family="Space Grotesk, sans-serif" font-weight="500" font-size="20" fill="${WHITE}">
-          <g data-art="menu-cafe"><text x="74" y="140">Café</text><text x="294" y="140" text-anchor="end">1,50 €</text></g>
-          <g data-art="menu-pan"><text x="74" y="178">Pan con tomate</text><text x="294" y="178" text-anchor="end">2,50 €</text></g>
-          <g data-art="menu-agua"><text x="74" y="216">Agua</text><text x="294" y="216" text-anchor="end">1,00 €</text></g>
+        <g font-family="Space Grotesk, sans-serif" font-weight="500" font-size="17.5" fill="${WHITE}">
+          <g data-art="menu-cafe"><g transform="translate(66 118) scale(.27)">${P.cup.replace(/stroke="#0B0B0B"/g, 'stroke="#fff"')}</g><text x="94" y="139">Café</text><text x="306" y="139" text-anchor="end">1,50 €</text></g>
+          <g data-art="menu-pan"><g transform="translate(66 156) scale(.27)">${P.pantomate.replace(/stroke="#0B0B0B"/g, 'stroke="#fff"')}</g><text x="94" y="177">Pan con tomate</text><text x="306" y="177" text-anchor="end">2,50 €</text></g>
+          <g data-art="menu-agua"><g transform="translate(66 194) scale(.27)">${P.glass.replace(/stroke="#0B0B0B"/g, 'stroke="#fff"')}</g><text x="94" y="215">Agua</text><text x="306" y="215" text-anchor="end">1,00 €</text></g>
         </g>
         ${hot('rect', 'menu-cafe', 'x="62" y="114" width="244" height="36" rx="8"', 'Menu line 1')}
         ${hot('rect', 'menu-pan', 'x="62" y="152" width="244" height="36" rx="8"', 'Menu line 2')}
@@ -71,13 +71,13 @@
         ${stripes}
         <rect x="340" y="316" width="1380" height="9" fill="${INK}" opacity=".14"/>
       </g>
-      <g>
+      <g data-art="pastries">
         <ellipse cx="590" cy="293" rx="36" ry="5.5" fill="${WHITE}"/>
         <path d="M566 290 q4 -16 20 -13 q-10 4 -8 13 z" fill="${TAN}"/><path d="M588 290 q6 -18 24 -12 q-12 3 -10 12 z" fill="#D99A3E"/>
         <path d="M558 291 V272 Q558 246 590 246 Q622 246 622 272 V291 Z" fill="#fff" opacity=".2"/><path d="M558 291 V272 Q558 246 590 246 Q622 246 622 272 V291" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="3"/>
         <path d="M568 268 Q570 256 580 252" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/><circle cx="590" cy="242" r="5" fill="${WHITE}"/>
       </g>
-      <g class="machine">
+      <g class="machine" data-art="machine">
         <path d="M652 214 v-12 h18 v12 M676 214 v-12 h18 v12 M664 202 v-10 h18 v10" fill="${WHITE}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
         <rect x="640" y="214" width="120" height="82" rx="12" fill="${WHITE}"/><rect x="744" y="236" width="16" height="60" fill="${INK}" opacity=".08"/>
         <rect x="640" y="214" width="120" height="22" rx="10" fill="${INK}"/>
@@ -87,6 +87,18 @@
         <g class="steam"><path d="M677 268 q-5 -7 0 -14 q5 -7 0 -14" stroke="${WHITE}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M686 268 q-5 -7 0 -14 q5 -7 0 -14" stroke="${WHITE}" stroke-width="3" fill="none" stroke-linecap="round"/></g>
       </g>
       ${plant(822, 252, 0.8, LIME)}
+      <g class="prop" data-prop="jug">
+        <path d="M344 296 V262 Q344 254 352 252 L350 244 H372 L370 252 Q378 254 378 262 V296 Z" fill="#DDF1FF"/>
+        <path d="M344 270 H378 V296 H344 Z" fill="#6CC4FF"/>
+        <path d="M378 262 Q390 262 389 274 Q388 284 378 284" fill="none" stroke="#DDF1FF" stroke-width="5"/>
+        <rect x="349" y="260" width="4" height="30" rx="2" fill="#fff" opacity=".85"/>
+      </g>
+      <g class="prop" data-prop="offer-pan">
+        <ellipse cx="420" cy="294" rx="38" ry="6" fill="${WHITE}"/>
+        <rect x="392" y="276" width="56" height="17" rx="8" fill="${TAN}"/>
+        <path d="M396 284 Q396 279 402 279 H440 Q445 279 445 284 V288 H396 Z" fill="${TOMATO}"/>
+        <circle cx="410" cy="283" r="1.8" fill="#FFD23F"/><circle cx="430" cy="284" r="1.6" fill="#FFD23F"/>
+      </g>
       <ellipse cx="70" cy="462" rx="56" ry="8" fill="${INK}" opacity=".2"/><ellipse cx="176" cy="462" rx="74" ry="10" fill="${INK}" opacity=".2"/>
       <g class="chair" data-art="chair">
         <rect x="34" y="318" width="14" height="140" rx="6" fill="${PINK}"/><rect x="43" y="322" width="5" height="132" rx="2.5" fill="${INK}" opacity=".12"/>
@@ -127,6 +139,9 @@
       ${hot('ellipse', 'cup', 'cx="116" cy="330" rx="28" ry="26"', 'Item on the table 1')}
       ${hot('ellipse', 'bread', 'cx="176" cy="338" rx="32" ry="20"', 'Item on the table 2')}
       ${hot('ellipse', 'glass', 'cx="235" cy="331" rx="22" ry="26"', 'Item on the table 3')}
+      ${hot('ellipse', 'receipt', 'cx="175" cy="343" rx="32" ry="22"', 'Paper on the table')}
+      ${hot('ellipse', 'offer-pan', 'cx="420" cy="284" rx="42" ry="20"', 'Plate on the counter')}
+      ${hot('rect', 'pastries', 'x="552" y="236" width="78" height="62" rx="12"', 'Glass dome on the counter')}
     </g>
     </svg>`;
   }
@@ -183,12 +198,106 @@
       </g>
       <rect x="652" y="412" width="190" height="400" fill="${WHITE}"/>${[0, 1, 2, 3].map((i) => `<rect x="${668 + i * 46}" y="412" width="20" height="400" fill="${LIME}"/>`).join('')}<rect x="652" y="412" width="190" height="10" fill="${INK}" opacity=".14"/>
       <rect x="640" y="372" width="204" height="40" rx="8" fill="${INK}"/><rect x="648" y="376" width="188" height="3" rx="1.5" fill="#fff" opacity=".22"/>
+      <g class="prop" data-prop="m-receipt"><path d="M684 368 L722 360 L726 374 L688 382 Z" fill="${WHITE}"/><path d="M692 368 L712 364 M693 374 L706 371" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/></g>
       ${opts.friend ? `<g class="friend-fig" data-who="${opts.friendId || 'friend'}">${castFig(opts.friend, 412, 143, 2.3, true)}</g>` : ''}
       ${hot('rect', 'cafe', 'x="380" y="126" width="90" height="80" rx="10"', 'Shelf item: bags')}
+      ${hot('rect', 'm-receipt', 'x="676" y="346" width="58" height="42" rx="8"', 'Paper on the counter')}
       ${hot('rect', 'agua', 'x="78" y="120" width="120" height="86" rx="10"', 'Shelf item: bottles')}
       ${hot('rect', 'zumo', 'x="224" y="126" width="122" height="80" rx="10"', 'Shelf item: cartons')}
       ${hot('rect', 'pan', 'x="74" y="248" width="210" height="58" rx="10"', 'Shelf item: loaves')}
       ${hot('rect', 'naranja', 'x="306" y="214" width="134" height="92" rx="10"', 'Shelf item: round fruit')}
+    </g>
+    </svg>`;
+  }
+
+
+  /* ---------- La peluquería: Salón Rosa ---------- */
+  // opts.fem picks the haircut photos that match the learner; opts.look draws them in the mirror.
+  // The learner sits in the chair facing the mirror, so the mirror shows them (in a cape, the chair behind them)
+  // and the room shows the counter under the mirror, not an empty chair.
+  function salonReflection(look) {
+    if (!look) return '';
+    const c = Object.assign({}, look, { cap: 'none', pack: 'none', badge: 'none', cape: true });
+    return `<path d="M462 300 V198 Q462 176 486 176 H554 Q578 176 578 198 V300 Z" fill="${BLUE}"/><path d="M462 198 Q462 176 486 176 H554 Q578 176 578 198 V206 H462 Z" fill="#fff" opacity=".18"/>
+      ${A.avatarFull(c, 'refl', { legs: false }).replace('<svg ', '<svg x="424" y="99" width="192" height="320" ')}`;
+  }
+  function peluqueria(opts = {}) {
+    let tiles = '';
+    for (let r = 0; r < 4; r++) for (let c = -12; c < 40; c++) if ((r + c) % 2 === 0) tiles += `<rect x="${c * 46}" y="${400 + r * 46}" width="46" height="46" fill="${INK}" opacity=".9"/>`;
+    let paper = '';
+    for (let i = -20; i < 40; i++) paper += `<rect x="${i * 40}" y="-700" width="14" height="1050" fill="#EAF7C0"/>`;
+    const id = A.nextId('pl');
+    const cut = opts.fem ? ['hairShortF', 'hairLong'] : ['hairShort', 'hairLongM'];
+    return `<svg class="scene-svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" overflow="visible" role="img" aria-label="Salón Rosa: Carmen beside a big mirror where you can see yourself in the salon chair, with a trolley of towels, shampoo and scissors">
+    <defs><clipPath id="${id}g"><path d="M444 296 V124 Q444 80 520 80 Q596 80 596 124 V296 Z"/></clipPath></defs>
+    <g class="cam">
+      <rect x="-900" y="-700" width="2600" height="1100" fill="#F4FCDD"/>
+      ${paper}
+      <rect x="-900" y="300" width="2600" height="100" fill="${PINK}"/><rect x="-900" y="296" width="2600" height="6" fill="${INK}" opacity=".8"/>
+      <rect x="-900" y="400" width="2600" height="800" fill="${WHITE}"/>${tiles}
+      <rect x="-900" y="400" width="2600" height="6" fill="${INK}" opacity=".25"/>
+      <g>
+        <rect x="40" y="36" width="250" height="62" rx="14" fill="${INK}"/>
+        <text x="165" y="76" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="22" letter-spacing="2" fill="${PINK}">PELUQUERÍA</text>
+        <circle class="sc sc-blink" cx="276" cy="50" r="5" fill="${LIME}"/>
+      </g>
+
+      <g class="sc sc-sway" style="transform-origin:330px -700px"><line x1="330" y1="-700" x2="330" y2="40" stroke="${INK}" stroke-width="3"/><path d="M306 60 A24 24 0 0 1 354 60 Z" fill="${BLUE}"/><circle cx="330" cy="61" r="7" fill="#FFF3B0"/></g>
+      <g data-art="espejo">
+        <path d="M428 300 V120 Q428 62 520 62 Q612 62 612 120 V300 Z" fill="${PINK}"/>
+        <path d="M444 296 V124 Q444 80 520 80 Q596 80 596 124 V296 Z" fill="#CFE9FF"/>
+        <g class="reflection" clip-path="url(#${id}g)">${salonReflection(opts.look)}</g>
+        <path d="M462 140 L500 104 M566 214 L590 192" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".6"/>
+        <circle cx="520" cy="70" r="6" fill="${LIME}"/>
+      </g>
+      <g>
+        <rect x="412" y="294" width="216" height="14" rx="6" fill="${INK}"/>
+        <rect x="426" y="308" width="188" height="92" fill="${WHITE}"/>
+        <rect x="438" y="320" width="78" height="32" rx="7" fill="#FFE3F1"/><rect x="524" y="320" width="78" height="32" rx="7" fill="#FFE3F1"/>
+        <rect x="438" y="360" width="164" height="30" rx="7" fill="#FFE3F1"/>
+        <rect x="466" y="333" width="22" height="6" rx="3" fill="${INK}"/><rect x="552" y="333" width="22" height="6" rx="3" fill="${INK}"/><rect x="509" y="372" width="22" height="6" rx="3" fill="${INK}"/>
+        <rect x="420" y="396" width="200" height="10" rx="3" fill="${INK}"/>
+        <rect x="446" y="284" width="36" height="9" rx="3" fill="${BLUE}"/><path d="M450 293 v4 M455 293 v4 M460 293 v4 M465 293 v4 M470 293 v4 M475 293 v4" stroke="${BLUE}" stroke-width="2"/>
+        <rect x="574" y="270" width="10" height="24" rx="4" fill="${LIME}"/><rect x="570" y="262" width="18" height="10" rx="4" fill="${INK}"/>
+      </g>
+      <g>
+        <rect x="660" y="96" width="70" height="10" rx="5" fill="${INK}"/>
+        <g class="sc sc-sway fast" style="transform-origin:686px 106px"><path d="M686 106 V130" stroke="${INK}" stroke-width="3"/><path d="M668 130 H708 Q716 130 716 140 V150 Q716 160 708 160 H690 L686 184 H678 L680 160 H668 Q660 160 660 150 V140 Q660 130 668 130 Z" fill="${LIME}"/><circle cx="706" cy="145" r="5" fill="${INK}"/></g>
+      </g>
+      <g>
+        <rect x="640" y="340" width="130" height="12" rx="6" fill="${INK}"/><rect x="700" y="352" width="10" height="70" fill="${INK}"/><ellipse cx="705" cy="424" rx="34" ry="6" fill="${INK}"/>
+      </g>
+      <g data-art="agenda">
+        <path d="M648 339 L672 331 L696 339 V322 L672 314 L648 322 Z" fill="${WHITE}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M672 314 V331" stroke="${INK}" stroke-width="2"/>
+        <path d="M654 324 L666 320 M654 329 L666 325 M678 320 L690 324 M678 325 L686 328" stroke="${INK}" stroke-width="1.6" stroke-linecap="round" opacity=".5"/>
+        <path d="M648 339 L672 331 L696 339" fill="none" stroke="${PINK}" stroke-width="3" stroke-linejoin="round"/>
+      </g>
+      <g class="prop" data-prop="p-receipt"><path d="M716 334 L752 326 L756 338 L720 346 Z" fill="${WHITE}" stroke="${INK}" stroke-width="1.5"/><path d="M724 334 L742 330 M725 340 L736 338" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/></g>
+      ${plant(16, 404, 1.0, BLUE)}
+      <g data-art="poster-corto"><rect x="636" y="192" width="64" height="84" rx="8" fill="${WHITE}"/><g transform="translate(640 196) scale(.56)">${P[cut[0]]}</g><text x="668" y="270" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="11" fill="${INK}">CORTO</text></g>
+      <g data-art="poster-largo"><rect x="710" y="192" width="64" height="84" rx="8" fill="${WHITE}"/><g transform="translate(714 196) scale(.56)">${P[cut[1]]}</g><text x="742" y="270" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="11" fill="${INK}">LARGO</text></g>
+      <g><rect x="648" y="20" width="112" height="64" rx="10" fill="${WHITE}"/>
+        <g data-art="dye-rosa"><g transform="translate(660 26) scale(.52)">${P.dyePink}</g></g>
+        <g data-art="dye-azul"><g transform="translate(708 26) scale(.52)">${P.dyeBlue}</g></g></g>
+      <g class="carmen" data-who="carmen">${castFig(CAST.carmen, 222, 51, 2.3, true)}</g>
+      <g>
+        <rect x="56" y="236" width="150" height="10" rx="5" fill="${INK}"/><rect x="56" y="396" width="150" height="10" rx="5" fill="${INK}"/>
+        <rect x="62" y="246" width="8" height="200" fill="${INK}"/><rect x="192" y="246" width="8" height="200" fill="${INK}"/>
+        <circle cx="66" cy="452" r="9" fill="${INK}"/><circle cx="196" cy="452" r="9" fill="${INK}"/><circle cx="66" cy="452" r="3" fill="${WHITE}"/><circle cx="196" cy="452" r="3" fill="${WHITE}"/>
+        <g data-art="tijeras" transform="translate(62 176) scale(.7)">${P.scissors}</g>
+        <g data-art="champu" transform="translate(128 166) scale(.8)">${P.shampoo}</g>
+        <g data-art="toalla" transform="translate(66 298) scale(1.22)">${P.towel}</g>
+      </g>
+      ${hot('rect', 'espejo', 'x="430" y="64" width="180" height="168" rx="20"', 'Big oval on the wall')}
+      ${hot('rect', 'tijeras', 'x="72" y="180" width="62" height="58" rx="10"', 'Trolley item 1')}
+      ${hot('rect', 'champu', 'x="146" y="168" width="50" height="70" rx="10"', 'Trolley item 2')}
+      ${hot('rect', 'toalla', 'x="80" y="330" width="104" height="66" rx="10"', 'Trolley item 3')}
+      ${hot('rect', 'p-receipt', 'x="708" y="316" width="58" height="40" rx="8"', 'Paper on the side table')}
+      ${hot('rect', 'poster-corto', 'x="632" y="188" width="72" height="92" rx="10"', 'Photo of a short haircut')}
+      ${hot('rect', 'poster-largo', 'x="706" y="188" width="72" height="92" rx="10"', 'Photo of a long haircut')}
+      ${hot('rect', 'dye-rosa', 'x="656" y="22" width="44" height="60" rx="8"', 'Colour card 1')}
+      ${hot('rect', 'dye-azul', 'x="704" y="22" width="44" height="60" rx="8"', 'Colour card 2')}
     </g>
     </svg>`;
   }
@@ -219,6 +328,7 @@
     </svg>`;
   }
 
-  A.scene = { cafe, mercado };
+  A.scene = { cafe, mercado, peluqueria };
+  A.salonReflection = salonReflection;
   A.arrival = arrival;
 })();

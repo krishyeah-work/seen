@@ -2,7 +2,7 @@
 
 **Learn a language by living it. Not by memorising it.**
 
-Picto teaches vocabulary through short, real-life scenes: ordering breakfast at a café, picking up groceries, shopping with a friend. You meet every new word inside a conversation, work it out from the picture and the context, then meet it again somewhere new. Translation is the last resort, not the first step.
+Picto teaches vocabulary through short, real-life scenes: ordering breakfast at a café, picking up groceries, shopping with a friend, getting a haircut. You meet every new word inside a conversation, work it out from the picture and the context, then meet it again somewhere new. Translation is the last resort, not the first step.
 
 It is made for adults around 40 and up who want to talk to real people (a waiter, a taxi driver, a shopkeeper) rather than pass tests.
 
@@ -27,7 +27,8 @@ Picto turns that experience into a product, built on **comprehensible input**: y
 Every word goes through the same loop:
 
 1. **See**: a character says a line in a real situation. The bubble shows the line and a small English gloss with a *blank* where the new word goes.
-2. **Guess**: you tap the thing in the scene, pick a picture or choose a reply. No translation unless you ask for it.
+2. **Guess**: you tap the thing in the scene, pick a picture (or tap that same thing in the scene) or choose a reply. When you reply, the word's picture is right there, so you always know what you're talking about. No translation unless you ask for it.
+   Scenes are conversations, not quizzes: where a real person would choose (what to order, how to cut your hair), you choose, every choice is right, and what people say next follows your choice.
 3. **Meet again**: the word comes back two or three times in the same scene, then again in a new place (a review at the market, a co-learn scene with a friend).
 4. **Recall later**: your word bank keeps each word with its picture and every place you met it. More places, stronger word.
 
@@ -51,12 +52,13 @@ False friends get a warning too (*pan* is not a frying pan).
 - **Arrival**: a short animated landing in Spain.
 - **Home**: your traveller, level, words learned, words that stuck, a weekly streak with daily moods, your languages and your friends.
 - **Spanish home**: today's activity, review and word bank, a map of Spain where **each city is a level**, your week of scenes with an adjustable pace, and a "Road to Madrid" progress strip your avatar walks along.
-- **Scenes**:
-  - *Café La Plaza*: 9 moments with Lucía, about 5 minutes.
-  - *El mercado*: a review at Paco's shop.
-  - *Shopping with Meera*: a co-learn scene where a friend joins you in the shop.
-- **Word bank**: every word with its picture, its lines and the places you met it.
-- **Profile**: an avatar editor. Earn **Rep** in scenes and spend it on hats, tops, backpacks, badges, eyewear and illustrated backgrounds. Your level follows lifetime Rep, so spending never lowers it.
+- **Scenes** (each ends with a phrase to try today and a short, fact-checked culture note):
+  - *Café La Plaza*: breakfast with Lucía, about 5 minutes. Order whatever you like from her menu; she brings it, offers what you didn't order and asks how yours is.
+  - *El mercado*: a review at Paco's shop, with a Spanish shopping list you can fill in any order.
+  - *Shopping with Meera*: a co-learn scene where a friend joins you in the shop and asks what to buy for breakfast.
+  - *Salón Rosa*: day 3, a haircut with Carmen. Check in for your appointment, choose short or long and a colour (or none), chat while she cuts, and see your new look in the mirror. The haircut photos match your avatar. New words: cita, corto, largo, rosa, azul, espejo, with agua and la cuenta coming back.
+- **Word bank**: every word with its picture, its lines and the places you met it. Pick a language and sort by scene, by type (food, drinks, colours and more) or newest first.
+- **Profile**: make the traveller look like you (man or woman, skin, hair, hair colour, beard), then earn **Rep** in scenes and spend it on hats, tops, bags, badges, eyewear and illustrated backgrounds. Your level follows lifetime Rep, so spending never lowers it.
 - **Friends**: filter by language, invite friends, and co-learn with friends on the same trip.
 - **Glo**: a small learning buddy with moods of its own. It offers hints when you're stuck, and stays quiet when you're not.
 - **Help when you're lost**: tap around in a scene and the tappable things wiggle, then the answer glows, then Glo offers to help.
@@ -117,7 +119,7 @@ motion.css      Motion tokens and all character, scene and map animation
 art/kit.js      Palette, helpers, word pictures, icons
 art/glo.js      Glo, the learning buddy
 art/people.js   The people rig: traveller, friends and scene cast
-art/scenes.js   Locations: café, shop, arrival
+art/scenes.js   Locations: café, shop, salon, arrival
 art/map.js      The illustrated map of Spain
 app.js          App: data, state, routing, views, scene engine, speech, the guide
 DESIGN.md       Rules for characters, motion, locations and the map
@@ -129,11 +131,12 @@ Everything a learner sees is driven by data at the top of `app.js`:
 
 | What | Where | Notes |
 | --- | --- | --- |
-| Words | `WORDS` | Target word, English meaning, picture (`art`), sound bridges per known language, optional false-friend note |
+| Words | `WORDS` | Target word, English meaning, word bank type (`cat`), picture (`art`), sound bridges per known language, optional false-friend note |
 | Lines | `LINES` | What a character says with a word, per place, plus the English gloss with `___` as the blank |
-| Scenes | `SCENES` | Ordered moments: who speaks, camera shot, line, gloss, and the interaction (`tap` in the scene, `pick` a picture, or `reply`) |
+| Scenes | `SCENES` | Ordered moments: who speaks, camera shot, line, gloss, and the interaction (`tap` in the scene, `pick` a picture, `reply`, or `choose`, where every option is right). A moment can be a function of the scene so far, so later lines follow the learner's choices |
 | Places and cities | `PLACES`, `CITIES` | Cities are levels on the map, each with its own scenes |
 | Languages | `KNOWN`, `LEARN` | Languages a learner can speak and can learn |
+| Traveller | `ME`, `ME_DEFAULT` | The learner's own character options (man or woman, skin, hair, hair colour, beard) |
 | Avatar shop | `SHOP` | Items, costs and the look each one applies |
 | Friends | `FRIENDS` | Friends, their language, city and look |
 

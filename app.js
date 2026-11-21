@@ -37,21 +37,49 @@
   ];
 
   // Sound bridges: how a Spanish word sounds in languages the learner already knows.
+  // cat: the word bank's "By type" group (WORD_CATS). Hair pictures follow the learner's avatar (a man's or a woman's cut).
   const WORDS = {
-    mesa: { es: 'mesa', en: 'table', art: 'table', tint: 't-lime', bridges: { hi: 'mez · मेज़', pt: 'mesa' } },
-    cafe: { es: 'café', en: 'coffee', art: 'cup', tint: 't-pink', bridges: { en: 'café', hi: 'kaafi · कॉफ़ी', ta: 'kaapi · காப்பி', te: 'kaafi · కాఫీ', kn: 'kaafi · ಕಾಫಿ', ml: 'kaappi · കാപ്പി', fr: 'café', it: 'caffè', pt: 'café', de: 'Kaffee' } },
-    pan: { es: 'pan', en: 'bread', art: 'bread', tint: 't-lime', bridges: { hi: 'pav · पाव', mr: 'pav · पाव', bn: 'pauruti · পাউরুটি', pt: 'pão', fr: 'pain', it: 'pane' }, falseFriend: { en: 'Not a frying pan' } },
-    agua: { es: 'agua', en: 'water', art: 'glass', tint: 't-blue', bridges: { en: 'aqua', pt: 'água', it: 'acqua' } },
-    cuenta: { es: 'la cuenta', en: 'the bill', art: 'receipt', tint: 't-pink', bridges: {} },
-    naranja: { es: 'naranja', en: 'orange', art: 'orange', tint: 't-lime', bridges: { hi: 'narangi · नारंगी', te: 'narinja · నారింజ', pt: 'laranja', it: 'arancia' } }
+    mesa: { es: 'mesa', en: 'table', cat: 'things', art: 'table', tint: 't-lime', bridges: { hi: 'mez · मेज़', pt: 'mesa' } },
+    cafe: { es: 'café', en: 'coffee', cat: 'drinks', art: 'cup', tint: 't-pink', bridges: { en: 'café', hi: 'kaafi · कॉफ़ी', ta: 'kaapi · காப்பி', te: 'kaafi · కాఫీ', kn: 'kaafi · ಕಾಫಿ', ml: 'kaappi · കാപ്പി', fr: 'café', it: 'caffè', pt: 'café', de: 'Kaffee' } },
+    pan: { es: 'pan', en: 'bread', cat: 'food', art: 'bread', tint: 't-lime', bridges: { hi: 'pav · पाव', mr: 'pav · पाव', bn: 'pauruti · পাউরুটি', pt: 'pão', fr: 'pain', it: 'pane' }, falseFriend: { en: 'Not a frying pan' } },
+    agua: { es: 'agua', en: 'water', cat: 'drinks', art: 'glass', tint: 't-blue', bridges: { en: 'aqua', pt: 'água', it: 'acqua' } },
+    cuenta: { es: 'la cuenta', en: 'the bill', cat: 'paying', art: 'receipt', tint: 't-pink', bridges: {} },
+    naranja: { es: 'naranja', en: 'orange', cat: 'food', art: 'orange', tint: 't-lime', bridges: { hi: 'narangi · नारंगी', te: 'narinja · నారింజ', pt: 'laranja', it: 'arancia' } },
+    espejo: { es: 'espejo', en: 'mirror', cat: 'things', art: 'mirror', tint: 't-blue', bridges: { pt: 'espelho', it: 'specchio' } },
+    toalla: { es: 'toalla', en: 'towel', cat: 'things', art: 'towel', tint: 't-pink', bridges: { en: 'towel', hi: 'tauliya · तौलिया', bn: 'toyale · তোয়ালে', te: 'tuvvalu · తువ్వాలు', ta: 'tuvalai · துவாலை', pt: 'toalha' } },
+    champu: { es: 'champú', en: 'shampoo', cat: 'things', art: 'shampoo', tint: 't-lime', bridges: { en: 'shampoo', hi: 'shampoo · शैम्पू', fr: 'shampooing', it: 'shampoo', de: 'Shampoo' } },
+    tijeras: { es: 'tijeras', en: 'scissors', cat: 'things', art: 'scissors', tint: 't-pink', bridges: {} },
+    cita: { es: 'cita', en: 'appointment', cat: 'plans', art: 'appointment', tint: 't-lime', bridges: {} },
+    corto: { es: 'corto', en: 'short', cat: 'describe', get art() { return myLook().fem ? 'hairShortF' : 'hairShort'; }, tint: 't-pink', bridges: { it: 'corto', pt: 'curto' } },
+    largo: { es: 'largo', en: 'long', cat: 'describe', get art() { return myLook().fem ? 'hairLong' : 'hairLongM'; }, tint: 't-blue', bridges: {}, falseFriend: { en: 'Not “large”', it: 'Not “wide”, as in Italian' } },
+    rosa: { es: 'rosa', en: 'pink', cat: 'colours', art: 'dyePink', tint: 't-pink', bridges: { en: 'rose', pt: 'rosa', it: 'rosa', fr: 'rose', de: 'rosa' } },
+    azul: { es: 'azul', en: 'blue', cat: 'colours', art: 'dyeBlue', tint: 't-blue', bridges: { en: 'azure', pt: 'azul' } }
   };
+  const WORD_CATS = [
+    { id: 'food', nm: 'Food', art: 'bread', tint: 't-lime' },
+    { id: 'drinks', nm: 'Drinks', art: 'cup', tint: 't-pink' },
+    { id: 'paying', nm: 'Shopping and paying', art: 'receipt', tint: 't-pink' },
+    { id: 'plans', nm: 'Plans and activities', art: 'appointment', tint: 't-lime' },
+    { id: 'things', nm: 'Things around you', art: 'table', tint: 't-blue' },
+    { id: 'describe', nm: 'Describing', art: 'hairShort', tint: 't-pink' },
+    { id: 'colours', nm: 'Colours', art: 'dyeBlue', tint: 't-blue' }
+  ];
   const LINES = {
     mesa: { cafe: ['¡Hola! ¿Una mesa para uno?', 'Hi! A ___ for one?'] },
     cafe: { cafe: ['Aquí tiene su café.', 'Here’s your ___.'], mercado: ['Muy bien. ¿Y café para casa?', 'Very good. And ___ for home?'], colearn: ['¿Un café mañana?', 'A ___ tomorrow?'] },
+    cita: { peluqueria: ['¡Hola! ¿Tiene cita?', 'Hi! Do you have an ___?'] },
     pan: { cafe: ['¿Qué tal el pan?', 'How’s the ___?'], mercado: ['¿Y pan? Está recién hecho.', 'And ___? It’s freshly baked.'], colearn: ['¿Y pan para el desayuno?', 'And ___ for breakfast?'] },
-    agua: { cafe: ['¿Y para beber? ¿Agua?', 'And to drink? ___?'], mercado: ['Mira, aquí está el agua.', 'Look, here’s the ___.'], colearn: ['¿Compramos agua para el piso?', 'Shall we buy ___ for the flat?'] },
-    cuenta: { cafe: ['Aquí tiene la cuenta.', 'Here’s ___.'], mercado: ['Aquí tiene la cuenta.', 'Here’s ___.'], colearn: ['Aquí tiene la cuenta, chicos.', 'Here’s ___, guys.'] },
-    naranja: { colearn: ['Hoy tengo naranjas muy buenas.', 'Today I’ve got really good ___.'] }
+    agua: { cafe: ['¿Y para beber? ¿Agua?', 'And to drink? ___?'], mercado: ['Mira, aquí está el agua.', 'Look, here’s the ___.'], colearn: ['¿Compramos agua para el piso?', 'Shall we buy ___ for the flat?'], peluqueria: ['Primero, lavamos el pelo. ¿Qué tal el agua?', 'First, we wash your hair. How’s the ___?'] },
+    cuenta: { cafe: ['Aquí tiene la cuenta.', 'Here’s ___.'], mercado: ['Aquí tiene la cuenta.', 'Here’s ___.'], colearn: ['Aquí tiene la cuenta, chicos.', 'Here’s ___, guys.'], peluqueria: ['Son quince euros. Aquí tiene la cuenta.', 'That’s fifteen euros. Here’s ___.'] },
+    naranja: { colearn: ['Hoy tengo naranjas muy buenas.', 'Today I’ve got really good ___.'] },
+    espejo: { peluqueria: ['¡Listo! ¿Le gusta? Mírese en el espejo.', 'Done! Do you like it? Look in the ___.'] },
+    corto: { peluqueria: ['¿Cómo lo quiere? ¿Corto o largo?', 'How would you like it? ___ or long?'] },
+    largo: { peluqueria: ['¿Cómo lo quiere? ¿Corto o largo?', 'How would you like it? Short or ___?'] },
+    rosa: { peluqueria: ['¿Y color? ¿Quiere rosa o azul?', 'And colour? Would you like ___ or blue?'] },
+    azul: { peluqueria: ['¿Y color? ¿Quiere rosa o azul?', 'And colour? Would you like pink or ___?'] },
+    toalla: { peluqueria: ['Primero, una toalla.', 'First, a ___.'] },
+    champu: { peluqueria: ['Ahora, un poco de champú.', 'Now, a little ___.'] },
+    tijeras: { peluqueria: ['Y ahora, las tijeras.', 'And now, the ___.'] }
   };
   const PLACES = {
     cafe: { nm: 'El café', art: 'cup', tint: 't-pink', what: 'Order breakfast' },
@@ -92,26 +120,33 @@
       { id: 'cap-pink', nm: 'Pink cap', cost: 0, set: { cap: 'cap', capC: '#FF6FB5' } },
       { id: 'cap-blue', nm: 'Blue cap', cost: 40, set: { cap: 'cap', capC: '#3A5AFF' } },
       { id: 'beanie', nm: 'Lime beanie', cost: 60, set: { cap: 'beanie', capC: '#C6F432' } },
+      { id: 'beret', nm: 'Red beret', cost: 80, set: { cap: 'beret', capC: '#D7263D' } },
       { id: 'sunhat', nm: 'Sun hat', cost: 120, set: { cap: 'sunhat', capC: '#F5D76E' } }] },
     top: { label: 'Tops', items: [
       { id: 'tee-blue', nm: 'Blue tee', cost: 0, set: { top: 'tee', topC: '#3A5AFF' } },
       { id: 'tee-lime', nm: 'Lime tee', cost: 30, set: { top: 'tee', topC: '#C6F432' } },
+      { id: 'cardigan', nm: 'Cardigan', cost: 60, set: { top: 'cardigan', topC: '#F5B83D' } },
       { id: 'stripes', nm: 'Stripes', cost: 70, set: { top: 'stripes', topC: '#FF6FB5' } },
       { id: 'hoodie', nm: 'Hoodie', cost: 90, set: { top: 'hoodie', topC: '#0B0B0B' } },
       { id: 'jacket', nm: 'Denim jacket', cost: 150, set: { top: 'jacket', topC: '#4B6CB7' } }] },
-    pack: { label: 'Backpacks', items: [
+    pack: { label: 'Bags', view: 'body', items: [
       { id: 'pack-pink', nm: 'Pink pack', cost: 0, set: { pack: 'pack', packC: '#FF6FB5' } },
       { id: 'pack-lime', nm: 'Lime pack', cost: 30, set: { pack: 'pack', packC: '#C6F432' } },
+      { id: 'tote', nm: 'Tote bag', cost: 40, set: { pack: 'tote', packC: '#F5D76E' } },
       { id: 'pack-orange', nm: 'Orange pack', cost: 50, set: { pack: 'pack', packC: '#FFA62B' } },
-      { id: 'pack-none', nm: 'No pack', cost: 0, set: { pack: 'none' } }] },
-    badge: { label: 'Badges', items: [
+      { id: 'cross', nm: 'Crossbody bag', cost: 70, set: { pack: 'cross', packC: '#C0703A' } },
+      { id: 'pack-none', nm: 'No bag', cost: 0, set: { pack: 'none' } }] },
+    badge: { label: 'Badges', view: 'chest', items: [
       { id: 'badge-none', nm: 'No badge', cost: 0, set: { badge: 'none' } },
       { id: 'badge-star', nm: 'Star pin', cost: 20, set: { badge: 'star' } },
       { id: 'badge-heart', nm: 'Heart pin', cost: 30, set: { badge: 'heart' } },
+      { id: 'badge-flower', nm: 'Flower pin', cost: 40, set: { badge: 'flower' } },
+      { id: 'badge-sun', nm: 'Sun pin', cost: 50, set: { badge: 'sun' } },
       { id: 'badge-spain', nm: 'Spain pin', cost: 60, set: { badge: 'spain' } }] },
     eyes: { label: 'Eyewear', items: [
       { id: 'eyes-none', nm: 'None', cost: 0, set: { eyes: 'none' } },
       { id: 'glasses', nm: 'Glasses', cost: 40, set: { eyes: 'glasses' } },
+      { id: 'round', nm: 'Round glasses', cost: 60, set: { eyes: 'round' } },
       { id: 'shades', nm: 'Sunglasses', cost: 80, set: { eyes: 'shades' } },
       { id: 'goggles', nm: 'Goggles', cost: 150, set: { eyes: 'goggles' } }] },
     bg: { label: 'Background', items: [
@@ -120,7 +155,23 @@
       { id: 'bg-pink', nm: 'Blossom', cost: 20, set: { bg: 'pink' } },
       { id: 'bg-sun', nm: 'Sunset', cost: 40, set: { bg: 'sunset' } }] }
   };
-  const BASE_LOOK = { skin: '#C98B5E', hair: 'short', hairC: '#1F1A17' };
+  // The traveller themself (profile, "You" tab): free to change any time. Hair styles depend on the character.
+  const ME_DEFAULT = { fem: false, skin: '#C98B5E', hair: 'short', hairC: '#1F1A17', face: 'none' };
+  const ME = {
+    skin: ['#F2C29B', '#E0A77E', '#C98B5E', '#A86B45', '#8D5A3B', '#5E3B26'],
+    hairC: [['#1F1A17', 'Black'], ['#3A2414', 'Dark brown'], ['#7A4A22', 'Brown'], ['#9C3D22', 'Auburn'], ['#D9A94E', 'Blonde'], ['#A9A49E', 'Grey']],
+    hair: { m: [['short', 'Short'], ['buzz', 'Buzz cut'], ['curly', 'Curly'], ['mid', 'Longer']], f: [['long', 'Long'], ['bob', 'Bob'], ['bun', 'Bun'], ['curly', 'Curly']] },
+    face: [['none', 'Clean shaven'], ['beard', 'Beard'], ['tache', 'Moustache']]
+  };
+  // At the salon: your hair when you sit down (grown out since your last cut; a bun comes down), and what a cut does.
+  // "Largo" keeps that length with a tidy-up; "corto" and "un poco más corto" take it one step shorter.
+  const HAIR = {
+    m: { grown: { short: 'mid', buzz: 'short' }, shorter: { mid: 'short', short: 'buzz', curly: 'buzz', buzz: 'buzz' } },
+    f: { grown: { bun: 'long', bob: 'long' }, shorter: { long: 'bob', bob: 'short', curly: 'short', short: 'short' } }
+  };
+  const gOf = (look) => (look.fem ? 'f' : 'm');
+  const grownHair = (look) => HAIR[gOf(look)].grown[look.hair] || look.hair;
+  const shorterHair = (look) => HAIR[gOf(look)].shorter[look.hair] || look.hair;
 
   const FRIENDS = [
     { id: 'meera', nm: 'Meera', lang: 'Spanish', city: 'barcelona', where: 'Barcelona', level: 'amateur', av: { skin: '#8D5A3B', hair: 'long', hairC: '#1A1A1A', fem: true, top: 'stripes', topC: '#FF6FB5', pack: 'pack', packC: '#C6F432', badge: 'heart', bg: 'pink' } },
@@ -134,11 +185,13 @@
   const CHARS = {
     lucia: { nm: 'Lucía', g: 'f' },
     paco: { nm: 'Paco', g: 'm' },
-    meera: { nm: 'Meera', g: 'f' }
+    meera: { nm: 'Meera', g: 'f' },
+    carmen: { nm: 'Carmen', g: 'f' }
   };
   const CAMS = {
     cafe: { hero: { x: 330, y: 250, s: 0.85 }, wide: { x: 380, y: 250, s: 0.8 }, table: { x: 180, y: 345, s: 1.3 }, menuL: { x: 270, y: 170, s: 1.05 }, lucia: { x: 480, y: 200, s: 1.2 } },
-    mercado: { hero: { x: 400, y: 250, s: 0.9 }, wide: { x: 400, y: 250, s: 0.85 }, shop: { x: 420, y: 250, s: 0.85 } }
+    mercado: { hero: { x: 400, y: 250, s: 0.9 }, wide: { x: 400, y: 250, s: 0.85 }, shop: { x: 420, y: 250, s: 0.85 } },
+    peluqueria: { hero: { x: 400, y: 250, s: 0.85 }, wide: { x: 400, y: 250, s: 0.8 }, trolley: { x: 200, y: 300, s: 1.2 }, carmen: { x: 330, y: 200, s: 1.1 }, side: { x: 640, y: 300, s: 1.15 }, mirror: { x: 560, y: 170, s: 1.05 } }
   };
   const SHOP_LIVE = ['agua', 'zumo', 'pan', 'naranja', 'cafe'];
   const SHOP_WRONG = {
@@ -149,62 +202,104 @@
     cafe: 'Those are coffee packets. Look again.'
   };
 
+  /* Conversations follow the learner's choices. A moment can be a function of the scene state (sc):
+     it is resolved when the moment starts, so later questions talk about what was actually chosen.
+     'choose' moments accept any of their choices (tap it in the scene or pick its picture). */
+  const CAFE_ITEMS = {
+    cafe: { word: 'cafe', hot: 'menu-cafe', art: 'cup', label: 'Café', prop: 'cup', line: 'su café', ok: 'Un café, coming right up.' },
+    pan: { word: 'pan', hot: 'menu-pan', art: 'pantomate', label: 'Pan con tomate', prop: 'bread', line: 'su pan con tomate', ok: 'Pan con tomate: toast with tomato and olive oil.' },
+    agua: { word: 'agua', hot: 'menu-agua', art: 'glass', label: 'Agua', prop: 'glass', line: 'su agua', ok: 'A glass of agua, nice and cold.' }
+  };
+  const cafeChoice = (k) => { const it = CAFE_ITEMS[k]; return { key: k, word: it.word, hot: it.hot, art: it.art, label: it.label, props: [it.prop], ok: it.ok }; };
+  const cafeOrdered = (sc) => ['first', 'more', 'offer'].map((k) => sc.picks[k]).filter(Boolean);
+  const SHOP_LIST = ['agua', 'pan', 'cafe'];
+  const SHOP_OK = { agua: 'Agua: first at the café, now at the shop.', cafe: 'Café para casa. Lucía would approve.', pan: 'Pan, from the café. Now it lives in two places.' };
+  function shopTurn(n) {
+    return (sc) => {
+      const left = SHOP_LIST.filter((k) => !(sc.bought || []).includes(k));
+      const last = (sc.bought || []).slice(-1)[0];
+      const said = last ? cap(WORDS[last].es) : '';
+      const lines = n === 0 ? ['¡Buenos días! ¿Qué necesita hoy?', 'Good morning! What do you need today?']
+        : n === 1 ? [`${said}, muy bien. ¿Algo más?`, 'Very good. Anything else?']
+          : [`${said}, perfecto. ¿Y qué más?`, 'Perfect. And what else?'];
+      return { type: 'choose', slot: 'buy' + n, list: true, listAll: SHOP_LIST, who: 'paco', cam: 'shop', line: lines[0], gloss: lines[1], hl: last ? [last] : null,
+        choices: left.map((k) => ({ key: k, word: k, hot: k, art: WORDS[k].art, label: WORDS[k].es, ok: SHOP_OK[k] })),
+        distractors: ['zumo', 'naranja', ...SHOP_LIST.filter((k) => !left.includes(k))],
+        wrong: Object.assign({}, SHOP_WRONG, Object.fromEntries(SHOP_LIST.filter((k) => !left.includes(k)).map((k) => [k, `You already have the ${WORDS[k].es}. What else is on your list?`])), { zumo: 'Not on your list today. Check your list.', naranja: 'Not on your list today. Check your list.' }),
+        prompt: n ? 'Paco asks what else you need.' : 'Paco asks what you need. You have a shopping list.', sub: 'Tap something from your list on his shelf.' };
+    };
+  }
+  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  // Salon: the learner's reflection in the mirror changes with each choice.
+  const DYE = { rosa: '#E64C9A', azul: '#3A5AFF' };
+  // The haircut photos on the salon wall (and their picture choices) match the learner: a man's or a woman's cut.
+  const CUT_ART = { m: { corto: 'hairShort', largo: 'hairLongM' }, f: { corto: 'hairShortF', largo: 'hairLong' } };
+
   const SCENES = {
     cafe: {
       id: 'cafe', art: 'cafe', place: 'cafe', title: 'Café La Plaza', where: 'Barrio Gótico, Barcelona', tag: 'Day 1 · Barcelona', mins: 5,
       activity: 'Order breakfast at Café La Plaza', speaker: 'lucia',
-      acts: ['present-l', 'shrug', 'present-l', 'idea', 'present', 'hips', 'present', 'present-l', 'wave'],
-      blurb: 'It’s 9 a.m. on your first morning in Barcelona. Lucía runs the little café on the corner. Find a table, order, chat and pay, all in Spanish.',
-      meta: [['clock', '5 min'], ['cards', '5 new words'], ['chat', 'With Lucía']],
+      acts: ['present-l', 'shrug', 'present', 'idea', 'hips', 'present', 'present-l', 'wave'],
+      blurb: 'It’s 9 a.m. on your first morning in Barcelona. Lucía runs the little café on the corner. Find a table, order whatever you like, chat and pay, all in Spanish.',
+      meta: [['clock', '5 min'], ['cards', 'Up to 5 new words'], ['chat', 'With Lucía']],
       whoLine: 'You’ll meet <b>Lucía</b>. She runs the café and speaks slowly for newcomers.',
       moments: [
         { word: 'mesa', who: 'lucia', cam: 'wide', line: '¡Hola! ¿Una mesa para uno?', gloss: 'Hi! A ___ for one?', type: 'tap', live: ['table', 'chair', 'lucia'], answer: 'table',
           prompt: 'Lucía is offering you a <b>mesa</b>.', sub: 'Tap it in the scene.', after: 'table', ok: 'You sit down by the window.',
           wrong: { chair: 'Close! That’s for sitting on. A mesa is where things go.', lucia: 'That’s Lucía. Look for the mesa she’s offering you.' } },
-        { word: 'cafe', who: 'lucia', cam: 'menuL', line: '¿Qué le pongo?', gloss: 'What can I get you?', type: 'tap', live: ['menu-cafe', 'menu-pan', 'menu-agua'], answer: 'menu-cafe',
-          prompt: 'Lucía asks what you’d like. You fancy a coffee.', sub: 'Find <b>café</b> on her menu.', props: ['cup'], after: 'table', ok: 'Un café, coming right up.',
-          wrong: { 'menu-pan': 'That line is something to eat. Keep looking for café.', 'menu-agua': 'That one is a drink, but not café. Keep looking.' } },
-        { word: 'cafe', who: 'lucia', cam: 'table', line: 'Aquí tiene su café.', gloss: 'Here’s your ___.', type: 'pick', options: ['glass', 'cup', 'bread'], answer: 'cup',
-          prompt: 'Lucía puts something down on your table.', sub: 'Which one is your <b>café</b>?', ok: 'Smell that? Your first café in Barcelona.',
-          wrong: { glass: 'That’s a drink too, but café is hot. Look for the steam.', bread: 'That’s something to eat. Your café is hot.' } },
-        { word: 'pan', who: 'lucia', cam: 'lucia', line: '¿Y para comer? Hay pan con tomate.', gloss: 'And to eat? There’s ___ with tomato.', type: 'pick', options: ['cup', 'bread', 'glass'], answer: 'bread',
-          prompt: 'Now Lucía suggests something to eat.', sub: 'Which one is <b>pan</b>?', props: ['bread'], after: 'table', ok: 'Pan con tomate: toast with tomato and olive oil.',
-          wrong: { cup: 'That’s your café. Pan is something to eat.', glass: 'That’s for drinking. Pan is something to eat.' } },
-        { word: 'agua', who: 'lucia', cam: 'lucia', line: '¿Y para beber? ¿Agua?', gloss: 'And to drink? ___?', type: 'reply',
-          replies: [{ es: 'Sí, agua, por favor.', en: 'Yes, ___, please.', props: ['glass'], ok: 'Lucía brings you a glass of agua.' }, { es: 'No, gracias.', en: 'No, thanks.', props: ['glass'], ok: 'Lucía leaves a little agua anyway, just in case.' }],
-          prompt: 'Lucía offers you something to drink.', sub: 'How do you answer?', after: 'table' },
-        { word: 'pan', who: 'lucia', cam: 'table', later: 'Ten minutes later…', line: '¿Qué tal el pan?', gloss: 'How’s the ___?', type: 'tap', live: ['cup', 'bread', 'glass'], answer: 'bread',
-          prompt: 'Lucía comes back to check on you.', sub: 'Tap the <b>pan</b> she’s asking about.', ok: '¡Muy rico! Lucía smiles.',
-          wrong: { cup: 'That’s your café. Which one did you eat?', glass: 'That’s your drink. Which one did you eat?' } },
-        { word: 'agua', who: 'lucia', cam: 'lucia', line: '¿Más agua?', gloss: 'More ___?', type: 'reply',
-          replies: [{ es: 'Sí, más agua, por favor.', en: 'Yes, more ___, please.', ok: 'Lucía tops up your glass.' }, { es: 'No, gracias. Está bien.', en: 'No, thanks. I’m fine.', ok: 'You’re all set.' }],
-          prompt: 'She notices your glass is nearly empty.', sub: 'Answer Lucía.', after: 'table' },
+        { type: 'choose', slot: 'first', who: 'lucia', cam: 'menuL', line: '¿Qué le pongo?', gloss: 'What can I get you?', choices: ['cafe', 'pan', 'agua'].map(cafeChoice),
+          prompt: 'Lucía asks what you’d like. Order whatever you fancy.', sub: 'Tap it on her menu, or pick it below.', after: 'table' },
+        (sc) => {
+          const x = sc.picks.first, rest = ['cafe', 'pan', 'agua'].filter((k) => k !== x);
+          return { type: 'choose', slot: 'more', who: 'lucia', cam: 'wide', line: `Aquí tiene ${CAFE_ITEMS[x].line}. ¿Algo más?`, gloss: `Here’s your ___${x === 'pan' ? ' with tomato' : ''}. Anything else?`, hl: [x],
+            choices: rest.map(cafeChoice), none: { label: 'Nada más, gracias.', en: 'Nothing else, thanks.', ok: 'Lucía smiles. «Muy bien.»' },
+            prompt: 'Lucía brings your order and asks if you’d like anything else.', sub: 'Order something more, or say no thanks.', after: 'table' };
+        },
+        (sc) => {
+          const had = cafeOrdered(sc), missing = ['agua', 'pan', 'cafe'].filter((k) => !had.includes(k));
+          const z = missing[0];
+          if (z === 'agua') return { word: 'agua', who: 'lucia', cam: 'lucia', line: '¿Y un poco de agua?', gloss: 'And a little ___?', type: 'reply', enter: { props: ['jug'] }, show: ['jug'],
+            replies: [{ es: 'Sí, agua, por favor.', en: 'Yes, ___, please.', props: ['glass'], ok: 'Lucía pours you a glass of agua.', pick: 'agua' }, { es: 'No, gracias.', en: 'No, thanks.', ok: 'No problem. The jug stays on the counter.' }],
+            prompt: 'Lucía lifts a jug of <b>agua</b>.', sub: 'How do you answer?', after: 'table' };
+          if (z === 'pan') return { word: 'pan', who: 'lucia', cam: 'lucia', line: '¿Algo para comer? El pan con tomate está muy rico.', gloss: 'Something to eat? The ___ with tomato is really good.', type: 'reply', enter: { props: ['offer-pan'] }, show: ['offer-pan'], takes: ['offer-pan'],
+            replies: [{ es: 'Vale, un pan con tomate.', en: 'OK, a ___ with tomato.', props: ['bread'], ok: 'Good choice. It’s a Barcelona classic.', pick: 'pan' }, { es: 'No, gracias.', en: 'No, thanks.', ok: 'Maybe tomorrow.' }],
+            prompt: 'Lucía shows you her <b>pan con tomate</b>.', sub: 'Would you like some?', after: 'table' };
+          return { word: 'cafe', who: 'lucia', cam: 'lucia', line: '¿Y un café para terminar?', gloss: 'And a ___ to finish?', type: 'reply', show: ['machine'],
+            replies: [{ es: 'Sí, un café, por favor.', en: 'Yes, a ___, please.', props: ['cup'], ok: 'The machine hisses. One café.', pick: 'cafe' }, { es: 'No, gracias.', en: 'No, thanks.', ok: 'No problem.' }],
+            prompt: 'Lucía points at her coffee machine.', sub: 'Would you like a <b>café</b>?', after: 'table' };
+        },
+        (sc) => {
+          const x = sc.picks.first;
+          const q = { cafe: ['¿Qué tal el café?', 'How’s the ___?', [{ es: '¡Muy rico!', en: 'Really good!' }, { es: 'Un poco caliente.', en: 'A little hot.' }]],
+            pan: ['¿Qué tal el pan?', 'How’s the ___?', [{ es: '¡Muy rico!', en: 'Really good!' }, { es: 'Muy bien, gracias.', en: 'Very good, thanks.' }]],
+            agua: ['¿Qué tal el agua? ¿Está fría?', 'How’s the ___? Is it cold?', [{ es: 'Sí, muy fría.', en: 'Yes, very cold.' }, { es: 'Perfecta, gracias.', en: 'Perfect, thanks.' }]] }[x];
+          return { word: x, who: 'lucia', cam: 'table', later: 'Ten minutes later…', line: q[0], gloss: q[1], type: 'reply', show: [CAFE_ITEMS[x].prop],
+            replies: q[2].map((r) => Object.assign({ ok: 'Lucía is pleased.' }, r)), prompt: `Lucía comes back to check on your <b>${WORDS[x].es}</b>.`, sub: 'Answer her.' };
+        },
         { word: 'cuenta', who: 'lucia', cam: 'table', later: 'Twenty minutes later…', line: 'Aquí tiene la cuenta.', gloss: 'Here’s ___.', type: 'pick', options: ['menucard', 'receipt', 'coins'], answer: 'receipt',
-          enter: { props: ['receipt'], eat: true }, noBridge: true, prompt: 'Breakfast is done. Lucía puts something on your table.', sub: 'What is <b>la cuenta</b>?', ok: 'Cinco euros. Breakfast: done.',
+          enter: { props: ['receipt'], eat: true }, scene: { receipt: 'receipt' }, noBridge: true, prompt: 'Breakfast is done. Lucía puts something on your table.', sub: 'What is <b>la cuenta</b>? Tap it on the table or pick a picture.', ok: 'Cinco euros. Breakfast: done.',
           wrong: { menucard: 'You’ve already ordered. Look at what’s on your table now.', coins: 'Close! You’ll need those to pay it. What did Lucía bring?' } },
         { word: 'mesa', who: 'lucia', cam: 'lucia', line: '¡Gracias! ¿Le guardo la mesa para mañana?', gloss: 'Thanks! Shall I keep the ___ for you tomorrow?', type: 'reply',
           replies: [{ es: '¡Sí, por favor!', en: 'Yes, please!', ok: 'Same table tomorrow. You’re a regular now.' }, { es: 'No, gracias.', en: 'No, thanks.', ok: 'No problem. See you around.' }],
-          prompt: 'Lucía wants to save your spot.', sub: 'Answer her.' }
+          prompt: 'Lucía offers to keep your <b>mesa</b> for tomorrow.', sub: 'Answer her.' }
       ],
       outro: {
         who: 'lucia', line: '¡Hasta mañana!', gloss: 'See you tomorrow!', title: 'Breakfast, sorted', text: 'You found a table, ordered, chatted and paid, all in Spanish.',
         tryToday: 'Un café y pan con tomate, por favor.', tryEn: 'A ___ and ___ with tomato, please.',
         culture: 'In Spain, <b>pan con tomate</b> is a breakfast classic: toasted bread rubbed with ripe tomato, olive oil and a pinch of salt.',
-        next: 'Tomorrow at Paco’s shop you’ll meet <b>agua</b>, <b>pan</b> and <b>café</b> again, in a new place.'
+        next: 'Tomorrow at Paco’s shop you’ll find <b>agua</b>, <b>pan</b> and <b>café</b> again, in a new place.'
       }
     },
     mercado: {
       id: 'mercado', art: 'mercado', place: 'mercado', title: 'El mercado', where: 'Paco’s corner shop, Barcelona', tag: 'Day 2 · Review', mins: 3, review: true, requires: 'cafe',
       activity: 'Pick up groceries at Paco’s shop', speaker: 'paco',
       acts: ['hips', 'present-l', 'idea', 'present'],
-      blurb: 'Paco runs the shop on your street. Find the words you met at the café on his shelves. No pictures to choose from this time: just the word and its sound.',
+      blurb: 'Paco runs the shop on your street. You have a shopping list in Spanish: find each thing on his shelves, in any order you like.',
       meta: [['clock', '3 min'], ['refresh', 'Review'], ['chat', 'With Paco']],
       whoLine: 'You’ll meet <b>Paco</b>. He always has fresh bread.',
       moments: [
-        { word: 'agua', who: 'paco', cam: 'shop', line: '¡Buenos días! ¿Qué necesita hoy?', gloss: 'Good morning! What do you need today?', type: 'tap', live: SHOP_LIVE, answer: 'agua', prompt: 'Remember this one from the café?', sub: 'Find the <b>agua</b> on Paco’s shelf.', ok: 'Agua: first at the café, now at the shop.', wrong: SHOP_WRONG },
-        { word: 'cafe', who: 'paco', cam: 'shop', line: 'Muy bien. ¿Y café para casa?', gloss: 'Very good. And ___ for home?', type: 'tap', live: SHOP_LIVE, answer: 'cafe', prompt: 'Paco sells coffee to take home.', sub: 'Find the <b>café</b>.', ok: 'Café para casa. Lucía would approve.', wrong: SHOP_WRONG },
-        { word: 'pan', who: 'paco', cam: 'shop', line: '¿Y pan? Está recién hecho.', gloss: 'And ___? It’s freshly baked.', type: 'tap', live: SHOP_LIVE, answer: 'pan', prompt: 'Paco’s favourite.', sub: 'Find the <b>pan</b>.', ok: 'Pan, from the café. Now it lives in two places.', wrong: SHOP_WRONG },
-        { word: 'cuenta', who: 'paco', cam: 'shop', line: 'Aquí tiene la cuenta.', gloss: 'Here’s ___.', type: 'pick', options: ['receipt', 'menucard', 'coins'], answer: 'receipt', prompt: 'Time to pay.', sub: 'What does Paco hand you?', ok: 'Four euros. All done.',
+        shopTurn(0), shopTurn(1), shopTurn(2),
+        { word: 'cuenta', who: 'paco', cam: 'shop', line: 'Aquí tiene la cuenta.', gloss: 'Here’s ___.', type: 'pick', options: ['receipt', 'menucard', 'coins'], answer: 'receipt', enter: { props: ['m-receipt'] }, scene: { 'm-receipt': 'receipt' }, prompt: 'Time to pay.', sub: 'What does Paco hand you? Tap it on the counter or pick a picture.', ok: 'Four euros. All done.',
           wrong: { menucard: 'That’s a menu. Paco is asking you to pay.', coins: 'You’ll pay with those. What does Paco hand you?' } }
       ],
       outro: {
@@ -222,23 +317,67 @@
       meta: [['clock', '4 min'], ['cards', '1 new word'], ['users', 'With Meera']],
       whoLine: 'You’re co-learning with <b>Meera</b>. She’s one level ahead of you.',
       moments: [
-        { word: 'agua', who: 'meera', cam: 'shop', line: '¡Hola! ¿Compramos agua para el piso?', gloss: 'Hi! Shall we buy ___ for the flat?', type: 'reply',
-          replies: [{ es: '¡Sí, agua!', en: 'Yes, ___!', ok: 'Meera grins. Teamwork.' }, { es: 'Sí, claro.', en: 'Yes, of course.', ok: 'Meera grins. Teamwork.' }], prompt: 'Meera waves you over.', sub: 'Answer her.' },
+        { word: 'agua', who: 'meera', cam: 'shop', line: '¡Hola! ¿Compramos agua para el piso?', gloss: 'Hi! Shall we buy ___ for the flat?', type: 'reply', show: ['agua'],
+          replies: [{ es: '¡Sí, agua!', en: 'Yes, ___!', ok: 'Meera grins. Teamwork.' }, { es: 'Sí, claro.', en: 'Yes, of course.', ok: 'Meera grins. Teamwork.' }], prompt: 'Meera waves you over and points at the bottles of <b>agua</b>.', sub: 'Answer her.' },
         { word: 'agua', who: 'meera', cam: 'shop', line: 'Mira, ahí está el agua.', gloss: 'Look, there’s the ___.', type: 'tap', live: SHOP_LIVE, answer: 'agua', prompt: 'Meera spotted it first.', sub: 'Tap the <b>agua</b>.', ok: 'Two bottles in the basket.', wrong: SHOP_WRONG },
         { word: 'naranja', who: 'paco', cam: 'shop', line: '¡Hola, chicos! Hoy tengo naranjas muy buenas.', gloss: 'Hi, guys! Today I’ve got really good ___.', type: 'tap', live: SHOP_LIVE, answer: 'naranja', prompt: 'Paco has something new for you both.', sub: 'Tap the <b>naranjas</b>.', ok: 'Naranjas: a new word, learned with a friend.',
           wrong: { agua: 'You already have agua. Paco means something new.', zumo: 'Close! Juice is made from them. Look for the fruit.', pan: 'That’s pan. Paco means the fruit.', cafe: 'Those are coffee packets. Look for the fruit.' } },
-        { word: 'pan', who: 'meera', cam: 'shop', line: '¿Y pan para el desayuno?', gloss: 'And ___ for breakfast?', type: 'pick', options: ['orange', 'bread', 'cup'], answer: 'bread', prompt: 'Meera is planning breakfast.', sub: 'Which one is <b>pan</b>?', ok: 'Breakfast for tomorrow: sorted.',
-          wrong: { orange: 'That’s a naranja. Pan is baked.', cup: 'That’s a café. Pan is baked.' } },
-        { word: 'cuenta', who: 'paco', cam: 'shop', line: 'Aquí tiene la cuenta, chicos.', gloss: 'Here’s ___, guys.', type: 'pick', options: ['coins', 'receipt', 'menucard'], answer: 'receipt', prompt: 'Paco totals it up.', sub: 'What does he hand you?', ok: 'You split it with Meera.',
+        { type: 'choose', slot: 'breakfast', who: 'meera', cam: 'shop', line: '¿Qué compramos para el desayuno? ¿Pan, naranjas o café?', gloss: 'What shall we buy for breakfast? ___, ___ or ___?', hl: ['pan', 'naranja', 'cafe'],
+          choices: [{ key: 'pan', word: 'pan', hot: 'pan', art: 'bread', label: 'Pan', ok: 'Fresh pan for breakfast. Meera grins.' }, { key: 'naranja', word: 'naranja', hot: 'naranja', art: 'orange', label: 'Naranjas', ok: '¡Naranjas! Meera loves them.' }, { key: 'cafe', word: 'cafe', hot: 'cafe', art: 'cup', label: 'Café', ok: 'Café for the morning. Good idea.' }],
+          prompt: 'Meera is planning breakfast and asks what you’d like.', sub: 'Tap it on the shelf, or pick it below.' },
+        { word: 'cuenta', who: 'paco', cam: 'shop', line: 'Aquí tiene la cuenta, chicos.', gloss: 'Here’s ___, guys.', type: 'pick', options: ['coins', 'receipt', 'menucard'], answer: 'receipt', enter: { props: ['m-receipt'] }, scene: { 'm-receipt': 'receipt' }, prompt: 'Paco totals it up.', sub: 'What does he hand you? Tap it on the counter or pick a picture.', ok: 'You split it with Meera.',
           wrong: { coins: 'You’ll pay with those. What does Paco hand you?', menucard: 'That’s a menu. Paco wants you to pay.' } },
-        { word: 'cafe', who: 'meera', cam: 'shop', line: '¡Gracias por venir! ¿Un café mañana?', gloss: 'Thanks for coming! A ___ tomorrow?', type: 'reply',
-          replies: [{ es: '¡Sí, un café!', en: 'Yes, a ___!', ok: 'See you at Café La Plaza.' }, { es: 'Mañana no, gracias.', en: 'Not tomorrow, thanks.', ok: 'Maybe another day.' }], prompt: 'Meera has an idea.', sub: 'Answer her.' }
+        { word: 'cafe', who: 'meera', cam: 'shop', line: '¡Gracias por venir! ¿Un café mañana?', gloss: 'Thanks for coming! A ___ tomorrow?', type: 'reply', show: ['cafe'],
+          replies: [{ es: '¡Sí, un café!', en: 'Yes, a ___!', ok: 'See you at Café La Plaza.' }, { es: 'Mañana no, gracias.', en: 'Not tomorrow, thanks.', ok: 'Maybe another day.' }], prompt: 'Meera suggests meeting for a <b>café</b> tomorrow.', sub: 'Answer her.' }
       ],
       outro: {
         who: 'meera', line: '¡Hasta mañana!', gloss: 'See you tomorrow!', title: 'Better together', text: 'You and Meera shopped, chatted and split the bill, all in Spanish.',
         tryToday: '¿Un café mañana?', tryEn: 'A ___ tomorrow?',
         culture: 'Spanish markets often sell fruit by the kilo. Ask for <b>un kilo de naranjas</b>.',
         next: 'Co-learning earns bonus Rep for both of you.'
+      }
+    },
+    peluqueria: {
+      id: 'peluqueria', art: 'peluqueria', place: 'peluqueria', title: 'Salón Rosa', where: 'Carmen’s hair salon, Barcelona', tag: 'Day 3 · Barcelona', mins: 5, requires: 'cafe', outroCam: 'carmen',
+      artOpts: () => { const me = myLook(); return { fem: !!me.fem, look: Object.assign({}, me, { hair: grownHair(me) }) }; },
+      activity: 'Get a haircut at Salón Rosa', speaker: 'carmen',
+      acts: ['present-l', 'shrug', 'present', 'hips', 'idea', 'present', 'present-l', 'wave'],
+      blurb: 'Your hair has grown and it’s time for a cut. Carmen runs the salon round the corner. Check in for your appointment, choose your style and colour, chat while she cuts, and pay, all in Spanish.',
+      meta: [['clock', '5 min'], ['cards', 'Up to 5 new words'], ['chat', 'With Carmen']],
+      whoLine: 'You’ll meet <b>Carmen</b>. She’s chatty and loves a good haircut.',
+      moments: [
+        // Spanish agrees with the learner: Carmen says bienvenido or bienvenida to match the avatar.
+        (sc) => ({ word: 'cita', who: 'carmen', cam: 'wide', line: `¡Hola, ${sc.look.fem ? 'bienvenida' : 'bienvenido'}! ¿Tiene cita?`, gloss: 'Hi, welcome! Do you have an ___?', type: 'reply', show: ['agenda'],
+          replies: [{ es: 'Sí, a las diez.', en: 'Yes, at ten.', ok: 'Carmen finds your name in her book. Right on time.' }, { es: 'No, no tengo cita.', en: 'No, I don’t have an ___.', ok: 'No problem. Carmen has a free chair right now.' }],
+          prompt: 'Carmen checks her book for your <b>cita</b>.', sub: 'Answer her.' }),
+        (sc) => { const art = CUT_ART[gOf(sc.look)]; return { type: 'choose', slot: 'cut', who: 'carmen', cam: 'wide', line: '¿Cómo lo quiere? ¿Corto o largo?', gloss: 'How would you like it? ___ or ___?', hl: ['corto', 'largo'],
+          choices: [{ key: 'corto', word: 'corto', hot: 'poster-corto', art: art.corto, label: 'Corto', ok: 'Short it is. Fresh and easy.', effect: (s) => { s.look.hair = shorterHair(s.look); } },
+            { key: 'largo', word: 'largo', hot: 'poster-largo', art: art.largo, label: 'Largo', ok: 'Long it is. Carmen will just tidy it up.' }],
+          prompt: 'You sit down and Carmen asks how you’d like your hair. Look at the photos on the wall.', sub: 'Tap a photo, or pick a style below.' }; },
+        { type: 'choose', slot: 'dye', who: 'carmen', cam: 'mirror', line: '¿Y color? ¿Quiere rosa o azul?', gloss: 'And colour? Would you like ___ or ___?', hl: ['rosa', 'azul'],
+          choices: [{ key: 'rosa', word: 'rosa', hot: 'dye-rosa', art: 'dyePink', label: 'Rosa', ok: 'Bold! Carmen mixes the rosa.', effect: (sc) => { sc.look.hairC = DYE.rosa; } },
+            { key: 'azul', word: 'azul', hot: 'dye-azul', art: 'dyeBlue', label: 'Azul', ok: 'Azul! Carmen loves it.', effect: (sc) => { sc.look.hairC = DYE.azul; } }],
+          none: { label: 'No, no quiero color.', en: 'No, I don’t want any colour.', ok: 'No colour. Just the cut.' },
+          prompt: 'Carmen shows you her colour cards and asks if you’d like some colour.', sub: 'Tap a colour card, pick one below, or say no.' },
+        { word: 'agua', who: 'carmen', cam: 'carmen', line: 'Primero, lavamos el pelo. ¿Qué tal el agua?', gloss: 'First, we wash your hair. How’s the ___?', type: 'reply',
+          replies: [{ es: 'Bien, gracias.', en: 'Fine, thanks.', ok: 'Nice and warm.' }, { es: 'Un poco caliente.', en: 'A little hot.', ok: 'Carmen cools the agua down a little.' }],
+          prompt: 'Carmen washes your hair and checks the <b>agua</b>.', sub: 'Answer her.' },
+        { word: 'corto', who: 'carmen', cam: 'mirror', later: 'Fifteen minutes later…', line: '¿Así está bien, o un poco más corto?', gloss: 'Is this OK, or a little ___er?', type: 'reply', show: ['espejo'],
+          replies: [{ es: 'Así está bien.', en: 'It’s fine like this.', ok: 'Carmen finishes the cut.' },
+            { es: 'Un poco más corto, por favor.', en: 'A little ___er, please.', ok: 'Snip, snip. A little shorter.', effect: (sc) => { sc.look.hair = shorterHair(sc.look); } }],
+          prompt: 'Carmen stops cutting and checks with you in the mirror.', sub: 'How do you answer?' },
+        { word: 'espejo', who: 'carmen', cam: 'wide', line: '¡Listo! ¿Le gusta? Mírese en el espejo.', gloss: 'Done! Do you like it? Look in the ___.', type: 'tap', live: ['espejo', 'poster-corto', 'toalla'], answer: 'espejo',
+          prompt: 'Your haircut is finished.', sub: 'Tap the <b>espejo</b> to take a look.', ok: '¡Qué bien! You look great.',
+          wrong: { 'poster-corto': 'That’s a photo of someone else. Look for where you can see yourself.', toalla: 'Those are towels. Look for where you can see yourself.' } },
+        { word: 'cuenta', who: 'carmen', cam: 'side', line: 'Son quince euros. Aquí tiene la cuenta.', gloss: 'That’s fifteen euros. Here’s ___.', type: 'pick', options: ['coins', 'receipt', 'menucard'], answer: 'receipt', enter: { props: ['p-receipt'] }, scene: { 'p-receipt': 'receipt' },
+          prompt: 'Time to pay.', sub: 'What does Carmen give you? Tap it in the scene or pick a picture.', ok: 'Paid. See you next month!',
+          wrong: { coins: 'You’ll pay with those. What does Carmen give you?', menucard: 'That’s a menu. Carmen wants you to pay.' } }
+      ],
+      outro: {
+        who: 'carmen', line: '¡Hasta pronto!', gloss: 'See you soon!', title: 'Fresh look, new words', text: 'You checked in, chose your haircut, chatted while Carmen cut it and paid, all in Spanish.',
+        tryToday: 'Un poco más corto, por favor.', tryEn: 'A little ___er, please.',
+        culture: 'Most Spanish salons work by appointment, so call ahead and ask for <b>una cita</b>. Tips aren’t expected; leaving a euro or two is a kind extra if you loved the cut.',
+        next: 'Next in Barcelona: eat out with friends at <b>El restaurante</b>, coming soon.'
       }
     }
   };
@@ -248,7 +387,8 @@
   const INITIAL = () => ({
     v: 3, known: [], learning: null, goal: null, sound: true, rep: 0, repEarned: 0, pace: 'steady', arrived: false,
     words: {}, order: [], fresh: [], done: {}, last: null, greeted: {}, tours: {}, log: {}, stuck: null, colearn: {},
-    eq: { cap: 'cap-none', top: 'tee-blue', pack: 'pack-pink', badge: 'badge-none', eyes: 'eyes-none', bg: 'bg-lime' }, owned: []
+    eq: { cap: 'cap-none', top: 'tee-blue', pack: 'pack-pink', badge: 'badge-none', eyes: 'eyes-none', bg: 'bg-lime' }, owned: [],
+    me: Object.assign({}, ME_DEFAULT)
   });
   function load() {
     try { const s = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY)); if (s && s.v === 3) return Object.assign(INITIAL(), s); } catch (e) { /* storage unavailable */ }
@@ -256,7 +396,7 @@
   }
   let state = load();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
-  const UI = { filter: 'all', langSel: null, learn: null, city: 'barcelona', tab: 'cap', search: '', goal: null, ffilter: 'all' };
+  const UI = { filter: 'all', langSel: null, learn: null, city: 'barcelona', tab: 'me', search: '', goal: null, ffilter: 'all', bankSort: 'scene', bankLang: 'es' };
   if (state.learning) UI.learn = state.learning;
   const bankCount = () => Object.keys(state.words).length;
   const isMobile = () => window.innerWidth < 820;
@@ -265,7 +405,8 @@
   const shopItem = (tab, id) => SHOP[tab].items.find((i) => i.id === id);
   const owns = (it) => it.cost === 0 || state.owned.includes(it.id);
   function myLook() {
-    const c = Object.assign({}, AV_DEFAULT, BASE_LOOK);
+    const me = Object.assign({}, ME_DEFAULT, state.me);
+    const c = Object.assign({}, AV_DEFAULT, { fem: !!me.fem, skin: me.skin, hair: me.hair, hairC: me.hairC, beard: !me.fem && me.face === 'beard', tache: !me.fem && me.face === 'tache' });
     Object.keys(SHOP).forEach((t) => { const it = shopItem(t, state.eq[t]); if (it) Object.assign(c, it.set); });
     return c;
   }
@@ -487,7 +628,8 @@
 
   /* ================= Helpers ================= */
   let timers = [];
-  function later(fn, ms) { const t = setTimeout(fn, ms); timers.push(t); return t; }
+  // Timed steps; an error in one shows the friendly error card instead of freezing the page.
+  function later(fn, ms) { const t = setTimeout(() => { try { fn(); } catch (err) { showCrash(err); } }, ms); timers.push(t); return t; }
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
   const svgArt = (k, cls = 'art') => prop(k).replace('<svg ', `<svg class="${cls}" `);
   const blankify = (s) => esc(s).replace(/___/g, '<span class="blank" aria-label="the new word"></span>');
@@ -514,6 +656,15 @@
     const w = WORDS[id];
     const l = state.known.find((x) => x !== 'en' && w.bridges[x]) || state.known.find((x) => w.bridges[x]);
     return l ? { lang: LANG[l], word: w.bridges[l].split(' · ')[0] } : null;
+  }
+  // Highlight several words in one line (a question that offers choices).
+  function hlAll(line, words) {
+    const marks = [];
+    words.forEach((w) => { const i = line.toLowerCase().indexOf(w.toLowerCase()); if (i >= 0) marks.push([i, i + w.length]); });
+    marks.sort((a, b) => a[0] - b[0]);
+    let out = '', at = 0;
+    marks.forEach(([a, b]) => { if (a < at) return; out += esc(line.slice(at, a)) + `<span class="nw">${esc(line.slice(a, b))}</span>`; at = b; });
+    return out + esc(line.slice(at));
   }
   function learn(id, place) {
     const isNew = !state.words[id];
@@ -1140,18 +1291,34 @@
   }
 
   /* ================= Profile: avatar editor ================= */
+  // "You": the traveller themself (character, skin, hair, beard). Free, and changeable any time.
+  function meHTML() {
+    const me = Object.assign({}, ME_DEFAULT, state.me), look = Object.assign(myLook(), { cap: 'none' }), g = me.fem ? 'f' : 'm';
+    const card = (k, v, patch, nm, on) => `<button type="button" class="pf-item${on ? ' on' : ''}" data-action="meSet" data-k="${k}" data-v="${v}" aria-pressed="${on}">
+        ${avatarBust(Object.assign({}, look, patch), 'av-item')}<span class="pi-nm">${nm}</span>${on ? `<span class="pi-st">${icon('check')}Yours</span>` : ''}</button>`;
+    const sw = (k, v, nm) => `<button type="button" class="me-sw${me[k] === v ? ' on' : ''}" data-action="meSet" data-k="${k}" data-v="${v}" aria-pressed="${me[k] === v}" aria-label="${nm}" title="${nm}" style="--sw:${v}"></button>`;
+    const sec = (h, body, cls = 'pf-items') => `<div class="me-sec"><h3>${h}</h3><div class="${cls}">${body}</div></div>`;
+    return sec('Character', card('fem', '0', { fem: false, hair: g === 'm' ? me.hair : 'short', beard: false, tache: false }, 'Man', !me.fem) + card('fem', '1', { fem: true, hair: g === 'f' ? me.hair : 'long', beard: false, tache: false }, 'Woman', me.fem))
+      + sec('Skin', ME.skin.map((v, i) => sw('skin', v, `Skin tone ${i + 1}`)).join(''), 'me-sws')
+      + sec('Hair', ME.hair[g].map(([v, nm]) => card('hair', v, { hair: v }, nm, me.hair === v)).join(''))
+      + sec('Hair colour', ME.hairC.map(([v, nm]) => sw('hairC', v, nm)).join(''), 'me-sws')
+      + (me.fem ? '' : sec('Face', ME.face.map(([v, nm]) => card('face', v, { beard: v === 'beard', tache: v === 'tache' }, nm, me.face === v)).join('')));
+  }
   function pfItemsHTML() {
+    if (UI.tab === 'me') return meHTML();
+    const view = SHOP[UI.tab].view;
     return SHOP[UI.tab].items.map((it) => {
       const own = owns(it), on = state.eq[UI.tab] === it.id;
       const look = Object.assign(myLook(), it.set);
       return `<button type="button" class="pf-item${on ? ' on' : ''}${own ? '' : ' locked'}" data-action="pfItem" data-id="${it.id}" aria-pressed="${on}">
-        ${avatarBust(look, 'av-item')}<span class="pi-nm">${it.nm}</span>
+        ${avatarBust(look, 'av-item', view)}<span class="pi-nm">${it.nm}</span>
         <span class="pi-st">${on ? `${icon('check')}Wearing` : own ? 'Owned' : `${icon('lock')}${it.cost} Rep`}</span></button>`;
     }).join('');
   }
   function pfRefresh(changed) {
     const items = $('#pfItems');
     if (!items) return;
+    items.className = UI.tab === 'me' ? 'pf-me' : 'pf-items';
     items.innerHTML = pfItemsHTML();
     $$('.pf-tab').forEach((t) => t.setAttribute('aria-selected', t.dataset.tab === UI.tab));
     if (!changed) return;
@@ -1178,9 +1345,9 @@
         </section>
         <section class="pf-shop">
           <h1>Your traveller</h1>
-          <p class="lead">Unlock new looks with Rep you earn in scenes. Spending Rep never lowers your level.</p>
-          <div class="pf-tabs" role="tablist" aria-label="Avatar items">${Object.entries(SHOP).map(([k, t]) => `<button type="button" role="tab" aria-selected="${UI.tab === k}" class="pf-tab" data-action="pfTab" data-tab="${k}">${t.label}</button>`).join('')}</div>
-          <div class="pf-items" role="tabpanel" id="pfItems">${pfItemsHTML()}</div>
+          <p class="lead">Make the traveller look like you, then unlock new looks with Rep you earn in scenes. Spending Rep never lowers your level.</p>
+          <div class="pf-tabs" role="tablist" aria-label="Avatar items">${[['me', 'You'], ...Object.entries(SHOP).map(([k, t]) => [k, t.label])].map(([k, l]) => `<button type="button" role="tab" aria-selected="${UI.tab === k}" class="pf-tab" data-action="pfTab" data-tab="${k}">${l}</button>`).join('')}</div>
+          <div class="${UI.tab === 'me' ? 'pf-me' : 'pf-items'}" role="tabpanel" id="pfItems">${pfItemsHTML()}</div>
           <div class="pf-levels">
             <h2>Traveller levels</h2>
             <p>Your level follows the Rep you’ve earned in total. ${nx ? `<b>${nx.min - state.repEarned} Rep</b> to ${nx.nm}.` : 'You’re at the top.'}</p>
@@ -1266,7 +1433,7 @@
       else if (playable && sceneOpen(id)) { cls = 'ready'; st = '<span class="st pill pink">Ready</span>'; }
       const open = playable && sceneOpen(id);
       const tag = open ? 'a' : 'button';
-      const attrs = open ? `href="#/scene/${id}"` : `type="button" data-action="locked" data-msg="${playable ? 'Finish the café first. Its words come back here.' : `${esc(p.nm)} opens later this week. In this prototype the café, market and co-learn scenes are playable.`}"`;
+      const attrs = open ? `href="#/scene/${id}"` : `type="button" data-action="locked" data-msg="${playable ? 'Finish the café first. Its words come back here.' : `${esc(p.nm)} opens later this week. In this prototype the café, market, hair salon and co-learn scenes are playable.`}"`;
       return `<${tag} class="jn ${cls}" ${attrs}>${st}${svgArt(p.art)}<span class="day">${pace.slots[i]}</span><span class="nm">${p.nm}</span><span class="what">${p.what}</span></${tag}>`;
     });
     Object.keys(state.colearn).filter((id) => state.colearn[id]).forEach((id) => {
@@ -1325,13 +1492,13 @@
     const reviewWords = cafeDone ? ['agua', 'cafe', 'pan', 'cuenta'] : [];
     const places = new Set(Object.values(state.words).flat()).size;
     const pace = PACES[state.pace] || PACES.steady;
-    const act = cafeDone && !reviewDone ? SCENES.mercado : SCENES.cafe;
+    const act = !cafeDone ? SCENES.cafe : !reviewDone ? SCENES.mercado : SCENES.peluqueria;
     const actDone = !!state.done[act.id];
     const recent = state.order.slice(-3).reverse();
     app.innerHTML = shell('spanish', `<div class="wrap sp-page">
       <div class="sp-head">
         <div><span class="eyebrow blue">Spanish · Level 1 · Barcelona</span><h1>Buenos días</h1></div>
-        <a class="sp-me" href="#/profile">${myBust('av-48')}<div><b>${levelOf(state.repEarned).nm}</b><small>Day ${cafeDone ? 2 : 1} of your trip</small></div></a>
+        <a class="sp-me" href="#/profile">${myBust('av-48')}<div><b>${levelOf(state.repEarned).nm}</b><small>Day ${Math.min(3, 1 + ['cafe', 'mercado', 'peluqueria'].filter((p) => state.done[p]).length)} of your trip</small></div></a>
       </div>
       <div class="top-grid">
         <section class="activity" aria-labelledby="actTitle">
@@ -1341,7 +1508,7 @@
             <div class="meta">${metaRow(act.meta)}</div>
             <a class="btn btn-lime" href="#/scene/${act.id}">${actDone ? 'Play it again' : 'Let’s go'} ${icon('arrowRight')}</a>
           </div>
-          <a class="activity-art" href="#/scene/${act.id}" tabindex="-1" aria-hidden="true" data-scene="${act.art}" data-cam="hero">${act.art === 'cafe' ? SCENE_ART.cafe() : SCENE_ART.mercado()}</a>
+          <a class="activity-art" href="#/scene/${act.id}" tabindex="-1" aria-hidden="true" data-scene="${act.art}" data-cam="hero">${SCENE_ART[act.art](act.artOpts ? act.artOpts() : {})}</a>
         </section>
         <div class="quick">
           <a class="qcard qc-review" href="${cafeDone ? '#/scene/mercado' : '#/today'}" ${cafeDone ? '' : 'data-action="locked" data-msg="Review opens after today’s café. Its words come back at Paco’s shop."'}>
@@ -1377,19 +1544,50 @@
     later(() => Tour.start('today'), 800);
   }
 
+  /* Word bank: pick a language, then see words by the scene you met them in, by type, or newest first. */
+  const BANK_SORTS = { scene: ['By scene', 'Where you first met each word'], type: ['By type', 'Food, drinks, colours and more'], new: ['Newest first', 'The words you learned last'] };
+  const SCENE_ORDER = ['cafe', 'mercado', 'colearn', 'peluqueria', 'restaurante', 'dentista'];
+  function langDD() {
+    const cur = LEARN.find((l) => l.id === UI.bankLang) || LEARN[0];
+    return `<div class="dd dd-bank" id="langDD">
+      <button type="button" class="dd-btn" data-action="ddToggle" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Language</span><span class="flag-dot" style="background:${cur.flag}"></span><span class="dd-v">${cur.nm}</span>${icon('chevronDown', 'dd-c')}</button>
+      <ul class="dd-menu" role="listbox" aria-label="Language">${LEARN.map((l) => { const on = l.id === UI.bankLang, n = l.on ? bankCount() : 0; return `<li role="option" aria-selected="${on}"${l.on ? '' : ' aria-disabled="true"'} tabindex="-1" data-action="bankLang" data-v="${l.id}"><span class="dd-row"><span class="flag-dot" style="background:${l.flag}"></span><span><b>${l.nm}</b><small>${l.on ? `${n} ${n === 1 ? 'word' : 'words'}` : 'Coming soon'}</small></span></span>${on ? icon('check') : ''}</li>`; }).join('')}</ul>
+    </div>`;
+  }
+  function sortDD() {
+    return `<div class="dd dd-bank" id="sortDD">
+      <button type="button" class="dd-btn" data-action="ddToggle" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Sort</span><span class="dd-v">${BANK_SORTS[UI.bankSort][0]}</span>${icon('chevronDown', 'dd-c')}</button>
+      <ul class="dd-menu" role="listbox" aria-label="Sort words">${Object.entries(BANK_SORTS).map(([k, [nm, sub]]) => `<li role="option" aria-selected="${k === UI.bankSort}" tabindex="-1" data-action="bankSort" data-v="${k}"><span><b>${nm}</b><small>${sub}</small></span>${k === UI.bankSort ? icon('check') : ''}</li>`).join('')}</ul>
+    </div>`;
+  }
+  function wordTile(id, i) {
+    const w = WORDS[id], pl = state.words[id];
+    return `<a class="wtile ${w.tint}" href="#/word/${id}" style="animation-delay:${Math.min(i, 10) * 0.04}s">${state.fresh.includes(id) ? '<span class="new">New</span>' : ''}${svgArt(w.art)}<span class="w">${w.es}</span><span class="s"><span>${pl.length === 1 ? PLACES[pl[0]].nm : `${pl.length} places`}</span>${dots(pl.length)}</span></a>`;
+  }
   function viewWords() {
     const f = UI.filter;
-    const ids = state.order.slice().reverse().filter((id) => { const n = state.words[id].length; return f === 'all' || (f === 'visit' && n === 1) || (f === 'strong' && n >= 2); });
-    const counts = { all: state.order.length, visit: state.order.filter((i) => state.words[i].length === 1).length, strong: state.order.filter((i) => state.words[i].length >= 2).length };
+    const pass = (id) => { const n = state.words[id].length; return f === 'all' || (f === 'visit' && n === 1) || (f === 'strong' && n >= 2); };
+    const met = state.order.filter((id) => WORDS[id] && state.words[id]);
+    const counts = { all: met.length, visit: met.filter((i) => state.words[i].length === 1).length, strong: met.filter((i) => state.words[i].length >= 2).length };
+    const ids = met.filter(pass);
+    const byEs = (a, b) => WORDS[a].es.replace(/^la /, '').localeCompare(WORDS[b].es.replace(/^la /, ''), 'es');
+    let groups = UI.bankSort === 'type'
+      ? WORD_CATS.map((c) => ({ h: c.nm, art: c.art, tint: c.tint, ids: ids.filter((id) => (WORDS[id].cat || 'things') === c.id).sort(byEs) }))
+      : UI.bankSort === 'scene'
+        ? SCENE_ORDER.map((p) => ({ h: PLACES[p].nm, sub: PLACES[p].what, art: PLACES[p].art, tint: PLACES[p].tint, ids: ids.filter((id) => state.words[id][0] === p) }))
+        : [{ ids: ids.slice().reverse() }];
+    groups = groups.filter((g) => g.ids.length);
+    let n = 0;
+    const body = groups.map((g) => `${g.h ? `<section class="wgroup"><h2 class="wg-h"><span class="wg-ic ${g.tint}">${svgArt(g.art, 'wg-art')}</span><span class="wg-t"><b>${g.h}</b>${g.sub ? `<small>${g.sub}</small>` : ''}</span><span class="wg-n">${g.ids.length} ${g.ids.length === 1 ? 'word' : 'words'}</span></h2>` : '<section class="wgroup">'}<div class="wgrid">${g.ids.map((id) => wordTile(id, n++)).join('')}</div></section>`).join('');
     app.innerHTML = shell('words', `<div class="wrap bank">
       <a class="back" href="#/today">${icon('arrowLeft')}Spanish</a>
-      <div class="bank-head"><div><h1>Word bank</h1><p>Like a notes app, but every word keeps its picture and the places you met it. More places, stronger word.</p></div></div>
-      ${state.order.length ? `<div class="filters" role="group" aria-label="Filter words">
+      <div class="bank-head"><div><h1>Word bank</h1><p>Like a notes app, but every word keeps its picture and the places you met it. More places, stronger word.</p></div>${met.length ? `<div class="bank-tools">${langDD()}${sortDD()}</div>` : ''}</div>
+      ${met.length ? `<div class="filters" role="group" aria-label="Filter words">
         <button type="button" class="filter" data-action="filter" data-f="all" aria-pressed="${f === 'all'}">All · ${counts.all}</button>
         <button type="button" class="filter" data-action="filter" data-f="visit" aria-pressed="${f === 'visit'}">Needs another visit · ${counts.visit}</button>
         <button type="button" class="filter" data-action="filter" data-f="strong" aria-pressed="${f === 'strong'}">Getting strong · ${counts.strong}</button>
       </div>
-      <div class="wgrid">${ids.map((id, i) => { const w = WORDS[id], pl = state.words[id]; return `<a class="wtile ${w.tint}" href="#/word/${id}" style="animation-delay:${Math.min(i, 10) * 0.04}s">${state.fresh.includes(id) ? '<span class="new">New</span>' : ''}${svgArt(w.art)}<span class="w">${w.es}</span><span class="s"><span>${PLACES[pl[pl.length - 1]].nm}</span>${dots(pl.length)}</span></a>`; }).join('') || '<p class="empty-note">No words in this filter yet.</p>'}</div>`
+      ${body || '<p class="empty-note">No words in this filter yet.</p>'}`
         : `<div class="empty"><div class="empty-tiles">${['', '', ''].map(() => '<span class="qc-tile"><i>+</i></span>').join('')}</div><h2>Your word bank is empty</h2><p>Words land here as you live scenes, each with its picture and the place you met it.</p><a class="btn" href="#/scene/cafe">Start at the café ${icon('arrowRight')}</a></div>`}
     </div>`);
     Glo.context('A word with <b>one dot</b> has only been met in one place. It needs another visit to stick.');
@@ -1430,8 +1628,8 @@
     if (!def) { location.hash = '#/today'; return; }
     if (!sceneOpen(id)) { toast('Finish the café first. Its words come back in this scene.'); location.hash = '#/today'; return; }
     document.body.classList.add('in-scene', 'no-tabs');
-    SC = { def, moments: def.moments, i: -1, solved: false, misses: 0, english: 0, rep: 0, firstTry: 0, lvlBefore: levelOf(state.repEarned).id, counts: {}, known0: new Set(Object.keys(state.words)), tipped: {} };
-    const artHTML = def.art === 'cafe' ? SCENE_ART.cafe() : SCENE_ART.mercado(def.artOpts ? def.artOpts() : {});
+    SC = { def, moments: def.moments.map((m) => (typeof m === 'function' ? m : Object.assign({}, m))), picks: {}, bought: [], learned: new Set(), look: null, i: -1, solved: false, misses: 0, english: 0, rep: 0, firstTry: 0, lvlBefore: levelOf(state.repEarned).id, counts: {}, known0: new Set(Object.keys(state.words)), tipped: {} };
+    const artHTML = SCENE_ART[def.art](def.artOpts ? def.artOpts() : {});
     app.innerHTML = `<div class="scene view">
       <div class="scene-top">
         <a class="close" href="#/today" aria-label="Leave the scene">${icon('x')}</a>
@@ -1457,6 +1655,7 @@
     const stage = $('#stage');
     fitScene();
     setCam(stage, 'wide', true);
+    if (def.art === 'peluqueria') { const me = myLook(); SC.look = Object.assign({}, me, { hair: grownHair(me) }); setReflection(false); }
     stage.addEventListener('click', (e) => { const h = e.target.closest('.hot.live'); if (h) onTap(h.dataset.hot, h); else confused(); });
     $('#panel').addEventListener('click', (e) => { if (!e.target.closest('button, a, input, .word, .say')) confused(); });
     stage.addEventListener('keydown', (e) => { const h = e.target.closest('.hot.live'); if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onTap(h.dataset.hot, h); } });
@@ -1492,7 +1691,7 @@
     say.hidden = false;
     say.dataset.who = who;
     say.classList.add('fading');
-    say.innerHTML = `<div class="say-body"><span class="say-nm">${(CHARS[who] || { nm: '' }).nm}</span><p class="line">${hl(line, word ? WORDS[word].es : null, true)}</p>${gloss ? `<p class="gloss">${blankify(gloss)}</p>` : ''}</div><button type="button" class="icon-btn round play" data-action="sayLine" aria-label="Hear it again">${icon('volume')}</button>`;
+    say.innerHTML = `<div class="say-body"><span class="say-nm">${(CHARS[who] || { nm: '' }).nm}</span><p class="line">${Array.isArray(word) ? hlAll(line, word.map((k) => WORDS[k].es)) : hl(line, word ? WORDS[word].es : null, true)}</p>${gloss ? `<p class="gloss">${blankify(gloss)}</p>` : ''}</div><button type="button" class="icon-btn round play" data-action="sayLine" aria-label="Hear it again">${icon('volume')}</button>`;
     placeSay();
     setTimeout(() => say.classList.remove('fading'), 30);
     if (!state.sound) timedTalk(who, line);
@@ -1557,6 +1756,7 @@
     Glo.hide();
     SC.i++;
     if (SC.i >= SC.moments.length) { sceneOutro(); return; }
+    if (typeof SC.moments[SC.i] === 'function') SC.moments[SC.i] = Object.assign({}, SC.moments[SC.i](SC));
     const m = cur();
     SC.solved = false;
     SC.misses = 0;
@@ -1564,21 +1764,27 @@
     setProgress();
     const stage = $('#stage'), say = $('#say');
     say.classList.add('fading');
+    // Nothing from the last moment stays tappable while the next one loads (or during a time skip).
+    stage.classList.remove('tappable');
+    $$('.hot.live', stage).forEach((h) => { h.classList.remove('live'); h.setAttribute('tabindex', '-1'); });
     const go = () => {
       if (m.enter) {
         (m.enter.props || []).forEach((p) => later(() => propIn(stage, p), 500));
         if (m.enter.eat) { const b = stage.querySelector('[data-prop="bread"]'); if (b) b.classList.add('eaten'); }
       }
       $$('.hot', stage).forEach((h) => { h.classList.remove('live', 'hint', 'right', 'wrong'); h.setAttribute('tabindex', '-1'); });
-      stage.classList.toggle('tappable', m.type === 'tap');
+      stage.classList.toggle('tappable', m.type === 'tap' || (m.type === 'pick' && !!m.scene) || (m.type === 'choose' && m.choices.some((c) => c.hot)));
       stage.classList.toggle('coach', m.type === 'tap' && !state.tours.tapped);
-      if (m.type === 'tap') m.live.forEach((k) => { const h = stage.querySelector(`[data-hot="${k}"]`); if (h) { h.classList.add('live'); h.setAttribute('tabindex', '0'); } });
+      const liveKeys = m.type === 'tap' ? m.live : m.type === 'pick' && m.scene ? Object.keys(m.scene)
+        : m.type === 'choose' ? m.choices.filter((c) => c.hot).map((c) => c.hot).concat(m.distractors || []) : [];
+      liveKeys.forEach((k) => { const h = stage.querySelector(`[data-hot="${k}"]`); if (h) { h.classList.add('live'); h.setAttribute('tabindex', '0'); } });
       renderMoment(m);
       momentGlo(m);
       moveCam(m.cam, () => {
         attend(m.who);
         gesture(m);
-        showSay(m.who, m.line, m.word, m.gloss);
+        showSay(m.who, m.line, m.hl || m.word, m.gloss);
+        (m.show || []).forEach((k, i) => later(() => artFor(k).forEach((a) => once(a, 'wiggle', 800)), 500 + i * 120));
         if (SC.i === 0) later(() => Tour.start('scene'), 900);
         if (state.sound) Speech.say(m.line, false, $('#say .play'), speakerG(m.who), m.who);
       });
@@ -1593,11 +1799,25 @@
     } else go();
   }
 
+  function renderChoose(m) {
+    const list = m.list ? `<div class="shoplist"><span class="sl-h">${icon('cards')}Your shopping list</span><ul>${m.listAll.map((k) => `<li class="${SC.bought.includes(k) ? 'got' : ''}">${icon('check')}<span>${WORDS[k].es}</span></li>`).join('')}</ul></div>` : '';
+    const tiles = m.list ? '' : `<div class="tiles choices" role="group" aria-label="Choose one">${m.choices.map((c) => `<button type="button" class="tile choice" data-action="choose" data-k="${c.key}" aria-label="${esc(c.label)}">${prop(c.art)}<span class="ch-l">${esc(c.label)}</span></button>`).join('')}</div>`;
+    const none = m.none ? `<div class="replies"><button type="button" class="reply" data-action="choose" data-k="none"><span><span class="r-es">${esc(m.none.label)}</span><span class="r-en">${esc(m.none.en)}</span></span>${icon('volume')}</button></div>` : '';
+    $('#panel').classList.remove('solved');
+    $('#panel').innerHTML = `
+      <div class="tagrow"><span class="eyebrow blue">${m.list ? 'Shopping list' : 'Your choice'}</span></div>
+      <p class="prompt">${m.prompt}<small>${m.sub}</small></p>
+      ${list}${tiles}${none}
+      <div id="olaSlot"></div>
+      <div id="fb"></div>
+      <div class="panel-foot" id="foot"></div>`;
+  }
   function renderMoment(m) {
+    if (m.type === 'choose') { renderChoose(m); return; }
     const w = WORDS[m.word];
     const seenToday = SC.counts[m.word] || 0;
     let tag = '<span class="eyebrow">New word</span>';
-    if (SC.def.review) tag = '<span class="eyebrow blue">Remember this?</span>';
+    if (SC.def.review && SC.known0.has(m.word)) tag = '<span class="eyebrow blue">Remember this?</span>';
     else if (seenToday) tag = `<span class="eyebrow pink">Again · ${seenToday + 1}${seenToday === 1 ? 'nd' : 'rd'} time in this scene</span>`;
     else if (SC.known0.has(m.word)) tag = '<span class="eyebrow pink">Met before · new place</span>';
     const chips = SC.def.review || seenToday || SC.known0.has(m.word) ? '' : bridgeChips(m.word, { noBridge: m.noBridge });
@@ -1608,7 +1828,7 @@
     $('#panel').classList.remove('solved');
     $('#panel').innerHTML = `
       <div class="tagrow">${tag}</div>
-      <div class="word-row"><div class="word" id="panelWord">${w.es}</div>
+      <div class="word-row"><div class="word-line">${m.type === 'reply' ? `<span class="word-pic" title="${esc(w.en)}" aria-label="${esc(w.es)} means ${esc(w.en)}">${prop(w.art)}</span>` : ''}<div class="word" id="panelWord">${w.es}</div></div>
       <div class="audio"><button type="button" class="icon-btn" data-action="sayWord" aria-label="Listen">${icon('volume')}<span class="lbl">Listen</span></button><button type="button" class="icon-btn" data-action="sayWordSlow" aria-label="Listen slower">${icon('turtle')}<span class="lbl">Slower</span></button></div></div>
       ${chips ? `<div class="bridges">${chips}</div>` : ''}
       <p class="prompt">${m.prompt}<small>${m.sub}</small></p>
@@ -1619,6 +1839,10 @@
   }
 
   function momentGlo(m) {
+    if (m.type === 'choose') {
+      Glo.context(() => Glo.say(SC.solved ? 'Nice choice. Tap <b>Continue</b> when you’re ready.' : 'Any choice is right here. Pick what you’d really like.', { actions: SC.solved ? null : gloActs(m) }));
+      return;
+    }
     const w = WORDS[m.word];
     const acts = gloActs(m);
     Glo.context(() => {
@@ -1635,9 +1859,41 @@
     }
   }
 
+  // Any choice is right. Remember it, so later moments can talk about it.
+  function choose(key, el) {
+    const m = cur();
+    if (!m || SC.solved || m.type !== 'choose') return;
+    const c = key === 'none' ? null : m.choices.find((x) => x.key === key);
+    if (key !== 'none' && !c) return;
+    SC.picks[m.slot] = c ? c.key : null;
+    if (m.list && c) SC.bought.push(c.key);
+    m.word = c ? c.word : null;
+    if (c && c.effect) c.effect(SC);
+    if (!c && m.none && m.none.effect) m.none.effect(SC);
+    if (SC.look) setReflection(true);
+    correct(el, c ? c.ok : m.none.ok, c ? (c.props || []) : []);
+    const t = $(`.choice[data-k="${key}"]`);
+    if (t) { t.classList.remove('dim'); t.classList.add('right'); }
+    if (m.list) $$('.shoplist li').forEach((li, i) => li.classList.toggle('got', SC.bought.includes(m.listAll[i])));
+  }
+  // The learner in the salon mirror (sitting in the chair, in a cape), with the style and colour chosen so far.
+  function setReflection(pop) {
+    const g = $('#stage .reflection');
+    if (!g || !SC || !SC.look) return;
+    g.innerHTML = window.ART.salonReflection(SC.look);
+    if (pop) once(g, 'wiggle', 800);
+  }
   function onTap(key, el) {
     if (SC.solved) return;
-    if (key === cur().answer) correct(el); else wrong(key, el);
+    const m = cur();
+    if (m.type === 'choose') { const c = m.choices.find((x) => x.hot === key); if (c) choose(c.key, el); else wrong(key, el); return; }
+    if (m.type === 'pick' && m.scene) { const k = m.scene[key]; if (k === m.answer) correct(el); else wrong(k || key, el); return; }
+    if (key === m.answer) correct(el); else wrong(key, el);
+  }
+  // Where the answer is in the scene: the tap target, or the scene item that matches a picture answer.
+  function answerHot(m) {
+    const key = m.type === 'tap' ? m.answer : m.scene ? Object.keys(m.scene).find((k) => m.scene[k] === m.answer) : null;
+    return key ? $(`#stage [data-hot="${key}"]`) : null;
   }
 
   function correct(el, okText, props) {
@@ -1655,11 +1911,19 @@
     if (el && el.classList.contains('hot')) later(() => el.classList.remove('right'), 900);
     $$('.hot.hint', stage).forEach((h) => h.classList.remove('hint'));
     $$('.tile, .reply').forEach((t) => { if (t !== el) t.classList.add('dim'); });
+    if (m.type === 'pick') {
+      // Answered in the scene or with a picture: the two stay in step.
+      const t = $(`.tile[data-k="${m.answer}"]`);
+      if (t) { t.classList.remove('dim'); t.classList.add('right'); }
+      const h = answerHot(m);
+      if (h && h !== el) { h.classList.add('right'); later(() => h.classList.remove('right'), 900); }
+    }
+    (m.takes || []).forEach((k) => { const pr = stage.querySelector(`[data-prop="${k}"]`); if (pr) pr.classList.remove('in'); });
     (props || m.props || []).forEach((p) => later(() => propIn(stage, p), 250));
-    const res = learn(m.word, SC.def.place);
-    SC.counts[m.word] = (SC.counts[m.word] || 0) + 1;
+    const w = m.word ? WORDS[m.word] : null;
+    const res = w ? learn(m.word, SC.def.place) : { isNew: false, grew: false, count: 0 };
+    if (w) { SC.counts[m.word] = (SC.counts[m.word] || 0) + 1; SC.learned.add(m.word); }
     if (SC.misses === 0) SC.firstTry++;
-    const w = WORDS[m.word];
     const praise = ['¡Muy bien!', '¡Eso es!', '¡Perfecto!', '¡Genial!'][SC.i % 4];
     const sc = (n) => `${n} ${n === 1 ? 'scene' : 'scenes'}`;
     const times = SC.counts[m.word];
@@ -1668,15 +1932,15 @@
     SC.rep += gain;
     addRep(gain);
     $('#fb').innerHTML = `<div class="feedback"><span class="badge">${icon('check')}</span><div class="fb-txt"><b>${praise}</b><p>${okText || m.ok}</p></div><span class="rep-gain">+${gain} Rep</span></div>
-      <div class="strength" style="margin-top:12px">${dots(res.count, res.grew)}<span><b>${w.es}</b> · ${strengthText}</span></div>`;
+      ${w ? `<div class="strength" style="margin-top:12px">${dots(res.count, res.grew)}<span><b>${w.es}</b> · ${strengthText}</span></div>` : ''}`;
     const last = SC.i === SC.moments.length - 1;
     $('#foot').innerHTML = `<button type="button" class="btn btn-block" data-action="next">${last ? 'Finish' : 'Continue'} ${icon('arrowRight')}</button>`;
     setProgress();
     Glo.jump();
     react(m.who, 'joy', 1900);
     pose(m.who, SC.i % 2 ? 'cheer' : 'thumb', 1500);
-    if (state.sound) later(() => Speech.say(w.es, false, null, speakerG(m.who), m.who), 350);
-    if (res.isNew || res.grew) flyToBank(w.es, $('#panelWord'));
+    if (w && state.sound) later(() => Speech.say(w.es, false, null, speakerG(m.who), m.who), 350);
+    if (w && (res.isNew || res.grew)) flyToBank(w.es, $('#panelWord') || el);
     if (m.after) later(() => moveCam(m.after, placeSay), 900);
     const btn = $('#foot .btn');
     if (btn && isMobile()) later(() => btn.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' }), 450);
@@ -1684,6 +1948,7 @@
 
   function wrong(key, el) {
     const m = cur();
+    if (!m || !$('#fb')) return;
     SC.misses++;
     if (el) { el.classList.remove('wrong'); void el.getBoundingClientRect(); el.classList.add('wrong'); later(() => el.classList.remove('wrong'), 800); }
     const msg = (m.wrong && m.wrong[key]) || 'Not quite. Look at the scene again.';
@@ -1708,10 +1973,15 @@
     else if (n === HELP_AT.answer) nudge(true);
     else if (n === HELP_AT.glo) offerHelp();
   }
-  const artFor = (key) => $$(`#stage [data-art~="${key}"], #stage [data-prop="${key}"].in, #stage [data-who="${key}"]`);
+  const artFor = (key) => !key ? [] : $$(`#stage [data-art~="${key}"], #stage [data-prop="${key}"].in, #stage [data-who="${key}"]`);
   function once(el, cls, ms) { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); setTimeout(() => el.classList.remove(cls), ms); }
   function nudge(answerOnly) {
     const m = cur();
+    if (m.type === 'choose') {
+      $$('.choice, .reply').forEach((t, i) => setTimeout(() => { once(t, 'wiggle', 800); if (answerOnly) once(t, 'glow', 1400); }, i * 90));
+      m.choices.filter((c) => c.hot).forEach((c) => { artFor(c.hot).forEach((a) => once(a, 'wiggle', 800)); const h = $(`#stage [data-hot="${c.hot}"]`); if (h && answerOnly) once(h, 'peek', 1400); });
+      return;
+    }
     if (m.type === 'tap') {
       const keys = answerOnly ? [m.answer] : m.live;
       keys.forEach((k, i) => setTimeout(() => {
@@ -1724,9 +1994,17 @@
       const items = $$(m.type === 'pick' ? '.tile' : '.reply');
       const pick = answerOnly ? items.filter((t) => m.type === 'reply' || t.dataset.k === m.answer).slice(0, 1) : items;
       pick.forEach((t, i) => setTimeout(() => { once(t, 'wiggle', 800); if (answerOnly) once(t, 'glow', 1400); }, i * 90));
+      if (m.type === 'pick' && m.scene) {
+        const keys = answerOnly ? Object.keys(m.scene).filter((k) => m.scene[k] === m.answer) : Object.keys(m.scene);
+        keys.forEach((k) => artFor(k).forEach((a) => once(a, 'wiggle', 800)));
+        const h = answerHot(m);
+        if (answerOnly && h) { once(h, 'nudge', 1400); pointAt(m.who, h); }
+      }
+      if (m.type === 'reply') (m.show || []).forEach((k) => artFor(k).forEach((a) => once(a, 'wiggle', 800)));
     }
   }
   function gloActs(m) {
+    if (m.type === 'choose') return [{ label: 'Say the choices to me', icon: 'volume', fn: () => Speech.say(m.choices.map((c) => c.label).join(', '), true, null, speakerG(m.who), m.who) }];
     const w = WORDS[m.word];
     const acts = [{ label: 'Say it slower', icon: 'turtle', fn: () => Speech.say(w.es, true, null, speakerG(m.who), m.who) }];
     if (m.type !== 'reply') acts.push({ label: 'Show me where', icon: 'search', fn: hint });
@@ -1736,19 +2014,24 @@
   function offerHelp() {
     const m = cur();
     Glo.jump();
-    if (m.type === 'tap') { const h = $(`#stage [data-hot="${m.answer}"]`); if (h) { pointAt(m.who, h); once(h, 'nudge', 1400); } }
+    const ah = m.type !== 'reply' && answerHot(m);
+    if (ah) { pointAt(m.who, ah); once(ah, 'nudge', 1400); }
+    if (m.type === 'choose') { Glo.say('Need a hand? Any choice works here. Tap something in the scene or pick one below.', { actions: gloActs(m) }); return; }
     Glo.say(m.type === 'tap' ? `Need a hand? You’re looking for <b>${WORDS[m.word].es}</b> in the picture.` : `Need a hand? Pick the answer below for <b>${WORDS[m.word].es}</b>.`, { actions: gloActs(m) });
   }
 
   function hint() {
     if (!SC || SC.solved) return;
     const m = cur();
+    if (m.type === 'choose') { nudge(true); Glo.say('Any of them is fine. Choose the one you’d like.'); return; }
     if (m.type === 'tap') {
       const h = $(`#stage [data-hot="${m.answer}"]`);
       if (h) { h.classList.add('hint'); pointAt(m.who, h); }
     } else if (m.type === 'pick') {
       const t = $(`.tile[data-k="${m.answer}"]`);
       if (t) { t.classList.remove('hint'); void t.offsetWidth; t.classList.add('hint'); }
+      const h = answerHot(m);
+      if (h) { h.classList.add('hint'); pointAt(m.who, h); }
     } else Glo.say('Either answer works here. Use the English gloss under each reply.');
   }
 
@@ -1766,7 +2049,7 @@
     SC.i = SC.moments.length;
     $$('.progress i').forEach((el) => { el.classList.add('on'); el.classList.remove('cur'); });
     stage.classList.remove('tappable');
-    moveCam(def.art === 'cafe' ? 'lucia' : 'shop', () => {
+    moveCam(def.outroCam || (def.art === 'cafe' ? 'lucia' : 'shop'), () => {
       attend(o.who);
       wave(stage, o.who);
       showSay(o.who, o.line, null, o.gloss);
@@ -1776,10 +2059,10 @@
     SC.rep += bonus;
     addRep(bonus);
     state.done[def.place] = true;
-    const newWords = [...new Set(def.moments.map((m) => m.word))].filter((w) => !SC.known0.has(w));
+    const newWords = [...SC.learned].filter((w) => !SC.known0.has(w));
     logToday({ min: def.mins, rep: SC.rep, words: newWords, scene: def.title });
     if (def.review) state.stuck = Math.round((SC.firstTry / def.moments.length) * 100);
-    state.last = { id: def.id, english: SC.english, rep: SC.rep, lvlBefore: SC.lvlBefore, lvlAfter: levelOf(state.repEarned).id, firstTry: SC.firstTry, total: def.moments.length };
+    state.last = { id: def.id, english: SC.english, rep: SC.rep, lvlBefore: SC.lvlBefore, lvlAfter: levelOf(state.repEarned).id, firstTry: SC.firstTry, total: def.moments.length, words: [...SC.learned] };
     save();
     $('#panel').innerHTML = `
       <div class="tagrow"><span class="eyebrow">Scene complete</span></div>
@@ -1795,7 +2078,7 @@
   function viewDone(id) {
     const def = SCENES[id];
     if (!def) { location.hash = '#/today'; return; }
-    const words = [...new Set(def.moments.map((m) => m.word))].filter((w) => state.words[w]);
+    const words = (state.last && state.last.id === id && state.last.words ? state.last.words : def.moments.filter((m) => typeof m === 'object' && m.word).map((m) => m.word)).filter((w, i, a) => a.indexOf(w) === i && state.words[w]);
     const L = state.last && state.last.id === id ? state.last : { english: 0, rep: 0 };
     const fresh = words.filter((w) => state.words[w].length === 1 && state.words[w][0] === def.place);
     const leveled = L.lvlAfter && L.lvlAfter !== L.lvlBefore;
@@ -1828,7 +2111,8 @@
   }
 
   /* ================= Actions ================= */
-  function closeDD() { const d = $('#paceDD'); if (d) { d.classList.remove('open'); $('.dd-btn', d).setAttribute('aria-expanded', 'false'); } }
+  // Close every open dropdown, or only the one given.
+  function closeDD(only) { $$('.dd.open').forEach((d) => { if (only && d !== only) return; d.classList.remove('open'); const b = $('.dd-btn', d); if (b) b.setAttribute('aria-expanded', 'false'); }); }
   const actions = {
     noop() {},
     openAbout() { openAbout(); },
@@ -1918,6 +2202,19 @@
     },
     ffilter(el) { UI.ffilter = el.dataset.f; rerender(viewFriends); },
     pfTab(el) { UI.tab = el.dataset.tab; pfRefresh(false); },
+    meSet(el) {
+      const k = el.dataset.k, v = el.dataset.v, before = Object.assign({}, ME_DEFAULT, state.me), me = Object.assign({}, before);
+      if (k === 'fem') {
+        me.fem = v === '1';
+        const styles = ME.hair[me.fem ? 'f' : 'm'].map((h) => h[0]);
+        if (!styles.includes(me.hair)) me.hair = styles[0];
+        if (me.fem) me.face = 'none';
+      } else me[k] = v;
+      if (JSON.stringify(me) === JSON.stringify(before)) return;
+      state.me = me;
+      save();
+      pfRefresh(true);
+    },
     pfItem(el) {
       const it = shopItem(UI.tab, el.dataset.id);
       if (!owns(it)) {
@@ -1931,9 +2228,10 @@
       save();
       pfRefresh(true);
     },
-    ddToggle() {
-      const d = $('#paceDD');
+    ddToggle(el) {
+      const d = el.closest('.dd');
       const open = !d.classList.contains('open');
+      closeDD();
       d.classList.toggle('open', open);
       $('.dd-btn', d).setAttribute('aria-expanded', open);
       if (open) { const sel = $('[aria-selected="true"]', d); if (sel) sel.focus({ preventScroll: true }); }
@@ -1954,10 +2252,13 @@
       if (m) Speech.say(m.line, false, el, speakerG(m.who), m.who); else Speech.say(SC.def.outro.line, false, el, speakerG(SC.def.outro.who), SC.def.outro.who);
     },
     pick(el) { if (SC.solved) return; if (el.dataset.k === cur().answer) correct(el); else wrong(el.dataset.k, el); },
+    choose(el) { if (state.sound) { const m = cur(), c = m && m.choices && m.choices.find((x) => x.key === el.dataset.k); Speech.say(c ? c.label : (m && m.none ? m.none.label : '')); } choose(el.dataset.k, el); },
     reply(el) {
       if (SC.solved) return;
-      const r = cur().replies[+el.dataset.i];
+      const m = cur(), r = m.replies[+el.dataset.i];
       if (state.sound) Speech.say(r.es);
+      if (r.pick) SC.picks[m.slot || 'offer'] = r.pick;
+      if (r.effect) { r.effect(SC); setReflection(true); }
       correct(el, r.ok, r.props || []);
     },
     next() { nextMoment(); },
@@ -1972,6 +2273,15 @@
       toast(state.sound ? 'Voices on' : 'Voices off. Tap any speaker to listen.');
     },
     filter(el) { UI.filter = el.dataset.f; rerender(viewWords); },
+    bankSort(el) { closeDD(); if (UI.bankSort === el.dataset.v) return; UI.bankSort = el.dataset.v; rerender(viewWords); },
+    bankLang(el) {
+      const l = LEARN.find((x) => x.id === el.dataset.v);
+      closeDD();
+      if (!l || !l.on) { toast(`${l ? l.nm : 'That language'} is coming soon. Your Spanish words are all here.`); return; }
+      if (UI.bankLang === l.id) return;
+      UI.bankLang = l.id;
+      rerender(viewWords);
+    },
     revealWord(el) { $('#reveal').innerHTML = `<p>In English</p><span class="en">${WORDS[el.dataset.id].en}</span>`; },
     reset() {
       try { localStorage.removeItem(KEY); localStorage.removeItem(OLD_KEY); sessionStorage.removeItem('picto-intro'); } catch (e) { /* ignore */ }
@@ -1984,12 +2294,11 @@
     }
   };
   document.addEventListener('click', (e) => {
-    const dd = $('#paceDD');
-    if (dd && dd.classList.contains('open') && !dd.contains(e.target)) closeDD();
+    $$('.dd.open').forEach((d) => { if (!d.contains(e.target)) closeDD(d); });
     const el = e.target.closest('[data-action]');
     if (!el) return;
     const fn = actions[el.dataset.action];
-    if (fn) { e.preventDefault(); fn(el, e); }
+    if (fn) { e.preventDefault(); try { fn(el, e); } catch (err) { showCrash(err); } }
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { if (Tour.id) { Tour.end(); return; } if ($('.modal')) { closeModal(); return; } closeDD(); }
